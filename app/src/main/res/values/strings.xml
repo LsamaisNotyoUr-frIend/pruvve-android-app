@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Pruvve</string>
+    <string name="pruvve">
+    PRUVVE
+    </string>
+    <string name="become_a_le">
+        Become a legend
+    </string>
+    <string name="welcome_to_">
+    Welcome to Pruvve
+    </string>
+    <string name="title_activity_main2">MainActivity2</string>
+
+    <string name="gender">pick a gender</string>
+    <string-array name="months">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+</resources>
