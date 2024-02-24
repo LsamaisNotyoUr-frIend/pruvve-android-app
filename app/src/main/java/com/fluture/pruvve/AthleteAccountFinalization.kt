@@ -30,13 +30,13 @@ class AthleteAccountFinalization : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         val text1 = binding.tvtos.text.toString()
-        val my_span = SpannableString(text1)
-        setClickableSpan(my_span, "terms of service")
-        setClickableSpan(my_span, "additional terms")
-        setClickableSpan(my_span, "privacy policy")
+        val mySpan = SpannableString(text1)
+        setClickableSpan(mySpan, "terms of service")
+        setClickableSpan(mySpan, "additional terms")
+        setClickableSpan(mySpan, "privacy policy")
 
         binding.tvtos.apply {
-            text = my_span
+            text = mySpan
             movementMethod = LinkMovementMethod.getInstance()
         }
         binding.tvpositionview.setOnClickListener {
@@ -45,15 +45,15 @@ class AthleteAccountFinalization : AppCompatActivity() {
         binding.button1.setOnClickListener {
             finish() }
         binding.button.setOnClickListener {
-            val firstName = intent.getStringExtra("Extra_firstname")
-            val lastName = intent.getStringExtra("Extra_lastname")
-            val zipCode = intent.getStringExtra("Extra_zipcode")
-            val gender = intent.getStringExtra("Extra_gender")
-            val dateOfBirth = intent.getStringExtra("Extra_dateOfBirth")
-            val userName = intent.getStringExtra("Extra_username")
-            val passWord = intent.getStringExtra("Extra_password")
-            val imageAddress = intent.getStringExtra("Extra_profilePic")
-            val videoAddress = intent.getStringExtra("Extra_introVideo")
+            val firstName = intent.getStringExtra("Extra_firstname").toString()
+            val lastName = intent.getStringExtra("Extra_lastname").toString()
+            val zipCode = intent.getStringExtra("Extra_zipcode").toString()
+            val gender = intent.getStringExtra("Extra_gender").toString()
+            val dateOfBirth = intent.getStringExtra("Extra_dateOfBirth").toString()
+            val userName = intent.getStringExtra("Extra_username").toString()
+            val passWord = intent.getStringExtra("Extra_password").toString()
+            val imageAddress = intent.getStringExtra("Extra_profilePic").toString()
+            val videoAddress = intent.getStringExtra("Extra_introVideo").toString()
             val position = binding.tvpositionview.text.toString()
             val height = binding.etheightField.text.toString()
             val feet = binding.etfeetField.text.toString()
@@ -125,7 +125,7 @@ class AthleteAccountFinalization : AppCompatActivity() {
         val dialog = builder.create()
 
         val positionPicker: NumberPicker = dialogView.findViewById(R.id.genderPicker)
-        val positionlabels: TextView = dialogView.findViewById(R.id.genderLabel)
+        val positionLabels: TextView = dialogView.findViewById(R.id.genderLabel)
         val positions = arrayOf("Goalkeeper(GK)", "Center-back(CB)", "Left-back(LB)", "Right-back(RB)",
             "Defensive midfielder (DM)" ,"Central midfielder(CM)" ,"Attacking midfielder(AM)",
             "Striker(ST)" , "Left-winger(LW)" , "Right-winger(RW)")
@@ -133,7 +133,7 @@ class AthleteAccountFinalization : AppCompatActivity() {
         positionPicker.maxValue = 9
         positionPicker.displayedValues = positions
         positionPicker.setOnValueChangedListener { _, _, newVal ->
-            positionlabels.text = positions[newVal]
+            positionLabels.text = positions[newVal]
             binding.imgender.visibility = View.VISIBLE
         }
 

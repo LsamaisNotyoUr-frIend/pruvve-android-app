@@ -11,18 +11,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
+        android:contentDescription="To display the background picture"
         android:src="@drawable/onboardend_image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="HardcodedText" />
 
     <ImageView
         android:id="@+id/button1"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="used to go back to previous activity"
         android:background="@drawable/ep_back"
         android:text="Button"
         app:layout_constraintBottom_toTopOf="@+id/guideline10"
@@ -52,11 +55,13 @@
     <ImageView
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="to show current progress"
         android:src="@drawable/progress_bar7"
         app:layout_constraintBottom_toTopOf="@+id/guideline76"
         app:layout_constraintEnd_toStartOf="@+id/guideline37"
         app:layout_constraintStart_toStartOf="@+id/guideline29"
-        app:layout_constraintTop_toTopOf="@+id/guideline75" />
+        app:layout_constraintTop_toTopOf="@+id/guideline75"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/tvtos"

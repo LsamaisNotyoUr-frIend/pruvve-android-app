@@ -6,40 +6,41 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import com.fluture.pruvve.databinding.ActivityCoachScoutAccountcreatorBinding
 
 class CoachScoutAccountcreator : AppCompatActivity() {
     private lateinit var binding: ActivityCoachScoutAccountcreatorBinding
+    private var imageUri: Uri? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivityCoachScoutAccountcreatorBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
+        binding = ActivityCoachScoutAccountcreatorBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         binding.button1.setOnClickListener {
-            finish()}
+            finish()
+        }
 
         binding.button.isEnabled = false
 
         binding.profpicplacholder.setOnClickListener {
-            Intent(Intent.ACTION_GET_CONTENT).also {
-                it.type = "image/*"
-                startActivityForResult(it, 0)
-            }
+            openImageChooser()
         }
+
         binding.btnaddimage.setOnClickListener {
-            Intent(Intent.ACTION_GET_CONTENT).also {
-                it.type = "image/*"
-                startActivityForResult(it, 0)
-            }
+            openImageChooser()
         }
+
         binding.button.setOnClickListener {
-            val firstName = intent.getStringExtra("Extra_firstname")
-            val lastName = intent.getStringExtra("Extra_lastname")
-            val zipCode = intent.getStringExtra("Extra_zipcode")
-            val gender = intent.getStringExtra("Extra_gender")
-            val dateOfBirth = intent.getStringExtra("Extra_dateOfBirth")
-            val userName = intent.getStringExtra("Extra_username")
-            val passWord = intent.getStringExtra("Extra_password")
-            val imageAddress = binding.profpicplacholder.tag as? Uri
+            val firstName = intent.getStringExtra("Extra_firstname").toString()
+            val lastName = intent.getStringExtra("Extra_lastname").toString()
+            val zipCode = intent.getStringExtra("Extra_zipcode").toString()
+            val gender = intent.getStringExtra("Extra_gender").toString()
+            val dateOfBirth = intent.getStringExtra("Extra_dateOfBirth").toString()
+            val userName = intent.getStringExtra("Extra_username").toString()
+            val passWord = intent.getStringExtra("Extra_password").toString()
+            val imageAddress = imageUri.toString()
             Intent(this, CoachAccountFinalization::class.java).also {
                 it.putExtra("Extra_firstname", firstName)
                 it.putExtra("Extra_lastname", lastName)
@@ -48,20 +49,30 @@ class CoachScoutAccountcreator : AppCompatActivity() {
                 it.putExtra("Extra_dateOfBirth", dateOfBirth)
                 it.putExtra("Extra_username", userName)
                 it.putExtra("Extra_password", passWord)
-                it.putExtra("Extra_profilePic", imageAddress.toString())
+                it.putExtra("Extra_profilePic", imageAddress)
                 startActivity(it)
             }
         }
     }
+
+    private fun openImageChooser() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            type = "image/*"
+        }
+        resultLauncher.launch(intent)
+    }
+
     @SuppressLint("SetTextI18n")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode == Activity.RESULT_OK && requestCode == 0){
-            val imgAdress = data?.data
-            binding.profpicplacholder.setImageURI(imgAdress)
-            binding.btnaddimage.text = "Add Another Image"
-            binding.button.isEnabled = true
-            binding.button.setBackgroundResource(R.drawable.primary_button)
+    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            data?.data?.let { uri ->
+                imageUri = uri
+                binding.profpicplacholder.setImageURI(uri)
+                binding.btnaddimage.text = "Add Another Image"
+                binding.button.isEnabled = true
+                binding.button.setBackgroundResource(R.drawable.primary_button)
+            }
         }
     }
 }

@@ -24,12 +24,8 @@ b
 2app/src/main/java/com/fluture/pruvve/MainSignup.kt,2\f\2fd74943c997bc5b4fe509e23c8d6d6ce3a7aad7
 ;
 gradlew.bat,2\a\2a45a911a8f1836b0b6c5b758962572012d8f8c3
-]
--app/src/main/java/com/fluture/pruvve/Coach.kt,9\6\96e77fb66dfb021db0fe6a741e4c1388807a5003
 A
 gradle.properties,2\a\2afbb999f001938c88fa43fc2ef52abf0f8213e4
-_
-/app/src/main/java/com/fluture/pruvve/Athlete.kt,e\b\eb0464d535201f750de524743722d5370baf83e6
 7
 gradlew,5\b\5bbfa66edb4db3c7c33c5181f43510990d3307f9
 X
@@ -62,3 +58,15 @@ g
 7app/src/test/java/com/fluture/pruvve/ExampleUnitTest.kt,e\0\e02bda1a09f30e3e74995e3cc826d5ea5b3fdb2f
 v
 Fapp/src/androidTest/java/com/fluture/pruvve/ExampleInstrumentedTest.kt,4\5\45be0a3e43a4837e28eba42ec705d710e5a1321f
+a
+1app/src/main/java/com/fluture/pruvve/LoginPage.kt,6\2\62fd8255c453e6b95a3d743762475ddaa738605a
+c
+3app/src/main/java/com/fluture/pruvve/WelcomeBack.kt,d\3\d309be77328797466e6f16b181f2ba410419572c
+\
+,app/src/main/java/com/fluture/pruvve/User.kt,1\e\1eca372bdfaa3f38c087ce2113ecf291f1b7018e
+c
+3app/src/main/java/com/fluture/pruvve/UserService.kt,8\e\8e546736a3315853f523627d4cbeb1bcd3dba542
+h
+8app/src/main/java/com/fluture/pruvve/LoginCredentials.kt,1\3\13a6aa61be4022586452a74cbb46d80b422fbd63
+a
+1app/src/main/java/com/fluture/pruvve/LoginInfo.kt,f\f\ffc9d323e7a4402ee53e85f3cd73c19e352eaa7c

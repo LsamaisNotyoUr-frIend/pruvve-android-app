@@ -25,17 +25,17 @@ class AthleteOnboardEnd : AppCompatActivity() {
         binding = ActivityAthleteOnboardEndBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        val text1 = binding.tvtos.text.toString()
-        val my_span = SpannableString(text1)
-        setClickableSpan(my_span, "terms of service")
-        setClickableSpan(my_span, "additional terms")
-        setClickableSpan(my_span, "privacy policy")
 
-        val username = intent.getStringExtra("Extra_username")
-        binding.tvwelcome.text = "Welcome to Pruvve, \n${username}!"
+        val text1 = binding.tvtos.text.toString()
+        val mySpan = SpannableString(text1)
+        setClickableSpan(mySpan, "terms of service")
+        setClickableSpan(mySpan, "additional terms")
+        setClickableSpan(mySpan, "privacy policy")
+        val userName = intent.getStringExtra("Extra_username")
+        binding.tvwelcome.text = "Welcome to Pruvve, \n${userName.toString()}!"
 
         binding.tvtos.apply {
-            text = my_span
+            text = mySpan
             movementMethod = LinkMovementMethod.getInstance()
         }
         binding.button1.setOnClickListener {

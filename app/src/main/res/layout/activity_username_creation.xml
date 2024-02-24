@@ -85,6 +85,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:autofillHints="username"
+            android:inputType="textPersonName"
             android:background="@drawable/sign_in_viewbackgrounds"
             android:hint="username"
             android:textAlignment="center"
@@ -105,12 +106,11 @@
             android:text="password*"
             android:textColor="@color/white"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/last_name_field"
+            app:layout_constraintBottom_toTopOf="@+id/guideline41"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline55"
-            app:layout_constraintVertical_bias="0.0"
             tools:ignore="HardcodedText" />
 
         <EditText
@@ -118,6 +118,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:autofillHints="password"
+            android:inputType="textPassword"
             android:background="@drawable/sign_in_viewbackgrounds"
             android:hint="password"
             android:textAlignment="center"
@@ -151,7 +152,7 @@
             app:layout_constraintGuide_percent="0.50" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/usernameLengthChecker"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="Must be between 2 and 12 characters"
@@ -171,16 +172,16 @@
             app:layout_constraintGuide_percent="0.39" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/passwordLengthChecker"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="Must be 8 or more characters"
-            android:textSize="14sp"
             android:textColor="@color/gray"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/last_name_field"
+            app:layout_constraintTop_toBottomOf="@+id/password_field"
             tools:ignore="HardcodedText" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -189,6 +190,7 @@
         android:id="@+id/button1"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="Goes to the previous activity"
         android:background="@drawable/ep_back"
         android:text="Button"
         app:layout_constraintBottom_toTopOf="@+id/guideline10"
@@ -201,7 +203,7 @@
         android:id="@+id/button"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/primary_button"
+        android:background="@drawable/secondary_button"
         android:fontFamily="@font/my_exo"
         android:text="Next"
         android:textAlignment="center"
@@ -218,11 +220,13 @@
     <ImageView
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="showing current progress on the pruvve sign up creation"
         android:src="@drawable/progress_bar2"
         app:layout_constraintBottom_toTopOf="@+id/guideline76"
         app:layout_constraintEnd_toStartOf="@+id/guideline37"
         app:layout_constraintStart_toStartOf="@+id/guideline29"
-        app:layout_constraintTop_toTopOf="@+id/guideline75" />
+        app:layout_constraintTop_toTopOf="@+id/guideline75"
+        tools:ignore="HardcodedText"/>
 
     <TextView
         android:id="@+id/tvtos"

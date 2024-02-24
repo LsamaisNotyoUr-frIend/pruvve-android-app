@@ -47,11 +47,18 @@
         app:layout_constraintVertical_bias="1.0">
 
         <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline90"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.59" />
+
+        <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline71"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.85" />
+            app:layout_constraintGuide_percent="0.87" />
 
         <TextView
             android:id="@+id/firstname"
@@ -72,6 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:autofillHints="name"
+            android:inputType="textPersonName"
             android:background="@drawable/sign_in_viewbackgrounds"
             android:hint="Firstname"
             android:textAlignment="center"
@@ -99,6 +107,40 @@
             tools:ignore="HardcodedText" />
 
         <TextView
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/my_poppins"
+            android:text="Email*"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/last_name_field"
+            tools:ignore="HardcodedText" />
+
+        <EditText
+            android:id="@+id/emailaddress_field"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:inputType="textEmailAddress"
+            android:autofillHints="emailAddress"
+            android:background="@drawable/sign_in_viewbackgrounds"
+            android:hint="Email address"
+            android:paddingEnd="20dp"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline90"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/email"
+            app:layout_constraintVertical_bias="1.0"
+            tools:ignore="HardcodedText,RtlSymmetry" />
+
+
+        <TextView
             android:id="@+id/zipcode"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -109,7 +151,7 @@
             app:layout_constraintBottom_toTopOf="@id/zip_code_field"
             app:layout_constraintEnd_toStartOf="@+id/gender"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline36"
+            app:layout_constraintTop_toTopOf="@+id/guideline90"
             tools:ignore="HardcodedText" />
 
 
@@ -118,6 +160,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginEnd="10dp"
+            android:inputType="textPostalAddress"
             android:layout_weight="1"
             android:autofillHints="postalCode"
             android:background="@drawable/sign_in_viewbackgrounds"
@@ -145,7 +188,7 @@
             app:layout_constraintBottom_toTopOf="@+id/guideline43"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline46"
-            app:layout_constraintTop_toTopOf="@+id/guideline36"
+            app:layout_constraintTop_toTopOf="@+id/guideline90"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -168,6 +211,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:autofillHints="name"
+            android:inputType="textPersonName"
             android:background="@drawable/sign_in_viewbackgrounds"
             android:hint="last name"
             android:textAlignment="center"
@@ -261,35 +305,35 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.22" />
+            app:layout_constraintGuide_percent="0.19" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline36"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.48" />
+            app:layout_constraintGuide_percent="0.39" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline41"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.34" />
+            app:layout_constraintGuide_percent="0.265" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline43"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.60053617" />
+            app:layout_constraintGuide_percent="0.66" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline45"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.74" />
+            app:layout_constraintGuide_percent="0.79" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline46"
@@ -304,6 +348,7 @@
         android:id="@+id/button1"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="used to return tpo the previous view"
         android:background="@drawable/ep_back"
         android:text="Button"
         app:layout_constraintBottom_toTopOf="@+id/guideline10"
@@ -319,7 +364,7 @@
         android:background="@drawable/primary_button"
         android:fontFamily="@font/my_exo"
         android:text="Next"
-        android:textAlignment="center"
+        android:gravity="center"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="18sp"
@@ -333,21 +378,25 @@
     <ImageView
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="show's the current progress"
         android:src="@drawable/progress_bar"
         app:layout_constraintBottom_toTopOf="@+id/guideline76"
         app:layout_constraintEnd_toStartOf="@+id/guideline37"
         app:layout_constraintStart_toStartOf="@+id/guideline29"
-        app:layout_constraintTop_toTopOf="@+id/guideline75" />
+        app:layout_constraintTop_toTopOf="@+id/guideline75"
+        tools:ignore="HardcodedText" />
 
     <ImageView
         android:id="@+id/imgender"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="to show the drop down for the gender"
         android:src="@drawable/my_downarroaw"
         app:layout_constraintBottom_toTopOf="@+id/guideline79"
         app:layout_constraintEnd_toStartOf="@+id/guideline37"
         app:layout_constraintStart_toStartOf="@+id/guideline77"
-        app:layout_constraintTop_toTopOf="@+id/guideline78" />
+        app:layout_constraintTop_toTopOf="@+id/guideline78"
+        tools:ignore="HardcodedText"/>
 
     <TextView
         android:id="@+id/tvtos"
@@ -403,7 +452,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.71" />
+        app:layout_constraintGuide_percent="0.80" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline35"
@@ -466,14 +515,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.515" />
+        app:layout_constraintGuide_percent="0.61" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline79"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.56" />
+        app:layout_constraintGuide_percent="0.66" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline80"

@@ -60,6 +60,7 @@
         android:id="@+id/button1"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="used to go back to the previous activity"
         android:background="@drawable/ep_back"
         android:text="Button"
         app:layout_constraintBottom_toTopOf="@+id/guideline10"
@@ -90,10 +91,12 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:src="@drawable/progress_bar3"
+        android:contentDescription="progress bar for the app"
         app:layout_constraintBottom_toTopOf="@+id/guideline76"
         app:layout_constraintEnd_toStartOf="@+id/guideline37"
         app:layout_constraintStart_toStartOf="@+id/guideline29"
-        app:layout_constraintTop_toTopOf="@+id/guideline75" />
+        app:layout_constraintTop_toTopOf="@+id/guideline75"
+        tools:ignore="HardcodedText"/>
 
     <TextView
         android:id="@+id/tvtos"

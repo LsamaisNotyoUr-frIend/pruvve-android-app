@@ -45,5 +45,6 @@
     <color name="pale_green">#98FB98</color>
     <color name="dark_gray">#333333</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="facebook_blue">#4267B2</color>
     <color name="transparent">#00000000</color>
 </resources>

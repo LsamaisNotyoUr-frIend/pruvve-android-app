@@ -92,6 +92,8 @@
             android:id="@+id/etteamview"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:autofillHints="none"
+            android:inputType="textShortMessage"
             android:background="@drawable/sign_in_viewbackgrounds"
             android:fontFamily="@font/poppins_bold"
             android:gravity="center"
@@ -101,13 +103,16 @@
             app:layout_constraintBottom_toTopOf="@+id/guideline38"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvteamorschool" />
+            app:layout_constraintTop_toBottomOf="@+id/tvteamorschool"
+            tools:ignore="HardcodedText" />
 
 
         <EditText
             android:id="@+id/etbiofield"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:autofillHints="none"
+            android:inputType="textLongMessage"
             android:background="@drawable/sign_in_viewbackgrounds"
             android:gravity="start"
             android:hint="write your story"
@@ -141,6 +146,7 @@
         android:id="@+id/button1"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="to go back to the previous view"
         android:background="@drawable/ep_back"
         android:text="Button"
         app:layout_constraintBottom_toTopOf="@+id/guideline10"
@@ -174,7 +180,8 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline76"
         app:layout_constraintEnd_toStartOf="@+id/guideline37"
         app:layout_constraintStart_toStartOf="@+id/guideline29"
-        app:layout_constraintTop_toTopOf="@+id/guideline75" />
+        app:layout_constraintTop_toTopOf="@+id/guideline75"
+        tools:ignore="HardcodedText, contentDescription"/>
 
     <TextView
         android:id="@+id/tvtos"

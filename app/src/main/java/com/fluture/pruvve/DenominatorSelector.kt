@@ -64,13 +64,13 @@ class DenominatorSelector : AppCompatActivity() {
             }
         }
         binding.button.setOnClickListener {
-            val firstName = intent.getStringExtra("Extra_firstname")
-            val lastName = intent.getStringExtra("Extra_lastname")
-            val zipCode = intent.getStringExtra("Extra_zipcode")
-            val gender = intent.getStringExtra("Extra_gender")
-            val dateOfBirth = intent.getStringExtra("Extra_dateOfBirth")
-            val userName = intent.getStringExtra("Extra_username")
-            val passWord = intent.getStringExtra("Extra_password")
+            val firstName = intent.getStringExtra("Extra_firstname").toString()
+            val lastName = intent.getStringExtra("Extra_lastname").toString()
+            val zipCode = intent.getStringExtra("Extra_zipcode").toString()
+            val gender = intent.getStringExtra("Extra_gender").toString()
+            val dateOfBirth = intent.getStringExtra("Extra_dateOfBirth").toString()
+            val userName = intent.getStringExtra("Extra_username").toString()
+            val passWord = intent.getStringExtra("Extra_password").toString()
             if (selectedTextView == binding.tvteamcoach) {
                 val intent = Intent(this@DenominatorSelector, CoachScoutAccountcreator::class.java)
                 intent.putExtra("Extra_firstname", firstName)
@@ -109,7 +109,8 @@ class DenominatorSelector : AppCompatActivity() {
         }
     }
     private fun showTermsAndConditions(term: String){
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.terms_and_conditions, null)
+        val parentViewGroup: ViewGroup? = null
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.terms_and_conditions, parentViewGroup, false)
         val termsAndConditionsTextView: TextView = dialogView.findViewById(R.id.termsandconditions)
 
         val inputStream = when (term) {

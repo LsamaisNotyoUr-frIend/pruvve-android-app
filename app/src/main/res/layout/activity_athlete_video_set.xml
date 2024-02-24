@@ -59,11 +59,13 @@
         android:id="@+id/intvidplacholder"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="placeholder for the intro video"
         android:src="@drawable/placerholderforvideos"
         app:layout_constraintBottom_toTopOf="@+id/guideline81"
         app:layout_constraintEnd_toStartOf="@+id/guideline83"
         app:layout_constraintStart_toStartOf="@+id/guideline82"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        tools:ignore="HardcodedText" />
 
 
     <TextView
@@ -97,6 +99,7 @@
         android:id="@+id/button1"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="used to go back to previous activity"
         android:background="@drawable/ep_back"
         android:text="Button"
         app:layout_constraintBottom_toTopOf="@+id/guideline10"
@@ -128,10 +131,12 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:src="@drawable/progress_bar5"
+        android:contentDescription="to show curent user creation progress"
         app:layout_constraintBottom_toTopOf="@+id/guideline76"
         app:layout_constraintEnd_toStartOf="@+id/guideline37"
         app:layout_constraintStart_toStartOf="@+id/guideline29"
-        app:layout_constraintTop_toTopOf="@+id/guideline75" />
+        app:layout_constraintTop_toTopOf="@+id/guideline75"
+        tools:ignore="HardcodedText" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline10"
@@ -270,5 +275,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline83"
         app:layout_constraintStart_toStartOf="@+id/guideline82"
-        app:layout_constraintTop_toTopOf="@+id/guideline84" />
+        app:layout_constraintTop_toTopOf="@+id/guideline84"
+        tools:ignore="HardcodedText" />
 </androidx.constraintlayout.widget.ConstraintLayout>

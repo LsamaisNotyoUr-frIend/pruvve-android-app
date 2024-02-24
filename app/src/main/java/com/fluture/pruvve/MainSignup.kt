@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.fluture.pruvve.databinding.ActivitySignupBinding
@@ -27,7 +26,9 @@ class MainSignup:AppCompatActivity() {
             .into(image)
 
         binding.alreadyanaccount.setOnClickListener {
-            Toast.makeText(this, "there are no accounts in the database yet", Toast.LENGTH_SHORT).show()
+           Intent(this, LoginPage::class.java).also {
+               startActivity(it)
+           }
         }
 
         binding.signinbutton.setOnClickListener {

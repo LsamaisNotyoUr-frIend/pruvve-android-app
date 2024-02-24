@@ -5,7 +5,6 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
@@ -19,6 +18,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.NumberPicker
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.fluture.pruvve.databinding.ActivityProfileCreationBinding
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -27,40 +27,47 @@ import java.util.Calendar
 class ProfileCreation : AppCompatActivity() {
     private lateinit var binding: ActivityProfileCreationBinding
     override fun onCreate(savedInstanceState: Bundle?) {
+
         binding = ActivityProfileCreationBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         binding.pruvve1.alpha = 0.5f
+
         binding.button1.setOnClickListener {
-            finish() }
+            finish()
+        }
         binding.tvgenderview.setOnClickListener {
-            showDialogue() }
+            showDialogue()
+        }
         binding.lldays.setOnClickListener {
-            showCustomDialog() }
+            showCustomDialog()
+        }
+
         val text1 = binding.tvtos.text.toString()
-        val my_span = SpannableString(text1)
-        setClickableSpan(my_span, "terms of service")
-        setClickableSpan(my_span, "additional terms")
-        setClickableSpan(my_span, "privacy policy")
+        val mySpan = SpannableString(text1)
+        setClickableSpan(mySpan, "terms of service")
+        setClickableSpan(mySpan, "additional terms")
+        setClickableSpan(mySpan, "privacy policy")
 
         binding.tvtos.apply {
-            text = my_span
-            movementMethod = LinkMovementMethod.getInstance()
-        }
+            text = mySpan
+            movementMethod = LinkMovementMethod.getInstance()}
+
         binding.button.setOnClickListener {
             val firstName = binding.firstNameField.text.toString()
             val lastName = binding.lastNameField.text.toString()
             val zipCode = binding.zipCodeField.text.toString()
-            val gender = binding.tvgenderview.text.toString()
-            val dateOfBirth = "${binding.tvdayview}/${binding.tvmonthview}/${binding.tvyearview}"
+            val gender = binding.tvgenderview.text.toString().uppercase()
+            val dateOfBirth = "${binding.tvyearview.text}-${binding.tvmonthview.text}-${binding.tvdayview.text}"
+            val emailAddress = binding.emailaddressField.text.toString()
             Intent(this, UsernameCreation::class.java).also {
                 it.putExtra("Extra_firstname", firstName)
                 it.putExtra("Extra_lastname", lastName)
                 it.putExtra("Extra_zipcode", zipCode)
                 it.putExtra("Extra_gender", gender)
                 it.putExtra("Extra_dateOfBirth", dateOfBirth)
-                startActivity(it)
-            }
+                it.putExtra("Extra_email", emailAddress)
+                startActivity(it)}
         }
     }
     private fun setClickableSpan(spannableString: SpannableString, targetWord: String) {
@@ -131,21 +138,22 @@ class ProfileCreation : AppCompatActivity() {
         monthPicker.setOnValueChangedListener { _, _, newVal ->
             monthLabel.text = months[newVal] }
 
-        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+        val currentYear = Calendar.getInstance()[Calendar.YEAR]
         yearPicker.minValue = currentYear - 124
         yearPicker.maxValue = currentYear + 100
 
         val cal = Calendar.getInstance()
-        dayPicker.value = cal.get(Calendar.DAY_OF_MONTH)
-        monthPicker.value = cal.get(Calendar.MONTH)
-        yearPicker.value = cal.get(Calendar.YEAR)
+        dayPicker.value = cal[Calendar.DAY_OF_MONTH]
+        monthPicker.value = cal[Calendar.MONTH]
+        yearPicker.value = cal[Calendar.YEAR]
 
         dialog.setOnDismissListener {
             val selectedDay = dayPicker.value
-            val selectedMonth = monthPicker.value
+            val selectedMonth = (monthPicker.value + 1).toString().padStart(2, '0')
             val selectedYear = yearPicker.value
-            binding.tvdayview.text = selectedDay.toString()
-            binding.tvmonthview.text = months[monthPicker.value]
+            binding.tvdayview.text = selectedDay.toString().padStart(2, '0')
+
+            binding.tvmonthview.text = selectedMonth
             binding.tvyearview.text = selectedYear.toString()
         }
         val window = dialog.window

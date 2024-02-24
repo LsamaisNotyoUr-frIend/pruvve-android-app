@@ -4,22 +4,27 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import com.bumptech.glide.Glide
 import com.fluture.pruvve.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val handler = Handler()
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val toChangeColor = colorLetters(binding.pruvve.text.toString(), 3, 4)
+        val toChangeColor = colorLetters(binding.pruvve.text.toString())
         binding.pruvve.text = toChangeColor
 
         val image = binding.image24
@@ -27,17 +32,18 @@ class MainActivity : AppCompatActivity() {
             .load(R.drawable.soccer)
             .into(image)
 
-        handler.postDelayed({
-            startActivity(Intent(this, MainSignup::class.java))
-        }, DELAY_MILLIS)
+        coroutineScope.launch {
+            delay(DELAY_MILLIS)
+            startActivity(Intent(this@MainActivity, MainSignup::class.java))
+        }
 
         binding.root.setOnClickListener {
-            handler.removeCallbacksAndMessages(null)
-            startActivity(Intent(this, MainSignup::class.java))
+            coroutineScope.cancel()
+            startActivity(Intent(this@MainActivity, MainSignup::class.java))
         }
     }
 
-    fun colorLetters(text: String, startNum: Int, endNum: Int): SpannableStringBuilder {
+    private fun colorLetters(text: String, startNum: Int = 3, endNum: Int = 4): SpannableStringBuilder {
         val colorChanger = SpannableStringBuilder(text)
         colorChanger.setSpan(
             ForegroundColorSpan(Color.GREEN),
@@ -48,8 +54,13 @@ class MainActivity : AppCompatActivity() {
         return colorChanger
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        coroutineScope.cancel()
+    }
+
     companion object {
-        private const val DELAY_MILLIS: Long = 10000
+        private const val DELAY_MILLIS: Long = 7300
     }
 }
 

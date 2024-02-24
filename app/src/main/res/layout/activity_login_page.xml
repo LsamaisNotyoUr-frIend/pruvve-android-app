@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".MainSignup">
+    tools:context=".LoginPage">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
@@ -44,7 +44,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/llsignins"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
@@ -59,11 +59,11 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:layout_weight="1"
-            android:background="@drawable/secondary_button"
+            android:background="@drawable/google_background"
             android:fontFamily="@font/my_exo"
             android:text="Sign In With Google"
             android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="18sp"
             app:layout_constraintVertical_bias="1.0"
             tools:ignore="HardcodedText" />
@@ -74,9 +74,8 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:layout_weight="1"
-            android:background="@drawable/secondary_button"
+            android:background="@drawable/facebook_background"
             android:fontFamily="@font/my_exo"
-            android:textAlignment="center"
             android:text="Sign In With Facebook"
             android:textAllCaps="false"
             android:textColor="@color/white"
@@ -96,7 +95,7 @@
             android:layout_weight="1"
             android:background="@drawable/primary_button"
             android:fontFamily="@font/my_exo"
-            android:text="Sign Up With Email"
+            android:text="Sign In With Email"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="18sp"
@@ -121,71 +120,54 @@
     <ImageView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:contentDescription="google's logo"
         android:src="@drawable/google"
+        android:contentDescription="google's logo"
         app:layout_constraintBottom_toTopOf="@+id/guideline50"
         app:layout_constraintEnd_toStartOf="@+id/guideline48"
         app:layout_constraintStart_toStartOf="@+id/guideline47"
         app:layout_constraintTop_toTopOf="@+id/guideline49"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText"/>
 
     <ImageView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:contentDescription="facebook's logo"
-        android:src="@drawable/devicon_facebook"
+        android:src="@drawable/fackbook_signin"
         app:layout_constraintBottom_toTopOf="@+id/guideline52"
         app:layout_constraintEnd_toStartOf="@+id/guideline48"
         app:layout_constraintStart_toStartOf="@+id/guideline47"
         app:layout_constraintTop_toTopOf="@+id/guideline51"
-        tools:ignore="HardcodedText" />
-
-    <TextView
-        android:id="@+id/alreadyanaccount"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:fontFamily="@font/my_poppins"
-        android:gravity="top"
-        android:text="    I already have an account"
-        android:textAllCaps="false"
-        android:textAppearance="@style/become_a_le"
-        android:textColor="@color/white"
-        android:textSize="11sp"
-        android:typeface="sans"
-        app:layout_constraintBottom_toTopOf="@+id/guideline59"
-        app:layout_constraintEnd_toStartOf="@+id/guideline67"
-        app:layout_constraintStart_toStartOf="@+id/guideline60"
-        app:layout_constraintTop_toTopOf="@+id/guideline58"
-        tools:ignore="HardcodedText,SmallSp" />
+        tools:ignore="HardcodedText"/>
 
     <TextView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fontFamily="@font/my_exo"
-        android:text="Sign up"
+        android:text="Sign In"
+        android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@color/lime_green"
         android:textSize="22sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline63"
-        app:layout_constraintEnd_toStartOf="@+id/guideline67"
-        app:layout_constraintStart_toStartOf="@+id/guideline61"
+        app:layout_constraintEnd_toStartOf="@+id/guideline21"
+        app:layout_constraintStart_toStartOf="@+id/guideline40"
         app:layout_constraintTop_toTopOf="@+id/guideline62"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText"/>
 
     <TextView
         android:id="@+id/become_a_le"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fontFamily="@font/my_poppins"
-        android:gravity="top"
+        android:textAlignment="center"
         android:text="@string/become_a_le"
         android:textAppearance="@style/become_a_le"
         android:textColor="@color/white"
         android:textSize="15sp"
         android:typeface="sans"
         app:layout_constraintBottom_toTopOf="@+id/guideline68"
-        app:layout_constraintEnd_toStartOf="@+id/guideline67"
-        app:layout_constraintStart_toStartOf="@+id/guideline65"
+        app:layout_constraintEnd_toStartOf="@+id/guideline21"
+        app:layout_constraintStart_toStartOf="@+id/guideline40"
         app:layout_constraintTop_toBottomOf="@+id/pruvve"
         tools:ignore="SmallSp" />
 
@@ -195,14 +177,14 @@
         android:layout_height="0dp"
         android:layout_alignParentEnd="true"
         android:fontFamily="@font/my_rubix_glitch"
-        android:gravity="top"
+        android:textAlignment="center"
         android:text="@string/pruvve"
         android:textAppearance="@style/pruvve"
         android:textColor="@color/white"
         android:textSize="50sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline69"
-        app:layout_constraintEnd_toStartOf="@+id/guideline56"
-        app:layout_constraintStart_toStartOf="@+id/guideline64"
+        app:layout_constraintEnd_toStartOf="@+id/guideline21"
+        app:layout_constraintStart_toStartOf="@+id/guideline40"
         app:layout_constraintTop_toTopOf="@+id/guideline70" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -324,20 +306,6 @@
         app:layout_constraintGuide_percent="0.82" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline60"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.3" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline61"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.39" />
-
-    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline62"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -350,27 +318,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.64" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline64"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.235" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline65"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.35" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline67"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.765" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline68"

@@ -20,21 +20,22 @@ import java.io.InputStreamReader
 
 class CoachOnboardEnd : AppCompatActivity() {
     private lateinit var binding: ActivityCoachOnboardEndBinding
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityCoachOnboardEndBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        val text1 = binding.tvtos.text.toString()
-        val my_span = SpannableString(text1)
-        setClickableSpan(my_span, "terms of service")
-        setClickableSpan(my_span, "additional terms")
-        setClickableSpan(my_span, "privacy policy")
 
+        val text1 = binding.tvtos.text.toString()
+        val mySpan = SpannableString(text1)
+        setClickableSpan(mySpan, "terms of service")
+        setClickableSpan(mySpan, "additional terms")
+        setClickableSpan(mySpan, "privacy policy")
         val username = intent.getStringExtra("Extra_username")
-        binding.tvwelcome.text = "Welcome to Pruvve, \n${username}!"
+        binding.tvwelcome.text = "Welcome to Pruvve, \n${username.toString()}!"
 
         binding.tvtos.apply {
-            text = my_span
+            text = mySpan
             movementMethod = LinkMovementMethod.getInstance()
         }
         binding.button1.setOnClickListener {
