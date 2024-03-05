@@ -1,0 +1,33 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Pruvve" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="pruvve">
+        <item name="android:textSize">24.62sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <dimen
+        name="square_size">300dp </dimen>
+
+    <style name="become_a_le">
+        <item name="android:textSize">6.15sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="Theme.Pruvve" parent="Base.Theme.Pruvve" />
+
+    <style name="number_pickerTheme" parent="Theme.AppCompat">
+        <item name="colorControlNormal">@color/white</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="welcome_to_">
+        <item name="android:textSize">40sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+</resources>
