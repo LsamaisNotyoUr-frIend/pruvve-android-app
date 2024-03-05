@@ -11,11 +11,18 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.fluture.pruvve.databinding.ActivityCoachAccountFinalizationBinding
+import okhttp3.OkHttpClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -24,12 +31,27 @@ class CoachAccountFinalization : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityCoachAccountFinalizationBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
+        LoginManager.init(this)
         setContentView(binding.root)
         val text1 = binding.tvtos.text.toString()
         val mySpan = SpannableString(text1)
         setClickableSpan(mySpan, "terms of service")
         setClickableSpan(mySpan, "additional terms")
         setClickableSpan(mySpan, "privacy policy")
+
+        val token = LoginManager.getToken()
+        Log.d("RetrofitToken", token.toString())
+
+        val httpClient = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(token.toString()))
+            .build()
+
+        val service = Retrofit.Builder()
+            .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
+            .client(httpClient)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(UserService::class.java)
 
         binding.tvtos.apply {
             text = mySpan
@@ -39,29 +61,30 @@ class CoachAccountFinalization : AppCompatActivity() {
         binding.button1.setOnClickListener {
             finish() }
         binding.button.setOnClickListener {
-            val firstName = intent.getStringExtra("Extra_firstname").toString()
-            val lastName = intent.getStringExtra("Extra_lastname").toString()
-            val zipCode = intent.getStringExtra("Extra_zipcode").toString()
-            val gender = intent.getStringExtra("Extra_gender").toString()
-            val dateOfBirth = intent.getStringExtra("Extra_dateOfBirth").toString()
             val userName = intent.getStringExtra("Extra_username").toString()
-            val passWord = intent.getStringExtra("Extra_password").toString()
-            val imageAddress = intent.getStringExtra("Extra_profilePic").toString()
             val team = binding.etteamview.text.toString()
             val bio = binding.etbiofield.text.toString()
-            Intent(this, CoachOnboardEnd::class.java).also {
-                it.putExtra("Extra_firstname", firstName)
-                it.putExtra("Extra_lastname", lastName)
-                it.putExtra("Extra_zipcode", zipCode)
-                it.putExtra("Extra_gender", gender)
-                it.putExtra("Extra_dateOfBirth", dateOfBirth)
-                it.putExtra("Extra_username", userName)
-                it.putExtra("Extra_password", passWord)
-                it.putExtra("Extra_profilePic", imageAddress)
-                it.putExtra("Extra_team", team)
-                it.putExtra("Extra_bio",bio)
-                startActivity(it)
-            }
+            val coachProfileBody = CoachProfileBody(
+                team,
+                bio
+            )
+            service.finishCoachProfile(coachProfileBody).enqueue(object : Callback<ProfileResponse>{
+                override fun onResponse(call: Call<ProfileResponse>, response: Response<ProfileResponse>) {
+                    if (response.isSuccessful){
+                        Intent(this@CoachAccountFinalization, CoachOnboardEnd::class.java).also {
+                            it.putExtra("Extra_username", userName)
+                            startActivity(it)
+                        }
+                    }else{
+                        val errorMessage = response.errorBody()?.string() ?: "Unknown error"
+                        Log.e("RetrofitError", "Error uploading file $errorMessage")
+                    }
+                }
+
+                override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
+                    Log.e("RetrofitError", "Error reaching server ${t.message.toString()}")
+                }
+            })
         }
     }
     private fun setClickableSpan(spannableString: SpannableString, targetWord: String) {

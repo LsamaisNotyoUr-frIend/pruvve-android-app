@@ -10,24 +10,47 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.fluture.pruvve.databinding.ActivityDenominatorSelectorBinding
+import android.widget.Toast
+import com.fluture.pruvve.databinding.ActivityAccounttypeSelectorBinding
+import okhttp3.OkHttpClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
-class DenominatorSelector : AppCompatActivity() {
-    private lateinit var binding: ActivityDenominatorSelectorBinding
+class AccountTypeSelector : AppCompatActivity() {
+    private lateinit var binding: ActivityAccounttypeSelectorBinding
     private var selectedTextView: TextView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivityDenominatorSelectorBinding.inflate(layoutInflater)
+        binding = ActivityAccounttypeSelectorBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
+        LoginManager.init(this)
         setContentView(binding.root)
         binding.pruvve1.alpha = 0.5f
         binding.button1.setOnClickListener {
             finish()}
+        val token = LoginManager.getToken()
+        Log.d("RetrofitToken", token.toString())
+
+        val httpClient = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(token.toString()))
+            .build()
+
+        val service = Retrofit.Builder()
+            .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
+            .client(httpClient)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(UserService::class.java)
+
         var teamCoachPreviousBackground = binding.tvteamcoach.background
         var athletePreviousBackground = binding.tvathlete.background
 
@@ -69,29 +92,44 @@ class DenominatorSelector : AppCompatActivity() {
             val zipCode = intent.getStringExtra("Extra_zipcode").toString()
             val gender = intent.getStringExtra("Extra_gender").toString()
             val dateOfBirth = intent.getStringExtra("Extra_dateOfBirth").toString()
-            val userName = intent.getStringExtra("Extra_username").toString()
-            val passWord = intent.getStringExtra("Extra_password").toString()
-            if (selectedTextView == binding.tvteamcoach) {
-                val intent = Intent(this@DenominatorSelector, CoachScoutAccountcreator::class.java)
-                intent.putExtra("Extra_firstname", firstName)
-                intent.putExtra("Extra_lastname", lastName)
-                intent.putExtra("Extra_zipcode", zipCode)
-                intent.putExtra("Extra_gender", gender)
-                intent.putExtra("Extra_dateOfBirth", dateOfBirth)
-                intent.putExtra("Extra_username", userName)
-                intent.putExtra("Extra_password", passWord)
-                startActivity(intent)
-            } else if (selectedTextView == binding.tvathlete) {
-                val intent = Intent(this@DenominatorSelector, AthleteAccountCreator::class.java)
-                intent.putExtra("Extra_firstname", firstName)
-                intent.putExtra("Extra_lastname", lastName)
-                intent.putExtra("Extra_zipcode", zipCode)
-                intent.putExtra("Extra_gender", gender)
-                intent.putExtra("Extra_dateOfBirth", dateOfBirth)
-                intent.putExtra("Extra_username", userName)
-                intent.putExtra("Extra_password", passWord)
-                startActivity(intent)
-            }
+            val username = intent.getStringExtra("Extra_username").toString()
+            val password = intent.getStringExtra("Extra_password").toString()
+            val accountType = if (selectedTextView == binding.tvteamcoach) "COACH" else "ATHLETE"
+            val newAccountType = AccountType(
+                accountType
+            )
+            service.userAccountType(newAccountType).enqueue(object : Callback<AccountType> {
+                override fun onResponse(call: Call<AccountType>, response: Response<AccountType>) {
+                    if (response.isSuccessful) {
+                        val intent = when (selectedTextView) {
+                            binding.tvteamcoach -> {
+                                Intent(this@AccountTypeSelector, CoachScoutAccountcreator::class.java)
+                            }
+                            binding.tvathlete -> {
+                                Intent(this@AccountTypeSelector, AthleteAccountCreator::class.java)
+                            }
+                            else -> {
+                                TODO()
+                            }
+                        }
+                        intent.putExtra("Extra_firstname", firstName)
+                        intent.putExtra("Extra_lastname", lastName)
+                        intent.putExtra("Extra_zipcode", zipCode)
+                        intent.putExtra("Extra_gender", gender)
+                        intent.putExtra("Extra_dateOfBirth", dateOfBirth)
+                        intent.putExtra("Extra_username", username)
+                        intent.putExtra("Extra_password", password)
+                        startActivity(intent)
+                    } else {
+                        Log.e("RetrofitError", "Error changing user account type:${response.errorBody()?.string()!!}")
+                        Toast.makeText(this@AccountTypeSelector, "Error changing account type", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                override fun onFailure(call: Call<AccountType>, t: Throwable) {
+                    Log.e("RetrofitError", "Error reaching server: ${t.message.toString()}")
+                    Toast.makeText(this@AccountTypeSelector, "Error reaching the server", Toast.LENGTH_SHORT).show()
+                }
+            })
         }
     }
     private fun setClickableSpan(spannableString: SpannableString, targetWord: String) {

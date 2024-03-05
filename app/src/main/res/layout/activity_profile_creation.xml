@@ -51,14 +51,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.59" />
+            app:layout_constraintGuide_percent="0.60" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline71"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.87" />
+            app:layout_constraintGuide_percent="0.88" />
 
         <TextView
             android:id="@+id/firstname"
@@ -106,39 +106,20 @@
             app:layout_constraintTop_toTopOf="@+id/guideline38"
             tools:ignore="HardcodedText" />
 
+
         <TextView
-            android:id="@+id/email"
+            android:id="@+id/emailaddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/my_poppins"
-            android:text="Email*"
+            android:text="Email Address*"
             android:textColor="@color/white"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/last_name_field"
             tools:ignore="HardcodedText" />
-
-        <EditText
-            android:id="@+id/emailaddress_field"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:inputType="textEmailAddress"
-            android:autofillHints="emailAddress"
-            android:background="@drawable/sign_in_viewbackgrounds"
-            android:hint="Email address"
-            android:paddingEnd="20dp"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/guideline90"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/email"
-            app:layout_constraintVertical_bias="1.0"
-            tools:ignore="HardcodedText,RtlSymmetry" />
-
 
         <TextView
             android:id="@+id/zipcode"
@@ -154,6 +135,26 @@
             app:layout_constraintTop_toTopOf="@+id/guideline90"
             tools:ignore="HardcodedText" />
 
+        <EditText
+            android:id="@+id/emailaddressfield"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:autofillHints="emailAddress"
+            android:background="@drawable/sign_in_viewbackgrounds"
+            android:hint="Email Address"
+            android:inputType="textEmailAddress"
+            android:paddingEnd="20dp"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline90"
+            app:layout_constraintEnd_toEndOf="@+id/emailaddress"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/emailaddress"
+            app:layout_constraintVertical_bias="1.0"
+            tools:ignore="HardcodedText,RtlSymmetry" />
 
         <EditText
             android:id="@+id/zip_code_field"
@@ -232,7 +233,7 @@
             android:textColor="@color/white"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/guideline71"
-            app:layout_constraintEnd_toStartOf="@+id/guideline46"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline45"
             tools:ignore="HardcodedText" />
@@ -312,28 +313,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.39" />
+            app:layout_constraintGuide_percent="0.405" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline41"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.265" />
+            app:layout_constraintGuide_percent="0.27" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline43"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.66" />
+            app:layout_constraintGuide_percent="0.68" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline45"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.79" />
+            app:layout_constraintGuide_percent="0.80" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline46"
@@ -452,14 +453,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.80" />
+        app:layout_constraintGuide_percent="0.81" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline35"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.2" />
+        app:layout_constraintGuide_percent="0.19" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline37"
@@ -515,14 +516,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.61" />
+        app:layout_constraintGuide_percent="0.62" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline79"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.66" />
+        app:layout_constraintGuide_percent="0.67" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline80"

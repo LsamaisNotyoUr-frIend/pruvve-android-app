@@ -11,6 +11,7 @@
     </string>
     <string name="title_activity_main2">MainActivity2</string>
 
+    <string name="webClientId">996881312958-9h3u1b9ihde8q7dbd46agme79apak2mb.apps.googleusercontent.com</string>
     <string name="gender">pick a gender</string>
     <string-array name="months">
         <item>January</item>

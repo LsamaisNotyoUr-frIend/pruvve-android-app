@@ -39,17 +39,22 @@ class WelcomeBack : AppCompatActivity() {
                 username,
                 password
             )
-            service.getUser(userLogin).enqueue(object : Callback<User> {
-                override fun onResponse(call: Call<User>, response: Response<User>) {
+            service.getUser(userLogin).enqueue(object : Callback<LoginResponse> {
+                override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                     if (response.isSuccessful) {
                         Toast.makeText(this@WelcomeBack, "User gotten successfully", Toast.LENGTH_SHORT).show()
+                        val token = response.body()?.data?.token.toString()
+                        LoginManager.saveToken(token)
+                        Log.d("RetrofitToken", token)
+                        Intent(this@WelcomeBack, HomePage::class.java).also {
+                            startActivity(it) }
                     } else {
-                        Log.e("RetrofitError", "RetrofitError:${response.errorBody()?.string()!!}")
+                        Log.e("GetUserError", "Error calling user API, body:${response.errorBody()?.string()!!}")
                         Toast.makeText(this@WelcomeBack, "couldn't fetch user", Toast.LENGTH_SHORT).show()
                     }
                 }
-                override fun onFailure(call: Call<User>, t: Throwable) {
-                    Log.e("RetrofitFailure", "error: ${t.message.toString()}")
+                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    Log.e("GetUserFailure", "Error reaching getUser API: ${t.message.toString()}")
                     Toast.makeText(this@WelcomeBack, "user not found", Toast.LENGTH_SHORT).show()
                 }
             })

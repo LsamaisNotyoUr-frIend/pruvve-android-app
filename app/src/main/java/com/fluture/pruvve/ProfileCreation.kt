@@ -59,14 +59,14 @@ class ProfileCreation : AppCompatActivity() {
             val zipCode = binding.zipCodeField.text.toString()
             val gender = binding.tvgenderview.text.toString().uppercase()
             val dateOfBirth = "${binding.tvyearview.text}-${binding.tvmonthview.text}-${binding.tvdayview.text}"
-            val emailAddress = binding.emailaddressField.text.toString()
+            val email = binding.emailaddressfield.text.toString()
             Intent(this, UsernameCreation::class.java).also {
                 it.putExtra("Extra_firstname", firstName)
                 it.putExtra("Extra_lastname", lastName)
                 it.putExtra("Extra_zipcode", zipCode)
                 it.putExtra("Extra_gender", gender)
                 it.putExtra("Extra_dateOfBirth", dateOfBirth)
-                it.putExtra("Extra_email", emailAddress)
+                it.putExtra("Extra_email", email)
                 startActivity(it)}
         }
     }

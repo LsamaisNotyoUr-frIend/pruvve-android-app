@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "996881312958",
+    "project_id": "pruvve-76f71",
+    "storage_bucket": "pruvve-76f71.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:996881312958:android:feb80e27148d136e8882ef",
+        "android_client_info": {
+          "package_name": "com.fluture.pruvve"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRo5nPWZRBFooU-SS_xrc0BiQZ4tL4zuM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

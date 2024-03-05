@@ -32,6 +32,7 @@ class UsernameCreation : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityUsernameCreationBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
+        LoginManager.init(this)
         setContentView(binding.root)
         val service = Retrofit.Builder()
             .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
@@ -41,10 +42,10 @@ class UsernameCreation : AppCompatActivity() {
 
         val firstName = intent.getStringExtra("Extra_firstname").toString()
         val lastName = intent.getStringExtra("Extra_lastname").toString()
-        val emailAddress = intent.getStringExtra("Extra_email").toString()
         val zipCode = intent.getStringExtra("Extra_zipcode").toString()
         val gender = intent.getStringExtra("Extra_gender").toString()
         val dateOfBirth = intent.getStringExtra("Extra_dateOfBirth").toString()
+        val email = intent.getStringExtra("Extra_email").toString()
 
         binding.button1.setOnClickListener {
             finish()
@@ -86,30 +87,31 @@ class UsernameCreation : AppCompatActivity() {
         binding.passwordField.addTextChangedListener(textWatcher)
 
         binding.button.setOnClickListener {
-            val userName = binding.usernameField.text.toString()
-            val passWord = binding.passwordField.text.toString()
+            val username = binding.usernameField.text.toString()
+            val password = binding.passwordField.text.toString()
                 val userToCreate = User(
                     firstName = firstName,
                     lastName = lastName,
-                    email = emailAddress,
+                    email = email,
                     zipCode = zipCode,
                     gender = gender,
                     dateOfBirth = dateOfBirth,
-                    username = userName,
-                    password = passWord
+                    username = username,
+                    password = password
                 )
                 service.createUser(userToCreate).enqueue(object : Callback<User> {
                     override fun onResponse(call: Call<User>, response: Response<User>) {
                         if (response.isSuccessful) {
                             Toast.makeText(this@UsernameCreation, "User created successfully", Toast.LENGTH_SHORT).show()
-                            Intent(this@UsernameCreation, DenominatorSelector::class.java).also {
+                            Intent(this@UsernameCreation, AccountTypeSelector::class.java).also {
+                                login(username, password)
                                 it.putExtra("Extra_firstname", firstName)
                                 it.putExtra("Extra_lastname", lastName)
                                 it.putExtra("Extra_zipcode", zipCode)
                                 it.putExtra("Extra_gender", gender)
                                 it.putExtra("Extra_dateOfBirth", dateOfBirth)
-                                it.putExtra("Extra_username", userName)
-                                it.putExtra("Extra_password", passWord)
+                                it.putExtra("Extra_username", username)
+                                it.putExtra("Extra_password", password)
                                 startActivity(it)
                             }
                         } else {
@@ -164,5 +166,33 @@ class UsernameCreation : AppCompatActivity() {
         dialogView.setOnClickListener {
             dialog.dismiss()
         }
+    }
+    private fun login(username: String, password:String){
+        val service = Retrofit.Builder()
+            .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(UserService::class.java)
+
+        val userLogin = LoginInfo(
+            username,
+            password
+        )
+        service.getUser(userLogin).enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                if (response.isSuccessful) {
+                    val token = response.body()?.data?.token.toString()
+                    Log.d("RetrofitToken", token)
+                    LoginManager.saveToken(token)
+                } else {
+                    Log.e("RetrofitError", "User authorization failed: ${response.errorBody()?.toString()}")
+                    Toast.makeText(this@UsernameCreation, "Couldn't authorize user", Toast.LENGTH_SHORT).show()
+                }
+            }
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                Log.e("RetrofitError", "Authorization failed: ${t.message.toString()}")
+                Toast.makeText(this@UsernameCreation, "Error during authorization", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }
