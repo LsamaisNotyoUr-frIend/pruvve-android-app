@@ -2,6 +2,7 @@ package com.fluture.pruvve
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -40,6 +41,12 @@ class CoachOnboardEnd : AppCompatActivity() {
         }
         binding.button1.setOnClickListener {
             finish() }
+
+        binding.button.setOnClickListener {
+            Intent(this, HomePage::class.java).also {
+                startActivity(it)
+            }
+        }
     }
     private fun setClickableSpan(spannableString: SpannableString, targetWord: String) {
         val clickableSpan = object : ClickableSpan() {
