@@ -44,6 +44,7 @@ class AthleteOnboardEnd : AppCompatActivity() {
 
         binding.button.setOnClickListener {
             Intent(this, HomePage::class.java).also {
+                it.putExtra("Extra_username", userName)
                 startActivity(it)
             }
         }

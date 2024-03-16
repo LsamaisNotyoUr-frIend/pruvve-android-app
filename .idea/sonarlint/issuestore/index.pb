@@ -92,3 +92,17 @@ H
 app/google-services.json,f\d\fd8d34b142d02ec743a8efefefd2c097961666e9
 `
 0app/src/main/java/com/fluture/pruvve/HomePage.kt,c\1\c17d3e5b07a39b4a95d16423a8fbb70600c0a2e8
+k
+;app/src/main/java/com/fluture/pruvve/HomeScreenFragments.kt,5\9\59153209d811104dbebc8528964be7e1f10def08
+l
+<app/src/main/java/com/fluture/pruvve/VideoScreenFragments.kt,a\e\ae55e2bef7596f2f72ee03a56200529a8c672116
+i
+9app/src/main/java/com/fluture/pruvve/BookPitchFragment.kt,8\2\8267ee6b44fc828debe3412460330d911e73f103
+k
+;app/src/main/java/com/fluture/pruvve/UserProfileFragment.kt,9\e\9e71648216ee1cff0a79ae4d535aba40d6e24a17
+d
+4app/src/main/java/com/fluture/pruvve/StoryAdapter.kt,0\1\01120d4b769639fc276ff088e0942858ed53df61
+`
+0app/src/main/java/com/fluture/pruvve/MorePage.kt,6\a\6ad830e7b8e134d59028baa69361252bcb583596
+i
+9app/src/main/java/com/fluture/pruvve/MoreVideosAdapter.kt,2\d\2d41610f985533228ad7f57b0587ea6851620c91

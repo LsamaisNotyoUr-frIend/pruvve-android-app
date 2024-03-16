@@ -80,6 +80,7 @@ class AthleteAccountCreator : AppCompatActivity() {
             service.uploadPicture(uploadImage).enqueue(object : Callback<UploadResponse>{
                 override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
                     if (response.isSuccessful){
+                        Log.d("RetrofitUrl", "Your url is ${response.body()?.url.toString()}")
                         val imageData = UploadData(
                             url = response.body()?.url.toString(),
                             mediaType = "PROFILE_PICTURE"
