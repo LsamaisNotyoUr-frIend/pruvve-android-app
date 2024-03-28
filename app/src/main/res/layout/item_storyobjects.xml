@@ -16,8 +16,8 @@
         app:layout_constraintStart_toStartOf="@+id/guideline92"
         app:layout_constraintTop_toTopOf="@+id/guideline91">
 
-        <VideoView
-            android:id="@+id/vvStory"
+        <WebView
+            android:id="@+id/wvStory"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/dialogue_background3" />

@@ -81,7 +81,7 @@ class CoachScoutAccountcreator : AppCompatActivity() {
                 override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
                     if (response.isSuccessful) {
                         val imageData = UploadData(
-                            url = response.body()?.url.toString(),
+                            url = response.body()?.data.toString(),
                             mediaType = "PROFILE_PICTURE"
                         )
                         service.uploadData(imageData).enqueue(object : Callback<UploadResponse> {

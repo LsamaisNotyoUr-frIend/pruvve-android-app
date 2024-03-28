@@ -1,12 +1,11 @@
 package com.fluture.pruvve
 
-import android.net.Uri
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.webkit.WebView
 import android.widget.TextView
-import android.widget.VideoView
 import androidx.recyclerview.widget.RecyclerView
 
 class MoreVideosAdapter(private var videos: List<VideoItems>):RecyclerView.Adapter<MoreVideosAdapter.FeedsViewHolder>() {
@@ -18,10 +17,10 @@ class MoreVideosAdapter(private var videos: List<VideoItems>):RecyclerView.Adapt
     }
     override fun onBindViewHolder(holder: FeedsViewHolder, position: Int) {
         holder.itemView.apply {
-            findViewById<ImageView>(R.id.ivFeedsProfilePicture).setImageURI(Uri.parse(videos[position].profilePicUrl))
+            findViewById<WebView>(R.id.wvFeedsProfilePicture).loadUrl(videos[position].profilePicUrl)
             findViewById<TextView>(R.id.tvTimestamp).text = videos[position].timeStamp
             findViewById<TextView>(R.id.tvProfileName).text = videos[position].name
-            findViewById<VideoView>(R.id.vvFeeds).setVideoPath(Uri.parse(videos[position].videoUrl).toString())
+            findViewById<WebView>(R.id.wvFeeds).loadUrl(videos[position].videoUrl)
             findViewById<TextView>(R.id.tvFollowButton).text = videos[position].follow
             findViewById<TextView>(R.id.tvViews).text = videos[position].views
             findViewById<TextView>(R.id.tvComments).text = videos[position].comments
