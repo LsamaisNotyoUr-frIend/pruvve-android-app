@@ -1,11 +1,10 @@
 package com.fluture.pruvve
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import android.widget.TextView
-import android.widget.VideoView
 import androidx.recyclerview.widget.RecyclerView
 
 class StoryAdapter(private var story: List<Stories>):RecyclerView.Adapter<StoryAdapter.StoryViewHolder>() {
@@ -19,7 +18,7 @@ class StoryAdapter(private var story: List<Stories>):RecyclerView.Adapter<StoryA
     override fun onBindViewHolder(holder: StoryViewHolder, position: Int) {
         holder.itemView.apply {
             findViewById<TextView>(R.id.tvStoryName).text = story[position].name
-            findViewById<VideoView>(R.id.vvStory).setVideoPath(Uri.parse(story[position].url).toString())
+            findViewById<WebView>(R.id.wvStory).loadUrl(story[position].url)
         }
     }
 

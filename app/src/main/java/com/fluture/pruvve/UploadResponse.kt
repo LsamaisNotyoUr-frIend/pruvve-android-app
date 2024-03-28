@@ -8,5 +8,5 @@ data class UploadResponse(
     @SerializedName("message")
     val message: String,
     @SerializedName("data")
-    val url: String
+    val data: String
 )

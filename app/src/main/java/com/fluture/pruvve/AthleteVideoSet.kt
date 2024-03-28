@@ -64,35 +64,14 @@ class AthleteVideoSet : AppCompatActivity() {
             binding.introvid.start()
         }
         binding.tvskip.setOnClickListener {
-            val firstName = intent.getStringExtra("Extra_firstname").toString()
-            val lastName = intent.getStringExtra("Extra_lastname").toString()
-            val zipCode = intent.getStringExtra("Extra_zipcode").toString()
-            val gender = intent.getStringExtra("Extra_gender").toString()
-            val dateOfBirth = intent.getStringExtra("Extra_dateOfBirth").toString()
             val userName = intent.getStringExtra("Extra_username").toString()
-            val passWord = intent.getStringExtra("Extra_password").toString()
-            val imageAddress = intent.getStringExtra("Extra_profilePic").toString()
             Intent(this, AthleteAccountFinalization::class.java).also {
-                it.putExtra("Extra_firstname", firstName)
-                it.putExtra("Extra_lastname", lastName)
-                it.putExtra("Extra_zipcode", zipCode)
-                it.putExtra("Extra_gender", gender)
-                it.putExtra("Extra_dateOfBirth", dateOfBirth)
                 it.putExtra("Extra_username", userName)
-                it.putExtra("Extra_password", passWord)
-                it.putExtra("Extra_profilePic", imageAddress)
                 startActivity(it)
             }
         }
         binding.button.setOnClickListener {
-            val firstName = intent.getStringExtra("Extra_firstname").toString()
-            val lastName = intent.getStringExtra("Extra_lastname").toString()
-            val zipCode = intent.getStringExtra("Extra_zipcode").toString()
-            val gender = intent.getStringExtra("Extra_gender").toString()
-            val dateOfBirth = intent.getStringExtra("Extra_dateOfBirth").toString()
             val userName = intent.getStringExtra("Extra_username").toString()
-            val passWord = intent.getStringExtra("Extra_password").toString()
-            val imageAddress = intent.getStringExtra("Extra_profilePic").toString()
             val videoToUpload = contentResolver.openInputStream(videoUri!!)?.readBytes()
             val byteVideo = videoToUpload?.let { Base64.getEncoder().encodeToString(it) }
             val filename = generateFilename(userName)
@@ -106,7 +85,7 @@ class AthleteVideoSet : AppCompatActivity() {
                 override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
                     if (response.isSuccessful){
                         val imageData = UploadData(
-                            url = response.body()?.url.toString(),
+                            url = response.body()?.data.toString(),
                             mediaType = "INTRO_VIDEO"
                         )
                         service.uploadData(imageData).enqueue(object : Callback<UploadResponse> {
@@ -115,14 +94,7 @@ class AthleteVideoSet : AppCompatActivity() {
                                     Toast.makeText(this@AthleteVideoSet, "File uploaded successfully", Toast.LENGTH_SHORT).show()
                                     Log.d("Retrofit", "The video has been uploaded ${response.body().toString()}")
                                     Intent(this@AthleteVideoSet, AthleteAccountFinalization::class.java).also{
-                                        it.putExtra("Extra_firstname", firstName)
-                                        it.putExtra("Extra_lastname", lastName)
-                                        it.putExtra("Extra_zipcode", zipCode)
-                                        it.putExtra("Extra_gender", gender)
-                                        it.putExtra("Extra_dateOfBirth", dateOfBirth)
                                         it.putExtra("Extra_username", userName)
-                                        it.putExtra("Extra_password", passWord)
-                                        it.putExtra("Extra_profilePic", imageAddress)
                                         startActivity(it)
                                     }
                                 }else{
