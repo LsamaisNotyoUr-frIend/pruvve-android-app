@@ -9,6 +9,13 @@ data class LoginResponse (
     val message: String,
     @SerializedName("data")
     val data: DataToken,
-    @SerializedName("user")
-    val user: User
+)
+
+data class GetUserResponse (
+    @SerializedName("code")
+    val code: String,
+    @SerializedName("message")
+    val message: String,
+    @SerializedName("data")
+    val data: GetData,
 )

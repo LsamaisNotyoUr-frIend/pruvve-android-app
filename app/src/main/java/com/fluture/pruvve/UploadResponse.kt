@@ -1,6 +1,12 @@
 package com.fluture.pruvve
 
-class UploadResponse(
+import com.google.gson.annotations.SerializedName
+
+data class UploadResponse(
+    @SerializedName("code")
+    val code:String,
+    @SerializedName("message")
     val message: String,
-    val url: String
+    @SerializedName("data")
+    val data: String
 )

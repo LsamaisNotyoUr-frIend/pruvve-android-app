@@ -89,6 +89,7 @@ class ProfileCreation : AppCompatActivity() {
     private fun showTermsAndConditions(term: String){
         val dialogView = LayoutInflater.from(this).inflate(R.layout.terms_and_conditions, null)
         val termsAndConditionsTextView: TextView = dialogView.findViewById(R.id.termsandconditions)
+        val backButton = dialogView.findViewById<TextView>(R.id.backbuttontc)
 
         val inputStream = when (term) {
             "terms of service" -> resources.openRawResource(R.raw.placeholdertermsfile)
@@ -107,6 +108,10 @@ class ProfileCreation : AppCompatActivity() {
         dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.show()
 
+
+        backButton.setOnClickListener {
+            dialog.dismiss()
+        }
         dialogView.setOnClickListener {
             dialog.dismiss()
         }

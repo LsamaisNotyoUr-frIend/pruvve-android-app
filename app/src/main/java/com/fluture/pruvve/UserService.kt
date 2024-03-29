@@ -24,8 +24,10 @@ internal interface UserService {
     fun finishAthleteProfile(@Body profile: ProfileBody):Call<ProfileResponse>
     @PUT("v1/user/coach/profile")
     fun finishCoachProfile(@Body profile: CoachProfileBody):Call<ProfileResponse>
+    @GET("v1/user")
+    fun getUserCredentials():Call<GetUserResponse>
     @GET("oauth2/authorization/google")
-    fun googleLogin(@Query("access_token") accessToken: String):Call<LoginResponse>
+    fun googleLogin(@Query("access_token") accessToken: String):Call<ResponseBody>
     @GET("oauth2/authorization/facebook")
-    fun facebookLogin(@Query("access_token") accessToken: String):Call<LoginResponse>
+    fun facebookLogin(@Query("access_token") accessToken: String):Call<ResponseBody>
 }

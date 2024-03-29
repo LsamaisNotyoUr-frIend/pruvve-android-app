@@ -44,6 +44,8 @@
     <color name="hot_pink">#FF69B4</color>
     <color name="pale_green">#98FB98</color>
     <color name="dark_gray">#333333</color>
+    <color name="light_gray">#CDCDCD</color>
+    <color name="darker_gray">#111111</color>
     <color name="white">#FFFFFFFF</color>
     <color name="facebook_blue">#4267B2</color>
     <color name="transparent">#00000000</color>
