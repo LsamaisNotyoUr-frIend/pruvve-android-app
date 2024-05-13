@@ -2,6 +2,7 @@ package com.fluture.pruvve
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -9,18 +10,26 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import com.fluture.pruvve.auth.AuthInterceptor
+import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityPlayerAccountCreatorBinding
+import com.fluture.pruvve.essentials.ImageUploader
+import com.fluture.pruvve.retrofittcalls.UploadData
+import com.fluture.pruvve.retrofittcalls.UploadImage
+import com.fluture.pruvve.retrofittcalls.UploadResponse
+import com.fluture.pruvve.retrofittcalls.UserService
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.InputStream
 import java.text.SimpleDateFormat
-import java.util.Base64
 import java.util.Date
 import java.util.Locale
-
 class AthleteAccountCreator : AppCompatActivity() {
     private lateinit var binding: ActivityPlayerAccountCreatorBinding
     private var imageUri: Uri? = null
@@ -60,51 +69,82 @@ class AthleteAccountCreator : AppCompatActivity() {
         }
 
         binding.button.setOnClickListener {
+            binding.button.setBackgroundResource(R.drawable.disabled_button)
+            binding.button.isEnabled = false
             val userName = intent.getStringExtra("Extra_username").toString()
             Log.e("RetrofitUri", "your uri is: $imageUri")
-            val imageToUpload = contentResolver.openInputStream(imageUri!!)?.readBytes()
-            val byteImage = imageToUpload?.let { Base64.getEncoder().encodeToString(imageToUpload) }
             val filename = generateFilename(userName)
-            val fileData = byteImage.toString()
-            val file = "$filename:$fileData"
             val purpose = "UPLOAD"
+            val purpose2 = "DOWNLOAD"
             val uploadImage = UploadImage(
-                file,
+                filename,
                 purpose)
+            val uploadImage2 = UploadImage(
+                filename,
+                purpose2)
             service.uploadPicture(uploadImage).enqueue(object : Callback<UploadResponse>{
                 override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
                     if (response.isSuccessful){
-                        Log.d("RetrofitUrl", "Your url is ${response.body()?.data.toString()}")
+                        val signedUrl= response.body()?.data.toString()
                         val imageData = UploadData(
-                            url = response.body()?.data.toString(),
+                            mediaUrl = filename,
                             mediaType = "PROFILE_PICTURE"
                         )
-                        service.uploadData(imageData).enqueue(object : Callback<UploadResponse>{
+                        Log.d("RetrofitUrl", "Your url is $signedUrl")
+                        val imageUploader = ImageUploader()
+
+                        imageUploader.uploadImage(uriToByteArray(this@AthleteAccountCreator, imageUri!!)!!, signedUrl)
+                        service.uploadPicture(uploadImage2).enqueue(object : Callback<UploadResponse>{
                             override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
                                 if (response.isSuccessful){
-                                    Toast.makeText(this@AthleteAccountCreator, "File uploaded successfully", Toast.LENGTH_SHORT).show()
-                                    Log.d("Retrofit", "The image has been uploaded ${response.body().toString()}")
-                                    Intent(this@AthleteAccountCreator, AthleteVideoSet::class.java).also{
-                                        it.putExtra("Extra_username", userName)
-                                        startActivity(it)
-                                    }
-                                }else{
-                                    val errorMessage = response.errorBody()?.string() ?: "Unknown error"
-                                    Log.e("RetrofitError", "Error uploading file $errorMessage")
+                                    Log.d("RetrofitUrl", "Your url is ${response.body()?.data.toString()}")
+                                    service.uploadData(imageData).enqueue(object : Callback<UploadResponse>{
+                                        override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
+                                            if (response.isSuccessful){
+                                                Toast.makeText(this@AthleteAccountCreator, "File uploaded successfully", Toast.LENGTH_SHORT).show()
+                                                Log.d("Retrofit", "The image has been uploaded ${response.body().toString()}")
+                                                Intent(this@AthleteAccountCreator, AthleteVideoSet::class.java).also{
+                                                    it.putExtra("Extra_username", userName)
+                                                    startActivity(it)
+                                                }
+                                            }else{
+                                                val errorMessage = response.errorBody()?.string() ?: "Unknown error"
+                                                Log.e("RetrofitError", "Error uploading file $errorMessage")
+                                                binding.button.setBackgroundResource(R.drawable.primary_button)
+                                                binding.button.isEnabled = true
+                                            }
+                                        }
+                                        override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
+                                            Log.e("RetrofitError", "Error reaching server ${t.message.toString()}")
+                                            binding.button.setBackgroundResource(R.drawable.primary_button)
+                                            binding.button.isEnabled = true
+                                        }
+                                    })
+
+                                }else {
+                                    Log.e("RetrofitError", response.errorBody().toString())
+                                    binding.button.setBackgroundResource(R.drawable.primary_button)
+                                    binding.button.isEnabled = true
                                 }
                             }
                             override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
-                                Log.e("RetrofitError", "Error reaching server ${t.message.toString()}")
+                                Log.e("RetrofitFailure", t.message.toString())
+                                binding.button.setBackgroundResource(R.drawable.primary_button)
+                                binding.button.isEnabled = true
                             }
                         })
                     }else{
                         val errorMessage = response.errorBody()?.string() ?: "Unknown error"
                         Log.e("RetrofitError", "An error occurred when sending image $errorMessage")
+                        binding.button.setBackgroundResource(R.drawable.primary_button)
+                        binding.button.isEnabled = true
                     }
                 }
 
                 override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
                     Log.e("RetrofitError", "There was a problem reaching the server ${t.message.toString()}")
+                    binding.button.setBackgroundResource(R.drawable.primary_button)
+                    binding.button.isEnabled = true
                 }
             })
         }
@@ -133,6 +173,28 @@ class AthleteAccountCreator : AppCompatActivity() {
     private fun generateFilename(username: String): String {
         val currentTimeMillis = System.currentTimeMillis()
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date(currentTimeMillis))
-        return "${username}_$timestamp"
+        return "${username}_${timestamp}_ProfilePic"
+    }
+
+    fun uriToByteArray(context: Context, uri: Uri): ByteArray? {
+        var inputStream: InputStream? = null
+        var byteArrayOutputStream: ByteArrayOutputStream? = null
+        var bytes: ByteArray? = null
+        try {
+            inputStream = context.contentResolver.openInputStream(uri)
+            byteArrayOutputStream = ByteArrayOutputStream()
+            inputStream?.use { input ->
+                byteArrayOutputStream.use { output ->
+                    input.copyTo(output)
+                }
+            }
+            bytes = byteArrayOutputStream.toByteArray()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } finally {
+            inputStream?.close()
+            byteArrayOutputStream?.close()
+        }
+        return bytes
     }
 }

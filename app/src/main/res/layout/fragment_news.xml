@@ -68,8 +68,8 @@
         app:layout_constraintStart_toStartOf="@+id/guideline29"
         app:layout_constraintTop_toTopOf="@+id/guideline126" />
 
-    <ImageView
-        android:id="@+id/imageView5"
+    <WebView
+        android:id="@+id/wvNewsMain"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="10dp"
@@ -79,7 +79,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline34" />
 
-    <ImageView
+    <WebView
+        android:id="@+id/wvSideNews2"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
@@ -93,7 +94,8 @@
         app:layout_constraintTop_toTopOf="@+id/guideline31"
         app:layout_constraintVertical_bias="0.0" />
 
-    <ImageView
+    <WebView
+        android:id="@+id/wvSideNews1"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="10dp"

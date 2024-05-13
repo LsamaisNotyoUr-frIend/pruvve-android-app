@@ -16,7 +16,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import com.fluture.pruvve.auth.AuthInterceptor
+import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityAccounttypeSelectorBinding
+import com.fluture.pruvve.retrofittcalls.AccountType
+import com.fluture.pruvve.retrofittcalls.AccountTypeResponse
+import com.fluture.pruvve.retrofittcalls.UserService
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -87,47 +92,41 @@ class AccountTypeSelector : AppCompatActivity() {
             }
         }
         binding.button.setOnClickListener {
-            val firstName = intent.getStringExtra("Extra_firstname").toString()
-            val lastName = intent.getStringExtra("Extra_lastname").toString()
-            val zipCode = intent.getStringExtra("Extra_zipcode").toString()
-            val gender = intent.getStringExtra("Extra_gender").toString()
-            val dateOfBirth = intent.getStringExtra("Extra_dateOfBirth").toString()
+            binding.button.setBackgroundResource(R.drawable.disabled_button)
+            binding.button.isEnabled = false
             val username = intent.getStringExtra("Extra_username").toString()
-            val password = intent.getStringExtra("Extra_password").toString()
+
             val accountType = if (selectedTextView == binding.tvteamcoach) "COACH" else "ATHLETE"
             val newAccountType = AccountType(
                 accountType
             )
-            service.userAccountType(newAccountType).enqueue(object : Callback<AccountType> {
-                override fun onResponse(call: Call<AccountType>, response: Response<AccountType>) {
+            Log.d("RetrofitAccount", accountType)
+            service.userAccountType(newAccountType).enqueue(object : Callback<AccountTypeResponse> {
+                override fun onResponse(call: Call<AccountTypeResponse>, response: Response<AccountTypeResponse>) {
                     if (response.isSuccessful) {
-                        val intent = when (selectedTextView) {
-                            binding.tvteamcoach -> {
-                                Intent(this@AccountTypeSelector, CoachScoutAccountcreator::class.java)
-                            }
-                            binding.tvathlete -> {
-                                Intent(this@AccountTypeSelector, AthleteAccountCreator::class.java)
-                            }
-                            else -> {
-                                TODO()
-                            }
+                        Log.d("RetrofitAccount", newAccountType.toString())
+                        Log.d("RetrofitAccount", response.body()?.message.toString())
+                        val intent: Intent
+                        if (selectedTextView == binding.tvteamcoach) {
+                            intent = Intent(this@AccountTypeSelector, CoachScoutAccountcreator::class.java)
                         }
-                        intent.putExtra("Extra_firstname", firstName)
-                        intent.putExtra("Extra_lastname", lastName)
-                        intent.putExtra("Extra_zipcode", zipCode)
-                        intent.putExtra("Extra_gender", gender)
-                        intent.putExtra("Extra_dateOfBirth", dateOfBirth)
+                        else{
+                            intent = Intent(this@AccountTypeSelector, AthleteAccountCreator::class.java)
+                        }
                         intent.putExtra("Extra_username", username)
-                        intent.putExtra("Extra_password", password)
                         startActivity(intent)
                     } else {
                         Log.e("RetrofitError", "Error changing user account type:${response.errorBody()?.string()!!}")
                         Toast.makeText(this@AccountTypeSelector, "Error changing account type", Toast.LENGTH_SHORT).show()
+                        binding.button.setBackgroundResource(R.drawable.primary_button)
+                        binding.button.isEnabled = true
                     }
                 }
-                override fun onFailure(call: Call<AccountType>, t: Throwable) {
+                override fun onFailure(call: Call<AccountTypeResponse>, t: Throwable) {
                     Log.e("RetrofitError", "Error reaching server: ${t.message.toString()}")
                     Toast.makeText(this@AccountTypeSelector, "Error reaching the server", Toast.LENGTH_SHORT).show()
+                    binding.button.setBackgroundResource(R.drawable.primary_button)
+                    binding.button.isEnabled = true
                 }
             })
         }
@@ -171,5 +170,20 @@ class AccountTypeSelector : AppCompatActivity() {
         dialogView.setOnClickListener {
             dialog.dismiss()
         }
+    }
+    private fun accountTypeSetter( accountType: String){
+        val token = LoginManager.getToken()
+        Log.d("RetrofitToken", token.toString())
+
+        val httpClient = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(token.toString()))
+            .build()
+
+        val service = Retrofit.Builder()
+            .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
+            .client(httpClient)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(UserService::class.java)
     }
 }

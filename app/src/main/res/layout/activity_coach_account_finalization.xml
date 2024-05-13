@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/pitch_background"
     tools:context=".CoachAccountFinalization">
 
     <TextView
@@ -19,8 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline33"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="@+id/guideline33"/>
 
     <TextView
         android:id="@+id/textView6"
@@ -93,11 +92,11 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:autofillHints="none"
-            android:inputType="textShortMessage"
             android:background="@drawable/sign_in_viewbackgrounds"
             android:fontFamily="@font/poppins_bold"
             android:gravity="center"
             android:hint="team"
+            android:inputType="textShortMessage"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/guideline38"
@@ -112,10 +111,10 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:autofillHints="none"
-            android:inputType="textLongMessage"
             android:background="@drawable/sign_in_viewbackgrounds"
             android:gravity="start"
             android:hint="write your story"
+            android:inputType="textLongMessage"
             android:text="\t"
             android:textColor="@color/white"
             android:textSize="14sp"
@@ -146,8 +145,8 @@
         android:id="@+id/button1"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:contentDescription="to go back to the previous view"
         android:background="@drawable/ep_back"
+        android:contentDescription="to go back to the previous view"
         android:text="Button"
         app:layout_constraintBottom_toTopOf="@+id/guideline10"
         app:layout_constraintEnd_toStartOf="@+id/guideline30"
@@ -181,7 +180,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline37"
         app:layout_constraintStart_toStartOf="@+id/guideline29"
         app:layout_constraintTop_toTopOf="@+id/guideline75"
-        tools:ignore="HardcodedText, contentDescription"/>
+        tools:ignore="HardcodedText, contentDescription" />
 
     <TextView
         android:id="@+id/tvtos"

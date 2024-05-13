@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@drawable/pitch_background"
     tools:context=".LoginPage">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -122,13 +122,13 @@
     <ImageView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:src="@color/white"
         android:contentDescription="google's logo"
+        android:src="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/guideline50"
         app:layout_constraintEnd_toStartOf="@+id/guideline48"
         app:layout_constraintStart_toStartOf="@+id/guideline47"
         app:layout_constraintTop_toTopOf="@+id/guideline49"
-        tools:ignore="HardcodedText"/>
+        tools:ignore="HardcodedText" />
 
     <ImageView
         android:layout_width="0dp"
@@ -139,7 +139,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline48"
         app:layout_constraintStart_toStartOf="@+id/guideline47"
         app:layout_constraintTop_toTopOf="@+id/guideline51"
-        tools:ignore="HardcodedText"/>
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:layout_width="0dp"
@@ -154,15 +154,15 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline21"
         app:layout_constraintStart_toStartOf="@+id/guideline40"
         app:layout_constraintTop_toTopOf="@+id/guideline62"
-        tools:ignore="HardcodedText"/>
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/become_a_le"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fontFamily="@font/my_poppins"
-        android:textAlignment="center"
         android:text="@string/become_a_le"
+        android:textAlignment="center"
         android:textAppearance="@style/become_a_le"
         android:textColor="@color/white"
         android:textSize="15sp"
@@ -179,8 +179,8 @@
         android:layout_height="0dp"
         android:layout_alignParentEnd="true"
         android:fontFamily="@font/my_rubix_glitch"
-        android:textAlignment="center"
         android:text="@string/pruvve"
+        android:textAlignment="center"
         android:textAppearance="@style/pruvve"
         android:textColor="@color/white"
         android:textSize="50sp"
@@ -209,6 +209,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.73" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline21"
         android:layout_width="wrap_content"
@@ -341,8 +342,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.23" />
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

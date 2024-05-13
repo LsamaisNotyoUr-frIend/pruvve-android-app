@@ -18,7 +18,12 @@ import android.text.TextWatcher
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import com.fluture.pruvve.adapters.LoginInfo
+import com.fluture.pruvve.adapters.LoginResponse
+import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityUsernameCreationBinding
+import com.fluture.pruvve.retrofittcalls.User
+import com.fluture.pruvve.retrofittcalls.UserService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -87,6 +92,8 @@ class UsernameCreation : AppCompatActivity() {
         binding.passwordField.addTextChangedListener(textWatcher)
 
         binding.button.setOnClickListener {
+            binding.button.setBackgroundResource(R.drawable.disabled_button)
+            binding.button.isEnabled = false
             val username = binding.usernameField.text.toString()
             val password = binding.passwordField.text.toString()
                 val userToCreate = User(
@@ -117,12 +124,16 @@ class UsernameCreation : AppCompatActivity() {
                         } else {
                             Log.e("RetrofitError", "RetrofitError:${response.errorBody()?.string()!!}")
                             Toast.makeText(this@UsernameCreation, "User creation failed", Toast.LENGTH_SHORT).show()
+                            binding.button.setBackgroundResource(R.drawable.primary_button)
+                            binding.button.isEnabled = true
                         }
                     }
 
                     override fun onFailure(call: Call<User>, t: Throwable) {
                         Log.e("RetrofitFailure", "error: ${t.message.toString()}")
                         Toast.makeText(this@UsernameCreation, "User could not be created", Toast.LENGTH_SHORT).show()
+                        binding.button.setBackgroundResource(R.drawable.primary_button)
+                        binding.button.isEnabled = true
                     }
                 })
     }

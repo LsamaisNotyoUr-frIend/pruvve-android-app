@@ -10,15 +10,19 @@
         <item name="android:textColor">#FFFFFF</item>
     </style>
 
-    <dimen
-        name="square_size">300dp </dimen>
+    <dimen name="square_size">300dp</dimen>
 
     <style name="become_a_le">
         <item name="android:textSize">6.15sp</item>
         <item name="android:textColor">#FFFFFF</item>
     </style>
 
-    <style name="Theme.Pruvve" parent="Base.Theme.Pruvve" />
+    <style name="Theme.Pruvve" parent="Theme.AppCompat.DayNight.DarkActionBar" />
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:statusBarColor">#000000</item>
+        <item name="android:navigationBarColor">#000000</item>
+    </style>
 
     <style name="number_pickerTheme" parent="Theme.AppCompat">
         <item name="colorControlNormal">@color/white</item>
@@ -29,5 +33,12 @@
     <style name="welcome_to_">
         <item name="android:textSize">40sp</item>
         <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+    <style name="blankTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/black</item>
     </style>
 </resources>

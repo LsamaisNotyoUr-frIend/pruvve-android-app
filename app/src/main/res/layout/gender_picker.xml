@@ -13,6 +13,7 @@
         android:layout_gravity="center_horizontal"
         android:text="Gender"
         android:textSize="20sp"
+        android:fontFamily="@font/my_exo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

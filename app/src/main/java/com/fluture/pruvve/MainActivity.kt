@@ -24,9 +24,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val toChangeColor = colorLetters(binding.pruvve.text.toString())
-        binding.pruvve.text = toChangeColor
-
         val image = binding.image24
         Glide.with(this)
             .load(R.drawable.soccer)
@@ -60,7 +57,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val DELAY_MILLIS: Long = 7300
+        private const val DELAY_MILLIS: Long = 3000
     }
 }
 

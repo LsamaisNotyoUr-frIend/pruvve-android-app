@@ -4,7 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
@@ -13,12 +15,45 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/pruvve_icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Pruvve"
         tools:targetApi="31">
+        <activity
+            android:name=".CustomGallery"
+            android:exported="false" />
+        <activity
+            android:name=".AddPlayer"
+            android:exported="false" />
+        <activity
+            android:name=".CoachHomePage"
+            android:exported="false" />
+        <activity
+            android:name=".FeedsViews"
+            android:exported="false" />
+        <activity
+            android:name=".BookingPitches"
+            android:exported="false" />
+        <activity
+            android:name=".SplashScreen"
+            android:exported="false"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name=".TeamsPage2"
+            android:exported="false" />
+        <activity
+            android:name=".ViewPitchItem"
+            android:exported="false"
+            android:label="@string/title_activity_view_pitch_item"
+            android:theme="@style/Theme.Pruvve" />
+        <activity
+            android:name=".ShowVideos"
+            android:exported="false" />
+        <activity
+            android:name=".TeamsPage"
+            android:exported="false" />
         <activity
             android:name=".SearchPage"
             android:exported="false" />

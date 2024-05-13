@@ -5,7 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.fluture.pruvve.adapters.LoginInfo
+import com.fluture.pruvve.adapters.LoginResponse
+import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityWelcomeBackBinding
+import com.fluture.pruvve.retrofittcalls.UserService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -33,6 +37,8 @@ class WelcomeBack : AppCompatActivity() {
             }
         }
         binding.btngetbackin.setOnClickListener {
+            binding.btngetbackin.setBackgroundResource(R.drawable.disabled_button)
+            binding.btngetbackin.isEnabled = false
             val username = binding.etusername.text.toString()
             val password =  binding.etpasswordfield.text.toString()
             val userLogin = LoginInfo(
@@ -46,16 +52,24 @@ class WelcomeBack : AppCompatActivity() {
                         val token = response.body()?.data?.token.toString()
                         LoginManager.saveToken(token)
                         Log.d("RetrofitToken", token)
-                        Intent(this@WelcomeBack, HomePage::class.java).also {
-                            startActivity(it) }
+                        val accountType = response.body()?.data?.user?.accountType.toString()
+                        val intent = Intent(this@WelcomeBack, SplashScreen::class.java)
+                        intent.putExtra("accountType", accountType)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                        startActivity(intent)
+                        finish()
                     } else {
                         Log.e("GetUserError", "Error calling user API, body:${response.errorBody()?.string()!!}")
                         Toast.makeText(this@WelcomeBack, "couldn't fetch user", Toast.LENGTH_SHORT).show()
+                        binding.btngetbackin.setBackgroundResource(R.drawable.primary_button)
+                        binding.btngetbackin.isEnabled = true
                     }
                 }
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                     Log.e("GetUserFailure", "Error reaching getUser API: ${t.message.toString()}")
                     Toast.makeText(this@WelcomeBack, "user not found", Toast.LENGTH_SHORT).show()
+                    binding.btngetbackin.setBackgroundResource(R.drawable.primary_button)
+                    binding.btngetbackin.isEnabled = true
                 }
             })
         }

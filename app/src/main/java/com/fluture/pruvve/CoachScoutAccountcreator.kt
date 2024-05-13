@@ -9,8 +9,16 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import com.fluture.pruvve.auth.AuthInterceptor
+import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityCoachScoutAccountcreatorBinding
+import com.fluture.pruvve.retrofittcalls.InputStreamRequestBody
+import com.fluture.pruvve.retrofittcalls.UploadData
+import com.fluture.pruvve.retrofittcalls.UploadImage
+import com.fluture.pruvve.retrofittcalls.UploadResponse
+import com.fluture.pruvve.retrofittcalls.UserService
 import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -59,67 +67,48 @@ class CoachScoutAccountcreator : AppCompatActivity() {
         }
 
         binding.button.setOnClickListener {
-            val firstName = intent.getStringExtra("Extra_firstname").toString()
-            val lastName = intent.getStringExtra("Extra_lastname").toString()
-            val zipCode = intent.getStringExtra("Extra_zipcode").toString()
-            val gender = intent.getStringExtra("Extra_gender").toString()
-            val dateOfBirth = intent.getStringExtra("Extra_dateOfBirth").toString()
             val userName = intent.getStringExtra("Extra_username").toString()
-            val passWord = intent.getStringExtra("Extra_password").toString()
-            val imageAddress = imageUri.toString()
-            val imageToUpload = contentResolver.openInputStream(imageUri!!)?.readBytes()
-            val byteImage = imageToUpload?.let { Base64.getEncoder().encodeToString(it) }
+            Log.e("RetrofitUri", "your uri is: $imageUri")
+            val imageToUpload = imageUri
             val filename = generateFilename(userName)
-            val fileData = "$byteImage"
-            val file = "$filename:$fileData"
             val purpose = "UPLOAD"
             val uploadImage = UploadImage(
-                file,
-                purpose
-            )
-            service.uploadPicture(uploadImage).enqueue(object : Callback<UploadResponse> {
+                filename,
+                purpose)
+            service.uploadPicture(uploadImage).enqueue(object : Callback<UploadResponse>{
                 override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
-                    if (response.isSuccessful) {
+                    if (response.isSuccessful){
+                        val signedUrl= response.body()?.data.toString()
                         val imageData = UploadData(
-                            url = response.body()?.data.toString(),
+                            mediaUrl = filename,
                             mediaType = "PROFILE_PICTURE"
                         )
-                        service.uploadData(imageData).enqueue(object : Callback<UploadResponse> {
+                        Log.d("RetrofitUrl", "Your url is $signedUrl")
+                        uploadFile(signedUrl, imageToUpload!!)
+                        service.uploadData(imageData).enqueue(object : Callback<UploadResponse>{
                             override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
-                                if (response.isSuccessful) {
-                                    Toast.makeText(
-                                        this@CoachScoutAccountcreator, "File uploaded successfully", Toast.LENGTH_SHORT).show()
+                                if (response.isSuccessful){
+                                    Toast.makeText(this@CoachScoutAccountcreator, "File uploaded successfully", Toast.LENGTH_SHORT).show()
                                     Log.d("Retrofit", "The image has been uploaded ${response.body().toString()}")
-                                    Intent(
-                                        this@CoachScoutAccountcreator, CoachAccountFinalization::class.java).also {
-                                        it.putExtra("Extra_firstname", firstName)
-                                        it.putExtra("Extra_lastname", lastName)
-                                        it.putExtra("Extra_zipcode", zipCode)
-                                        it.putExtra("Extra_gender", gender)
-                                        it.putExtra("Extra_dateOfBirth", dateOfBirth)
+                                    Intent(this@CoachScoutAccountcreator, CoachAccountFinalization::class.java).also{
                                         it.putExtra("Extra_username", userName)
-                                        it.putExtra("Extra_password", passWord)
-                                        it.putExtra("Extra_profilePic", imageAddress)
                                         startActivity(it)
                                     }
-                                } else {
+                                }else{
                                     val errorMessage = response.errorBody()?.string() ?: "Unknown error"
                                     Log.e("RetrofitError", "Error uploading file $errorMessage")
                                 }
                             }
-
                             override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
                                 Log.e("RetrofitError", "Error reaching server ${t.message.toString()}")
                             }
                         })
-                    } else {
+                    }else{
                         val errorMessage = response.errorBody()?.string() ?: "Unknown error"
-                        Log.e(
-                            "RetrofitError",
-                            "An error occurred when sending image $errorMessage"
-                        )
+                        Log.e("RetrofitError", "An error occurred when sending image $errorMessage")
                     }
                 }
+
                 override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
                     Log.e("RetrofitError", "There was a problem reaching the server ${t.message.toString()}")
                 }
@@ -151,5 +140,34 @@ class CoachScoutAccountcreator : AppCompatActivity() {
         val currentTimeMillis = System.currentTimeMillis()
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date(currentTimeMillis))
         return "${username}_$timestamp"
+    }
+    fun uploadFile(url: String, fileUri: Uri) {
+        LoginManager.init(this)
+        val token = LoginManager.getToken()
+        val httpClient = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(token.toString()))
+            .build()
+        val service = Retrofit.Builder()
+            .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
+            .client(httpClient)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(UserService::class.java)
+        contentResolver.getType(fileUri)?.let { mimeType ->
+            val requestBody = InputStreamRequestBody(contentResolver, fileUri)
+            service.uploadFile(mimeType, url, requestBody).enqueue(object: Callback<ResponseBody>{
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    Log.d("RetrofitUploadSuccess", response.body().toString())
+                    Log.d("RetrofitUploadSuccess", "your file has been uploaded to $url")
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    Log.e("RetrofitUploadFailure", "your file could not be uploaded ${t.message.toString()}")
+                }
+            })
+        }
     }
 }

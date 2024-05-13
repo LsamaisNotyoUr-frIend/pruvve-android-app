@@ -39,21 +39,20 @@ android {
 }
 
 dependencies {
+//    amazon
+    implementation("com.amazonaws:aws-android-sdk-core:2.24.0")
+    implementation("com.amazonaws:aws-android-sdk-s3:2.24.0")
 
 //    google and firebase
-    implementation(platform("com.google.firebase:firebase-bom:32.7.3"))
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.android.gms:play-services-auth:21.0.0")
+    implementation("com.google.android.gms:play-services-auth:21.1.0")
     implementation("com.google.code.gson:gson:2.10")
     implementation("com.google.android.material:material:1.11.0")
     implementation("com.google.gms.google-services:com.google.gms.google-services.gradle.plugin:4.4.1")
-    implementation("com.facebook.android:facebook-login:12.0.0")
 
-//    regular kotlin scopes
-    implementation("androidx.activity:activity-ktx:1.8.2")
-    implementation("androidx.fragment:fragment-ktx:1.6.2")
+
 
 //    retrofit
+    implementation("com.squareup.okio:okio:2.10.0")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-moshi:2.9.0")
@@ -74,19 +73,23 @@ dependencies {
 
 //    maps
     implementation("org.osmdroid:osmdroid-android:6.1.18")
+    implementation("org.apache.commons:commons-lang3:3.9")
 
 //    default
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.activity:activity-compose:1.9.0")
     implementation(platform("androidx.compose:compose-bom:2023.08.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("com.google.firebase:firebase-auth:22.3.1")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+    implementation("androidx.activity:activity:1.8.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@drawable/pitch_background"
     tools:context=".ProfileCreation">
 
     <TextView
@@ -25,8 +25,8 @@
     <TextView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:text="Complete your profile"
         android:fontFamily="@font/my_exo"
+        android:text="Complete your profile"
         android:textColor="@color/white"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline35"
@@ -79,9 +79,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:autofillHints="name"
-            android:inputType="textPersonName"
             android:background="@drawable/sign_in_viewbackgrounds"
             android:hint="Firstname"
+            android:inputType="textPersonName"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="20sp"
@@ -161,11 +161,11 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginEnd="10dp"
-            android:inputType="textPostalAddress"
             android:layout_weight="1"
             android:autofillHints="postalCode"
             android:background="@drawable/sign_in_viewbackgrounds"
             android:hint="zip code"
+            android:inputType="textPostalAddress"
             android:paddingEnd="20dp"
             android:textAlignment="center"
             android:textColor="@color/white"
@@ -212,9 +212,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:autofillHints="name"
-            android:inputType="textPersonName"
             android:background="@drawable/sign_in_viewbackgrounds"
             android:hint="last name"
+            android:inputType="textPersonName"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="20sp"
@@ -349,8 +349,8 @@
         android:id="@+id/button1"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:contentDescription="used to return tpo the previous view"
         android:background="@drawable/ep_back"
+        android:contentDescription="used to return tpo the previous view"
         android:text="Button"
         app:layout_constraintBottom_toTopOf="@+id/guideline10"
         app:layout_constraintEnd_toStartOf="@+id/guideline30"
@@ -364,8 +364,8 @@
         android:layout_height="0dp"
         android:background="@drawable/primary_button"
         android:fontFamily="@font/my_exo"
-        android:text="Next"
         android:gravity="center"
+        android:text="Next"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="18sp"
@@ -397,7 +397,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline37"
         app:layout_constraintStart_toStartOf="@+id/guideline77"
         app:layout_constraintTop_toTopOf="@+id/guideline78"
-        tools:ignore="HardcodedText"/>
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/tvtos"
