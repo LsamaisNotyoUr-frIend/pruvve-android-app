@@ -9,6 +9,7 @@ import android.text.style.ForegroundColorSpan
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.fluture.pruvve.databinding.ActivitySignupBinding
+import kotlin.math.log
 
 class MainSignup:AppCompatActivity() {
     private lateinit var binding: ActivitySignupBinding
@@ -17,8 +18,10 @@ class MainSignup:AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        val titleColorChanger = colorLetters(binding.pruvve.text.toString(), 3, 4)
+        val titleColorChanger = colorLetters(binding.pruvve.text.toString(), 3, 4, Color.GREEN)
+        val loginColorChanger = colorLetters(binding.alreadyanaccount.text.toString(), 17, 27, Color.GREEN)
         binding.pruvve.text = titleColorChanger
+        binding.alreadyanaccount.text = loginColorChanger
 
         val image = binding.image24
         Glide.with(this)
@@ -37,10 +40,10 @@ class MainSignup:AppCompatActivity() {
             }
         }
     }
-    fun colorLetters(text: String, startNum: Int, endNum: Int): SpannableStringBuilder {
+    private fun colorLetters(text: String, startNum: Int, endNum: Int, color: Int): SpannableStringBuilder {
         val colorChanger = SpannableStringBuilder(text)
         colorChanger.setSpan(
-            ForegroundColorSpan(Color.GREEN),
+            ForegroundColorSpan(color),
             startNum,
             endNum,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE

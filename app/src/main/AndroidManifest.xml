@@ -22,6 +22,9 @@
         android:theme="@style/Theme.Pruvve"
         tools:targetApi="31">
         <activity
+            android:name=".StoryMaker"
+            android:exported="false" />
+        <activity
             android:name=".CustomGallery"
             android:exported="false" />
         <activity

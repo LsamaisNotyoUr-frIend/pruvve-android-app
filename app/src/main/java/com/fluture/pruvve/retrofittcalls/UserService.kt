@@ -19,13 +19,13 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.Url
 
-internal interface UserService {
+interface UserService {
     @POST("v1/user")
     fun createUser(@Body user: User): Call<User>
     @POST("v1/auth/login")
     fun getUser(@Body userToLogin: LoginInfo): Call<LoginResponse>
     @PUT("v1/user/account-type")
-    fun userAccountType(@Body accountType: AccountType): Call<AccountTypeResponse>
+    fun userAccountType(accountType: AccountType): Call<AccountTypeResponse>
     @POST("v1/s3")
     fun uploadPicture(@Body uploadedImage: UploadImage):Call<UploadResponse>
     @PUT("v1/user/media")
@@ -48,4 +48,16 @@ internal interface UserService {
     fun getPosts(@Query("request") post: GetPostsMedia):Call<GetPost>
     @GET("v1/post/{postId}/comment")
     fun getComments(@Path("postId")postId:Int, @Query("request") requestObject: RequestObjects):Call<ServerComments>
+    @POST("v1/user/{userId}/follow")
+    fun followUser(userId: FollowsAndUnfollows):Call<FollowsReply>
+    @POST("v1/user/{userId}/unfollow")
+    fun unFollowUser(userId: FollowsAndUnfollows):Call<FollowsReply>
+
+    @GET("v1/user/follow-status")
+    fun getFollowStatus(@Query("followerId")followerId: FollowerId, @Query("followedId")followedId: FollowedId):Call<FollowStatusReply>
+
+    @POST("v1/story")
+    fun postStory(@Body post: PostsMedia):Call<UploadResponse>
+    @GET("v1/story")
+    fun getStories(@Query("request") post: GetPostsMedia):Call<GetPost>
 }

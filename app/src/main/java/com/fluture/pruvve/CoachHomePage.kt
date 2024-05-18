@@ -3,7 +3,7 @@ package com.fluture.pruvve
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.fluture.pruvve.adapters.VideoPageItems
 import com.fluture.pruvve.adapters.VideosPageAdapter1
 import com.fluture.pruvve.auth.AuthInterceptor
@@ -39,7 +39,6 @@ class CoachHomePage : AppCompatActivity() {
         val myUrl2 = "https://i.pinimg.com/236x/0e/88/20/0e8820df856a51cdcb7a791396846421.jpg"
         val thisURL = "https://i.pinimg.com/236x/c8/71/8e/c8718e9e41758a502a709765792b7de3.jpg"
         val recycler1 = binding.rvCoachFeeds1
-        val recycler2 = binding.rvCoachFeeds2
 
         val videos1 = mutableListOf(
             VideoPageItems(myUrl),
@@ -50,9 +49,7 @@ class CoachHomePage : AppCompatActivity() {
             VideoPageItems(myUrl),
             VideoPageItems(myUrl2),
             VideoPageItems(thisURL),
-            VideoPageItems(myUrl2)
-        )
-        val videos2 = mutableListOf(
+            VideoPageItems(myUrl2),
             VideoPageItems(thisURL),
             VideoPageItems(myUrl),
             VideoPageItems(myUrl2),
@@ -64,11 +61,9 @@ class CoachHomePage : AppCompatActivity() {
             VideoPageItems(myUrl)
         )
         val adapter1 = VideosPageAdapter1(videos1)
-        val adapter2 = VideosPageAdapter1(videos2)
-        recycler2.adapter = adapter2
+        val layoutManager = GridLayoutManager(this@CoachHomePage, 2, GridLayoutManager.VERTICAL, false)
         recycler1.adapter = adapter1
-        recycler1.layoutManager = LinearLayoutManager(this@CoachHomePage)
-        recycler2.layoutManager = LinearLayoutManager(this@CoachHomePage)
+        recycler1.layoutManager = layoutManager
 
         binding.videoPageButton.setImageResource(R.drawable.clicked_video_icon)
         binding.bookPitchButton.setImageResource(R.drawable.book_pitch_icon)
@@ -89,26 +84,25 @@ class CoachHomePage : AppCompatActivity() {
                 binding.profileButton.setImageResource(R.drawable.profile_icon)
                 commit()
             }
-
-            binding.bookPitchButton.setOnClickListener {
-                supportFragmentManager.beginTransaction().apply {
-                    replace(R.id.CoachHomeScreenFragment, BookPitchFragment())
-                    binding.videoPageButton.setImageResource(R.drawable.video_icon)
-                    binding.bookPitchButton.setImageResource(R.drawable.clicked_book_pitch)
-                    binding.profileButton.setImageResource(R.drawable.profile_icon)
-                    commit()
-                }
-            }
-            binding.profileButton.setOnClickListener {
-                supportFragmentManager.beginTransaction().apply {
-                    replace(R.id.CoachHomeScreenFragment, TeamsFragment())
-                    binding.videoPageButton.setImageResource(R.drawable.video_icon)
-                    binding.bookPitchButton.setImageResource(R.drawable.book_pitch_icon)
-                    binding.profileButton.setImageResource(R.drawable.clicked_profile_button)
-                    commit()
-                }
-            }
         }
 
+        binding.bookPitchButton.setOnClickListener {
+            supportFragmentManager.beginTransaction().apply {
+                replace(R.id.CoachHomeScreenFragment, BookPitchFragment())
+                binding.videoPageButton.setImageResource(R.drawable.video_icon)
+                binding.bookPitchButton.setImageResource(R.drawable.clicked_book_pitch)
+                binding.profileButton.setImageResource(R.drawable.profile_icon)
+                commit()
+            }
+        }
+        binding.profileButton.setOnClickListener {
+            supportFragmentManager.beginTransaction().apply {
+                replace(R.id.CoachHomeScreenFragment, TeamsFragment())
+                binding.videoPageButton.setImageResource(R.drawable.video_icon)
+                binding.bookPitchButton.setImageResource(R.drawable.book_pitch_icon)
+                binding.profileButton.setImageResource(R.drawable.clicked_profile_button)
+                commit()
+            }
+        }
     }
 }

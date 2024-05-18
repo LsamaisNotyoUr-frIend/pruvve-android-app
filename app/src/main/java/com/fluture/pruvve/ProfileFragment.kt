@@ -16,8 +16,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.GridLayoutManager
 import com.fluture.pruvve.adapters.VideoPageItems
 import com.fluture.pruvve.adapters.VideosPageAdapter1
 import com.fluture.pruvve.databinding.FragmentProfileBinding
@@ -30,6 +29,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         val myUrl = "https://i.pinimg.com/236x/5a/6b/ea/5a6beaca00190835c3ba144424156afb.jpg"
         val myUrl2 = "https://i.pinimg.com/236x/6b/38/ef/6b38ef66e69c53fc92a56766ff56adff.jpg"
 
+        val gridLayout = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         var isClicked = false
         var anyViewClicked = false
         binding.tvProfileAge.setOnClickListener { anyViewClicked = true }
@@ -56,21 +56,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         val profilePosts = binding.tvProfilePosts
         val mediaPosts = binding.tvProfileMedia
         val recycler1 = binding.rvPrpfileRecycler
-        val recycler2 = binding.rvPrpfileRecycler2
-
-        val scrollListener = object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (recyclerView == recycler1) {
-                    recycler2.scrollBy(dx, dy)
-                } else if (recyclerView == recycler2) {
-                    recycler1.scrollBy(dx, dy)
-                }
-            }
-        }
-
-        recycler1.addOnScrollListener(scrollListener)
-        recycler2.addOnScrollListener(scrollListener)
 
         binding.tvMoreDetails.setOnClickListener {
             if(isClicked){
@@ -118,9 +103,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 VideoPageItems(myUrl),
                 VideoPageItems(myUrl2),
                 VideoPageItems(thisURL),
-                VideoPageItems(myUrl2)
-            )
-            val videos2 = mutableListOf(
+                VideoPageItems(myUrl2),
                 VideoPageItems(thisURL),
                 VideoPageItems(myUrl),
                 VideoPageItems(myUrl2),
@@ -132,11 +115,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 VideoPageItems(myUrl)
             )
             val adapter1 = VideosPageAdapter1(videos1)
-            val adapter2 = VideosPageAdapter1(videos2)
-            recycler2.adapter = adapter2
             recycler1.adapter = adapter1
-            recycler1.layoutManager = LinearLayoutManager(requireContext())
-            recycler2.layoutManager = LinearLayoutManager(requireContext())
+            recycler1.layoutManager = gridLayout
         }
 
         mediaPosts.setOnClickListener {
@@ -152,9 +132,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 VideoPageItems(myUrl),
                 VideoPageItems(myUrl),
                 VideoPageItems(myUrl),
-                VideoPageItems(myUrl)
-            )
-            val videos2 = mutableListOf(
+                VideoPageItems(myUrl),
                 VideoPageItems(myUrl2),
                 VideoPageItems(myUrl2),
                 VideoPageItems(myUrl2),
@@ -166,9 +144,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 VideoPageItems(myUrl2)
             )
             val adapter1 = VideosPageAdapter1(videos1)
-            val adapter2 = VideosPageAdapter1(videos2)
-            recycler2.adapter = adapter1
-            recycler1.adapter = adapter2
+            recycler1.adapter = adapter1
         }
 
         val videos1 = mutableListOf(
@@ -180,9 +156,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             VideoPageItems(myUrl),
             VideoPageItems(myUrl2),
             VideoPageItems(thisURL),
-            VideoPageItems(myUrl2)
-        )
-        val videos2 = mutableListOf(
+            VideoPageItems(myUrl2),
             VideoPageItems(thisURL),
             VideoPageItems(myUrl),
             VideoPageItems(myUrl2),
@@ -194,11 +168,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             VideoPageItems(myUrl)
         )
         val adapter1 = VideosPageAdapter1(videos1)
-        val adapter2 = VideosPageAdapter1(videos2)
-        recycler2.adapter = adapter2
         recycler1.adapter = adapter1
-        recycler1.layoutManager = LinearLayoutManager(requireContext())
-        recycler2.layoutManager = LinearLayoutManager(requireContext())
+        recycler1.layoutManager = gridLayout
     }
     @SuppressLint("InflateParams")
     private fun showPopUpDialogue() {

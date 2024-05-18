@@ -168,3 +168,7 @@ e
 5app/src/main/java/com/fluture/pruvve/FirstFragment.kt,1\3\13860ecc08cdfd61bfa5832df9b500501e09f944
 l
 <app/src/main/java/com/fluture/pruvve/auth/AuthInterceptor.kt,7\8\78c2aa6b9e873bf392ad97fd0fc8256091688a4c
+u
+Eapp/src/main/java/com/fluture/pruvve/retrofittcalls/followsAndSuch.kt,4\f\4f8d7776e6953ab2f790ea9159f533404939a2c3
+b
+2app/src/main/java/com/fluture/pruvve/StoryMaker.kt,b\6\b6abbe85ba52388c550405ea727c0e6c47f4bf75

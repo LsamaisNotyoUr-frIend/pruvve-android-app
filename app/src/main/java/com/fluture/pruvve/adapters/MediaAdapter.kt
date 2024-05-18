@@ -4,27 +4,12 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.webkit.WebView
 import androidx.recyclerview.widget.RecyclerView
 import com.fluture.pruvve.R
 
-class MediaAdapter (private val mediaList: List<MediaFilter>): RecyclerView.Adapter<MediaAdapter.FilterViewHolder>() {
-    private var listener: OnItemClickListener? = null
-    interface OnItemClickListener {
-        fun onItemClick(filterPosition: Int)
-    }
-    inner class FilterViewHolder(itemView: View):RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        init {
-            itemView.setOnClickListener(this)
-        }
-        override fun onClick(v: View?) {
-            val position = adapterPosition
-            if (position != RecyclerView.NO_POSITION) {
-                listener?.onItemClick(position)
-            }
-        }
-
-    }
+class MediaAdapter (private val mediaList: List<MediaFilter>, private val onItemClick: (Uri) -> Unit): RecyclerView.Adapter<MediaAdapter.FilterViewHolder>() {
+    inner class FilterViewHolder(itemView: View):RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilterViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.media_medium, parent, false)
@@ -34,17 +19,18 @@ class MediaAdapter (private val mediaList: List<MediaFilter>): RecyclerView.Adap
     override fun onBindViewHolder(holder: FilterViewHolder, position: Int) {
         val currentFilter = mediaList[position]
         holder.itemView.apply {
-            findViewById<ImageView>(R.id.imvMediaMedium).setImageURI(currentFilter.imageUri)
-
+            findViewById<WebView>(R.id.imvMediaMedium).loadUrl(currentFilter.imageUri.toString())
+        }
+        holder.itemView.setOnClickListener {
+            onItemClick(currentFilter.imageUri)
         }
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return  mediaList.size
     }
 }
 
 data class MediaFilter(
-    val name: String,
     val imageUri: Uri
 )
