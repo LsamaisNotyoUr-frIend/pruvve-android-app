@@ -3,8 +3,8 @@ package com.fluture.pruvve
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.fluture.pruvve.adapters.TeamMates
 import com.fluture.pruvve.adapters.TeamsAdapter
 import com.fluture.pruvve.adapters.VideoPageItems
@@ -21,6 +21,7 @@ class TeamsPage2 : AppCompatActivity() {
         binding.imvBackButton.setOnClickListener {
             finish()
         }
+        val gridLayout = GridLayoutManager(this@TeamsPage2, 2, GridLayoutManager.VERTICAL, false)
         val myUrl = "https://i.pinimg.com/236x/be/e3/9e/bee39e2d9eee57acb2091fcadfd6d0d0.jpg"
         val myUrl2 = "https://i.pinimg.com/236x/ac/15/5f/ac155f3484a23ee2c057cce2eddbd349.jpg"
         val thisURL = "https://i.pinimg.com/236x/1f/0e/27/1f0e271f2a59bd426062578485a71b39.jpg"
@@ -32,23 +33,9 @@ class TeamsPage2 : AppCompatActivity() {
         val midFielders = binding.rvMidfielders
         val strikers = binding.rvStrikes
         val recycler1 = binding.rvTeams
-        val recycler2 = binding.rvTeams2
 
         val teamName = intent.getStringExtra("ExtraTeamName")!!
         binding.tvTeamAssigned.text = teamName
-
-        val scrollListener = object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (recyclerView == recycler1) {
-                    recycler2.scrollBy(dx, dy)
-                } else if (recyclerView == recycler2) {
-                    recycler1.scrollBy(dx, dy)
-                }
-            }
-        }
-        recycler1.addOnScrollListener(scrollListener)
-        recycler2.addOnScrollListener(scrollListener)
         binding.nsvTeamMates.visibility = View.GONE
         profilePosts.setBackgroundResource(R.drawable.primary_button)
         team.setBackgroundResource(R.color.dark_gray)
@@ -64,9 +51,7 @@ class TeamsPage2 : AppCompatActivity() {
             VideoPageItems(myUrl),
             VideoPageItems(myUrl2),
             VideoPageItems(thisURL),
-            VideoPageItems(myUrl2)
-        )
-        val videos2 = mutableListOf(
+            VideoPageItems(myUrl2),
             VideoPageItems(thisURL),
             VideoPageItems(myUrl),
             VideoPageItems(myUrl2),
@@ -78,33 +63,24 @@ class TeamsPage2 : AppCompatActivity() {
             VideoPageItems(myUrl)
         )
         val adapter1 = VideosPageAdapter1(videos1)
-        val adapter2 = VideosPageAdapter1(videos2)
-        recycler2.adapter = adapter2
         recycler1.adapter = adapter1
-        recycler1.layoutManager = LinearLayoutManager(this@TeamsPage2)
-        recycler2.layoutManager = LinearLayoutManager(this@TeamsPage2)
+        recycler1.layoutManager = gridLayout
 
         profilePosts.setOnClickListener {
             recycler1.visibility = View.VISIBLE
-            recycler2.visibility = View.VISIBLE
             recycler1.isClickable = true
-            recycler2.isClickable = true
             profilePosts.setBackgroundResource(R.drawable.primary_button)
             team.setBackgroundResource(R.color.dark_gray)
             binding.nsvTeamMates.visibility = View.GONE
             binding.nsvTeamMates.isClickable = false
             binding.nsvTeamMates.isNestedScrollingEnabled = false
-            recycler2.adapter = adapter2
             recycler1.adapter = adapter1
             recycler1.layoutManager = LinearLayoutManager(this@TeamsPage2)
-            recycler2.layoutManager = LinearLayoutManager(this@TeamsPage2)
         }
 
         team.setOnClickListener {
             recycler1.visibility = View.GONE
-            recycler2.visibility = View.GONE
             recycler1.isClickable = false
-            recycler2.isClickable = false
             binding.nsvTeamMates.visibility = View.VISIBLE
             binding.nsvTeamMates.isClickable = true
             binding.nsvTeamMates.isNestedScrollingEnabled = true

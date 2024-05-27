@@ -3,9 +3,10 @@ package com.fluture.pruvve.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.fluture.pruvve.R
 
 class StoryAdapter(private var story: List<Stories>):RecyclerView.Adapter<StoryAdapter.StoryViewHolder>() {
@@ -18,8 +19,11 @@ class StoryAdapter(private var story: List<Stories>):RecyclerView.Adapter<StoryA
 
     override fun onBindViewHolder(holder: StoryViewHolder, position: Int) {
         holder.itemView.apply {
+            Glide.with(context)
+                .load(story[position].url)
+                .apply(RequestOptions().fitCenter())
+                .into(findViewById(R.id.imvStory))
             findViewById<TextView>(R.id.tvStoryName).text = story[position].name
-            findViewById<WebView>(R.id.wvStory).loadUrl(story[position].url)
         }
     }
 

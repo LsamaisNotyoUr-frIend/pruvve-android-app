@@ -5,11 +5,7 @@
     android:id="@+id/clCommentsAndLikes"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/darker_gray"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="@+id/guideline324">
+    android:background="@drawable/pitch_background">
 
     <TextView
         android:id="@+id/tvLikeItems"
@@ -62,6 +58,7 @@
         android:id="@+id/rvCommentsAndLikes"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="10dp"
         android:background="@color/mid_dark_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,33 +69,46 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="10dp"
-        android:orientation="horizontal"
         android:background="@drawable/search_background2"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline124">
 
         <EditText
+            android:id="@+id/etCommentText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="2dp"
-            android:inputType="textMultiLine"
+            android:layout_weight="1"
             android:autofillHints="none"
             android:hint="Write a comment"
-            android:textSize="16sp"
+            android:inputType="textMultiLine"
             android:textColorHint="@color/gray"
+            android:textSize="16sp"
             tools:ignore="HardcodedText" />
 
         <ImageView
+            android:id="@+id/imvCommentSend"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="8"
             android:layout_margin="5dp"
-            android:src="@drawable/send_icon"/>
+            android:layout_weight="8"
+            android:src="@drawable/send_icon"
+            tools:ignore="ContentDescription" />
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imvExitCommentSection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:src="@drawable/exit_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline232"

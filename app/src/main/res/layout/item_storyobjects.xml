@@ -16,11 +16,12 @@
         app:layout_constraintStart_toStartOf="@+id/guideline92"
         app:layout_constraintTop_toTopOf="@+id/guideline91">
 
-        <WebView
-            android:id="@+id/wvStory"
+        <ImageView
+            android:id="@+id/imvStory"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/dialogue_background3" />
+            android:background="@drawable/dialogue_background3"
+            tools:ignore="ContentDescription" />
     </androidx.cardview.widget.CardView>
 
     <TextView

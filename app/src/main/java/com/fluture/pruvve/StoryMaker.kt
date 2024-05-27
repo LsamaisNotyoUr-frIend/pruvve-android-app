@@ -1,24 +1,28 @@
 package com.fluture.pruvve
 
+import android.Manifest.permission.CAMERA
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
-import android.database.Cursor
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.Glide
 import com.fluture.pruvve.adapters.GetUserResponse
-import com.fluture.pruvve.adapters.MediaAdapter
-import com.fluture.pruvve.adapters.MediaFilter
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityStoryMakerBinding
@@ -35,6 +39,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.text.SimpleDateFormat
@@ -47,22 +52,27 @@ class StoryMaker : AppCompatActivity() {
     private var videoUri: Uri? = null
     private var imageChosen: Boolean = false
     private lateinit var username: String
-    private val mediaList = mutableListOf<MediaFilter>()
+    private val authority = "com.fluture.pruvve.fileprovider"
+    private var currentPhotoPath: String? = null
+    private var currentVideoPath: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityStoryMakerBinding.inflate(layoutInflater)
         LoginManager.init(this)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.root)
-        loadMediaFiles()
+        binding.llCaption.visibility = View.GONE
+        binding.etStoryCaption.visibility = View.GONE
+        binding.imvAddAStory2.visibility = View.GONE
+        binding.imvAddAStory.visibility = View.GONE
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.clStoryMaker)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        openMediaChooser()
         val token = LoginManager.getToken()
         Log.d("RetrofitToken", token.toString())
-
         val httpClient = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(token.toString()))
             .build()
@@ -73,14 +83,6 @@ class StoryMaker : AppCompatActivity() {
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
             .create(UserService::class.java)
-
-        val recyclerView = binding.rvGalleryChooser
-        recyclerView.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
-
-        val mediaAdapter = MediaAdapter(mediaList) { uri ->
-            onMediaItemSelected(uri)
-        }
-        recyclerView.adapter = mediaAdapter
 
         service.getUserCredentials().enqueue(object : Callback<GetUserResponse> {
             override fun onResponse(call: Call<GetUserResponse>, response: Response<GetUserResponse>) {
@@ -98,12 +100,52 @@ class StoryMaker : AppCompatActivity() {
         binding.btnBack.setOnClickListener {
             finish()
         }
-
+        binding.imvWriteStory.setOnClickListener {
+            binding.llCaption.visibility = View.VISIBLE
+            binding.etStoryCaption.visibility = View.VISIBLE
+        }
         binding.btnDone.setOnClickListener {
             binding.btnDone.setBackgroundResource(R.drawable.disabled_button)
             binding.btnDone.isEnabled = false
             sortUpload(service)
 
+        }
+
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                if (currentPhotoPath != null) {
+                    val file = File(currentPhotoPath!!)
+                    val photoUri = FileProvider.getUriForFile(this, authority, file)
+                    imageUri = photoUri
+                    videoUri = null
+                    imageChosen = true
+                    binding.imvAddAStory.visibility = View.VISIBLE
+                    binding.imvAddAStory.setImageURI(photoUri)
+                } else if (currentVideoPath != null) {
+                    val file = File(currentVideoPath!!)
+                    val videoUri2 = FileProvider.getUriForFile(this, authority, file)
+                    videoUri = videoUri2
+                    imageUri = null
+                    imageChosen = false
+                    Glide.with(this)
+                        .load(videoUri)
+                        .into(binding.imvAddAStory2)
+                }
+            }
+        }
+
+        if (ContextCompat.checkSelfPermission(this, CAMERA) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(CAMERA, WRITE_EXTERNAL_STORAGE), 123)
+        } else {
+            openCamera()
+        }
+        binding.imvCameraStory.setOnClickListener {
+            openCamera()
+        }
+        binding.imvCameraStory.setOnLongClickListener {
+            startVideoRecording()
+            true
         }
     }
     private fun sortUpload(service: UserService){
@@ -212,7 +254,8 @@ class StoryMaker : AppCompatActivity() {
 
     private fun openMediaChooser() {
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-            type = "image/* video/*"
+            type = "*/*"
+            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*"))
         }
         resultLauncher.launch(intent)
     }
@@ -226,14 +269,22 @@ class StoryMaker : AppCompatActivity() {
                     imageUri = uri
                     videoUri = null
                     imageChosen = true
-                    binding.imvAddAStory.loadUrl(uri.toString())
+                    binding.imvAddAStory.visibility = View.VISIBLE
+                    binding.imvAddAStory2.visibility = View.GONE
+                    binding.imvAddAStory.setImageURI(uri)
+                    Log.d("Url", "your uri has been gotten")
                     Log.d("RetrofitImage", "your file is an image")
-                } else if (isVideo(uri)) {
+                } else{
                     videoUri = uri
                     imageUri = null
                     imageChosen = false
-                    binding.imvAddAStory.loadUrl(uri.toString())
+                    binding.imvAddAStory2.visibility = View.VISIBLE
+                    binding.imvAddAStory.visibility = View.GONE
+                    Glide.with(this)
+                        .load(videoUri)
+                        .into(binding.imvAddAStory2)
                     Log.d("RetrofitImage", "your file is a video")
+                    Log.d("Url", "your video has been gotten")
                 }
                 binding.btnDone.setBackgroundResource(R.drawable.primary_button)
                 binding.btnDone.isEnabled = true
@@ -242,10 +293,6 @@ class StoryMaker : AppCompatActivity() {
     }
     private fun isImage(uri: Uri): Boolean {
         return contentResolver.getType(uri)?.startsWith("image") ?: false
-    }
-
-    private fun isVideo(uri: Uri): Boolean {
-        return contentResolver.getType(uri)?.startsWith("video") ?: false
     }
     private fun generateFilename(username: String): String {
         val currentTimeMillis = System.currentTimeMillis()
@@ -275,51 +322,87 @@ class StoryMaker : AppCompatActivity() {
         return bytes
     }
 
-    private fun loadMediaFiles() {
-        val projection = arrayOf(
-            MediaStore.Files.FileColumns._ID,
-            MediaStore.Files.FileColumns.MEDIA_TYPE
-        )
+    private val takePicture = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val photoUri = result.data?.data
+            binding.imvAddAStory.visibility = View.VISIBLE
+            binding.imvAddAStory2.visibility = View.GONE
+            Log.d("Url", "your uri has been gotten")
+            Log.d("RetrofitImage", "your file is an image")
+            binding.imvAddAStory.setImageURI(photoUri)
+        }
+    }
 
-        val selection = "${MediaStore.Files.FileColumns.MEDIA_TYPE}=? OR ${MediaStore.Files.FileColumns.MEDIA_TYPE}=?"
-        val selectionArgs = arrayOf(
-            MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE.toString(),
-            MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO.toString()
-        )
+    private val takeVideo = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val videoUri = result.data?.data
+            binding.imvAddAStory2.visibility = View.VISIBLE
+            binding.imvAddAStory.visibility = View.GONE
+            Log.d("RetrofitImage", "your file is a video")
+            Log.d("Url", "your video has been gotten")
+            Glide.with(this)
+                .load(videoUri)
+                .into(binding.imvAddAStory2)
+        }
+    }
 
-        val queryUri = MediaStore.Files.getContentUri("external")
-
-        val cursor: Cursor? = contentResolver.query(
-            queryUri,
-            projection,
-            selection,
-            selectionArgs,
-            null
-        )
-
-        cursor?.use {
-            val idColumn = it.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID)
-            val typeColumn = it.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE)
-
-            while (it.moveToNext()) {
-                val id = it.getLong(idColumn)
-                val mediaType = it.getInt(typeColumn)
-                val contentUri: Uri = if (mediaType == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE) {
-                    ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                } else {
-                    ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
-                }
-                mediaList.add(MediaFilter(contentUri))
+    private fun openCamera() {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val takeVideoIntent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
+        if (takePictureIntent.resolveActivity(packageManager) != null || takeVideoIntent.resolveActivity(packageManager) != null) {
+            val photoFile: File? = try {
+                createImageFile()
+            } catch (ex: IOException) {
+                null
+            }
+            if (photoFile != null) {
+                val photoURI: Uri = FileProvider.getUriForFile(this, authority, photoFile)
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                takePicture.launch(takePictureIntent)
             }
         }
     }
-    private fun onMediaItemSelected(uri: Uri) {
-        if (isImage(uri)) {
-            imageUri = uri
-            Log.d("Url", "your uri has been gotten")
-        } else if (isVideo(uri)) {
-            videoUri = uri
-            Log.d("Url", "your video has been gotten")
+
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_",
+            ".jpg",
+            storageDir
+        ).apply {
+            currentPhotoPath = absolutePath
         }
     }
+
+    private fun startVideoRecording() {
+        val takeVideoIntent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
+        if (takeVideoIntent.resolveActivity(packageManager) != null) {
+            val videoFile: File? = try {
+                createVideoFile()
+            } catch (ex: IOException) {
+                null
+            }
+            if (videoFile != null) {
+                val videoURI: Uri = FileProvider.getUriForFile(this, authority, videoFile)
+                takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoURI)
+                takeVideo.launch(takeVideoIntent)
+            }
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun createVideoFile(): File {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_MOVIES)
+        return File.createTempFile(
+            "MP4_${timeStamp}_",
+            ".mp4",
+            storageDir
+        ).apply {
+            currentVideoPath = absolutePath
+        }
+    }
+
 }

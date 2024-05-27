@@ -18,7 +18,7 @@ import android.text.TextWatcher
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import com.fluture.pruvve.adapters.LoginInfo
+import com.fluture.pruvve.retrofittcalls.LoginInfo
 import com.fluture.pruvve.adapters.LoginResponse
 import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityUsernameCreationBinding
@@ -110,17 +110,31 @@ class UsernameCreation : AppCompatActivity() {
                     override fun onResponse(call: Call<User>, response: Response<User>) {
                         if (response.isSuccessful) {
                             Toast.makeText(this@UsernameCreation, "User created successfully", Toast.LENGTH_SHORT).show()
-                            Intent(this@UsernameCreation, AccountTypeSelector::class.java).also {
-                                login(username, password)
-                                it.putExtra("Extra_firstname", firstName)
-                                it.putExtra("Extra_lastname", lastName)
-                                it.putExtra("Extra_zipcode", zipCode)
-                                it.putExtra("Extra_gender", gender)
-                                it.putExtra("Extra_dateOfBirth", dateOfBirth)
-                                it.putExtra("Extra_username", username)
-                                it.putExtra("Extra_password", password)
-                                startActivity(it)
-                            }
+                            val userLogin = LoginInfo(
+                                username,
+                                password
+                            )
+                            service.getUser(userLogin).enqueue(object : Callback<LoginResponse> {
+                                override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                                    if (response.isSuccessful) {
+                                        val token = response.body()?.data?.token.toString()
+                                        Log.d("RetrofitToken", token)
+                                        Log.d("RetrofitLogin", "User Logged in successfully")
+                                        LoginManager.saveToken(token)
+                                        Intent(this@UsernameCreation, AccountTypeSelector::class.java).also {
+                                            it.putExtra("Extra_username", username)
+                                            startActivity(it)
+                                        }
+                                    } else {
+                                        Log.e("RetrofitError", "User authorization failed: ${response.errorBody()?.toString()}")
+                                        Toast.makeText(this@UsernameCreation, "Couldn't authorize user", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                                    Log.e("RetrofitError", "Authorization failed: ${t.message.toString()}")
+                                    Toast.makeText(this@UsernameCreation, "Error during authorization", Toast.LENGTH_SHORT).show()
+                                }
+                            })
                         } else {
                             Log.e("RetrofitError", "RetrofitError:${response.errorBody()?.string()!!}")
                             Toast.makeText(this@UsernameCreation, "User creation failed", Toast.LENGTH_SHORT).show()
@@ -177,33 +191,5 @@ class UsernameCreation : AppCompatActivity() {
         dialogView.setOnClickListener {
             dialog.dismiss()
         }
-    }
-    private fun login(username: String, password:String){
-        val service = Retrofit.Builder()
-            .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
-            .addConverterFactory(MoshiConverterFactory.create())
-            .build()
-            .create(UserService::class.java)
-
-        val userLogin = LoginInfo(
-            username,
-            password
-        )
-        service.getUser(userLogin).enqueue(object : Callback<LoginResponse> {
-            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-                if (response.isSuccessful) {
-                    val token = response.body()?.data?.token.toString()
-                    Log.d("RetrofitToken", token)
-                    LoginManager.saveToken(token)
-                } else {
-                    Log.e("RetrofitError", "User authorization failed: ${response.errorBody()?.toString()}")
-                    Toast.makeText(this@UsernameCreation, "Couldn't authorize user", Toast.LENGTH_SHORT).show()
-                }
-            }
-            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                Log.e("RetrofitError", "Authorization failed: ${t.message.toString()}")
-                Toast.makeText(this@UsernameCreation, "Error during authorization", Toast.LENGTH_SHORT).show()
-            }
-        })
     }
 }

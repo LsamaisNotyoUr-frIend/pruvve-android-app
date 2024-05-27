@@ -21,5 +21,30 @@ data class CommentList(
 data class CommentItems(
     val id: Int,
     val comment: String,
+    val user: CommentUser,
+)
+data class MakeComments(
+    val comment: String
+)
+
+data class ServerLikes (
+    val code: Int,
+    val message: String,
+    val data: LikesList
+)
+
+data class LikesList(
+    val list: List<LikesItems>,
+    val page: Int,
+    val limit: Int,
+    val total: Int
+)
+
+data class LikesItems(
+    val id: Int,
+    val postId: Int,
     val user: CommentUser
 )
+
+
+

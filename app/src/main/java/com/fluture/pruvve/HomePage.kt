@@ -1,14 +1,12 @@
 package com.fluture.pruvve
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.fluture.pruvve.adapters.GetUserResponse
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.fluture.pruvve.adapters.Stories
 import com.fluture.pruvve.adapters.StoryAdapter
 import com.fluture.pruvve.auth.AuthInterceptor
@@ -28,7 +26,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 class HomePage : AppCompatActivity() {
     private lateinit var binding: ActivityHomePageBinding
-    private var id: Int? = null
+    private var id: Int? = intent.getIntExtra("ProfileId", 3)
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityHomePageBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
@@ -36,6 +34,8 @@ class HomePage : AppCompatActivity() {
         setContentView(binding.root)
         val token = LoginManager.getToken()
         Log.d("RetrofitToken", token.toString())
+        val username = intent.getStringExtra("profileUsername")
+        val profilePic = intent.getStringExtra("profileUrl")
 
         val httpClient = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(token.toString()))
@@ -48,43 +48,55 @@ class HomePage : AppCompatActivity() {
             .build()
             .create(UserService::class.java)
 
-        val usernameDisplay = findViewById<TextView>(R.id.tvUsername)
-        val url = "https://i.pinimg.com/236x/83/20/37/8320378b76c73172661e40e2e190d80b.jpg"
-
-        service.getUserCredentials().enqueue(object: Callback<GetUserResponse> {
-            @SuppressLint("SetTextI18n")
-            override fun onResponse(call: Call<GetUserResponse>, response: Response<GetUserResponse>) {
-                if(response.isSuccessful){
-                    val informationSource = response.body()?.data
-                    Log.d("RetrofitSuccess", informationSource?.profilePictureUrl.toString())
-                    Log.d("RetrofitSuccess", response.body().toString())
-                    usernameDisplay.text = "\t\t${informationSource?.username.toString()}"
-                    id = response.body()?.data?.id
+        val downloadImage = UploadImage(
+            fileName = profilePic.toString(),
+            "DOWNLOAD"
+        )
+        service.uploadPicture(downloadImage).enqueue(object :Callback<UploadResponse>{
+            override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>
+            ) {
+                val url = response.body()?.data
+                if (response.isSuccessful){
+                    Glide.with(this@HomePage)
+                        .load(url)
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(binding.imvNewsCoverPfp)
                 }else{
-                    Log.e("RetrofitError", "could not load in username and profile pic ${response.errorBody().toString()}")
-                    Toast.makeText(HomePage() ,"Loading error", Toast.LENGTH_SHORT).show()
+                    Log.e("RetrofitError","an error occurred ${response.errorBody().toString()}")
                 }
             }
-            override fun onFailure(call: Call<GetUserResponse>, t: Throwable) {
-                Log.e("RetrofitFailure", "could not reach the server ${t.message.toString()}")
+            override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
+                Log.e("RetrofitError","an error occurred ${t.message.toString()}")
             }
         })
 
+        val myUrl2 = "https://i.pinimg.com/236x/e5/97/79/e59779258a86991a933e45143bf3db4c.jpg"
         val stories = mutableListOf(
-            Stories(usernameDisplay.text.toString(), url = url),
+            Stories(username.toString(), url = myUrl2),
         )
         val userid = id ?: 3
         Log.e("RetrofitId","your id is $userid")
         getStories(service, userid, stories)
 
         val myUrl = "https://i.pinimg.com/236x/63/cc/06/63cc06edc7c8222eaee125beb92bfc99.jpg"
-        val myUrl2 = "https://i.pinimg.com/236x/e5/97/79/e59779258a86991a933e45143bf3db4c.jpg"
 
-        binding.wvfeedsHp.loadUrl(myUrl)
-        binding.wvNewsCover.loadUrl(myUrl2)
-        binding.wvFeedsCoverPfp.loadUrl(myUrl2)
-        binding.wvNewsCoverPfp.loadUrl(myUrl)
-        binding.wvProfilePlace.loadUrl(myUrl)
+        Glide.with(this)
+            .load(myUrl)
+            .apply(RequestOptions.circleCropTransform())
+            .into(binding.imvNewsCoverPfp)
+
+        Glide.with(this)
+            .load(myUrl)
+            .apply(RequestOptions.circleCropTransform())
+            .into(binding.imvFeedsCoverPfp)
+
+        Glide.with(this)
+            .load(myUrl2)
+            .into(binding.imvfeedsHp)
+
+        Glide.with(this)
+            .load(myUrl2)
+            .into(binding.imvNewsCover)
 
         binding.homePageButton.setOnClickListener {
             supportFragmentManager.beginTransaction().apply {
@@ -146,7 +158,7 @@ class HomePage : AppCompatActivity() {
     private fun getStories(service: UserService,userid: Int, stories: MutableList<Stories>){
         val postMedia = GetPostsMedia(
             page = 1,
-            size = 1,
+            size = 10,
             userId = userid
         )
         val storiesRecycler = binding.rvStories

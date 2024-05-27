@@ -37,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/image_1"
-                android:contentDescription="just for displaying the gif on the screen"
+                android:contentDescription="just for covering the gif with a darker foreground"
                 android:scaleType="fitXY"
                 tools:ignore="HardcodedText" />
         </androidx.cardview.widget.CardView>

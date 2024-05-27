@@ -3,8 +3,9 @@ package com.fluture.pruvve.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.fluture.pruvve.R
 
 class VideosPageAdapter1(private var videos:List<VideoPageItems>):RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -31,13 +32,22 @@ class VideosPageAdapter1(private var videos:List<VideoPageItems>):RecyclerView.A
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder){
             is VideoSmallViewHolder -> holder.itemView.apply {
-                findViewById<WebView>(R.id.wvSmallVideos).loadUrl(videos[position].url)
+                Glide.with(context)
+                    .load(videos[position].url)
+                    .apply(RequestOptions().fitCenter())
+                    .into(findViewById(R.id.imvSmallVideos))
             }
             is VideoMediumViewHolder -> holder.itemView.apply {
-                findViewById<WebView>(R.id.wvMediumVideos).loadUrl(videos[position].url)
+                Glide.with(context)
+                    .load(videos[position].url)
+                    .apply(RequestOptions().fitCenter())
+                    .into(findViewById(R.id.imvMediumVideos))
             }
             is VideoLargeViewHolder -> holder.itemView.apply {
-                findViewById<WebView>(R.id.wvLargeVideos).loadUrl(videos[position].url)
+                Glide.with(context)
+                    .load(videos[position].url)
+                    .apply(RequestOptions().fitCenter())
+                    .into(findViewById(R.id.imvLargeVideos))
             }
         }
     }

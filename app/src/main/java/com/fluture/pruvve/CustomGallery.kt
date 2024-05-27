@@ -50,10 +50,6 @@ class CustomGallery : AppCompatActivity(){
         setContentView(binding.root)
 
         binding.wvGalleryPic1.visibility = View.GONE
-        binding.wvGalleryPic2.visibility = View.GONE
-        binding.wvGalleryPic3.visibility = View.GONE
-        binding.wvGalleryPic4.visibility = View.GONE
-        binding.wvGalleryPic5.visibility = View.GONE
 
         binding.imvOpenGallery.setOnClickListener {
             openImageChooser()
@@ -208,7 +204,8 @@ class CustomGallery : AppCompatActivity(){
     }
     private fun openImageChooser() {
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-            type = "image/* video/*"
+            type = "*/*"
+            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*"))
         }
         resultLauncher.launch(intent)
     }
@@ -222,6 +219,7 @@ class CustomGallery : AppCompatActivity(){
                     imageUri = uri
                     videoUri = null
                     imageChosen = true
+                    binding.wvGalleryPic1.visibility = View.VISIBLE
                     binding.wvGalleryPic1.setImageURI(imageUri)
                     Log.d("RetrofitImage", "your file is an image")
                 } else if (isVideo(uri)) {

@@ -1,4 +1,4 @@
-package com.fluture.pruvve.adapters
+package com.fluture.pruvve.retrofittcalls
 
 class LoginInfo(
     val username: String,

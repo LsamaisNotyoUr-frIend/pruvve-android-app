@@ -181,7 +181,7 @@
             android:textSize="14sp"
             android:gravity="start"
             android:autofillHints="who are you?"
-            android:inputType="textLongMessage"
+            android:inputType="textMultiLine"
             android:hint="write your story"
             android:text="\t"
             android:textColor="@color/white"

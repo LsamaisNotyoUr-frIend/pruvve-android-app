@@ -8,8 +8,20 @@
     android:background="@drawable/pitch_background"
     tools:context=".StoryMaker">
 
-    <WebView
+    <ImageView
         android:id="@+id/imvAddAStory"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:background="@drawable/dialogue_background3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/imvAddAStory2"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/dialogue_background3"
@@ -17,7 +29,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
         tools:ignore="ContentDescription" />
 
     <ImageView
@@ -36,7 +47,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="3dp"
+        android:padding="4dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/icon_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline333">
 
@@ -60,9 +73,20 @@
             app:layout_constraintTop_toBottomOf="@+id/imvWriteStory"
             tools:ignore="ContentDescription" />
 
+        <ImageView
+            android:id="@+id/imvCameraStory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/camera_icon2"
+            app:layout_constraintEnd_toStartOf="@+id/guideline318"
+            app:layout_constraintTop_toBottomOf="@+id/imvWriteStory"
+            tools:ignore="ContentDescription" />
+
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/llCaption"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/mid_dark_gray"
@@ -142,14 +166,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.22" />
+        app:layout_constraintGuide_percent="0.32" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline335"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.30" />
+        app:layout_constraintGuide_percent="0.40" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline330"
@@ -157,10 +181,5 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.08" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvGalleryChooser"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

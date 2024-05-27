@@ -9,6 +9,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.fluture.pruvve.R
 import com.fluture.pruvve.ViewPitchItem
 
@@ -29,7 +31,11 @@ class PitchAdapter(private val pitches: List<Pitches>):RecyclerView.Adapter<Pitc
         holder.itemView.apply {
             findViewById<TextView>(R.id.tvLocationTitle).text = currentItem.title
             findViewById<TextView>(R.id.tvLocations).text = currentItem.location
-            findViewById<WebView>(R.id.wvPitches).loadUrl(currentItem.backgroundUrl)
+            Glide.with(context)
+                .load(currentItem.backgroundUrl)
+                .apply(RequestOptions().fitCenter())
+                .into(findViewById(R.id.imvPitches))
+
             val rating = currentItem.rating
             if (rating in 1..5) {
                 for (i in 1..5) {

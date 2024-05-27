@@ -102,6 +102,7 @@ class AthleteVideoSet : AppCompatActivity() {
                         service.uploadPicture(uploadImage2).enqueue(object: Callback<UploadResponse>{
                             override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
                                 if (response.isSuccessful){
+                                    Log.d("RetrofitUrl", "your url is ${response.body()?.data}")
                                     val imageData = UploadData(
                                         mediaUrl = filename,
                                         mediaType = "INTRO_VIDEO")

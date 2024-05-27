@@ -9,7 +9,6 @@ import android.text.style.ForegroundColorSpan
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.fluture.pruvve.databinding.ActivitySignupBinding
-import kotlin.math.log
 
 class MainSignup:AppCompatActivity() {
     private lateinit var binding: ActivitySignupBinding
@@ -19,7 +18,7 @@ class MainSignup:AppCompatActivity() {
         setContentView(binding.root)
 
         val titleColorChanger = colorLetters(binding.pruvve.text.toString(), 3, 4, Color.GREEN)
-        val loginColorChanger = colorLetters(binding.alreadyanaccount.text.toString(), 17, 27, Color.GREEN)
+        val loginColorChanger = colorLetters(binding.alreadyanaccount.text.toString(), 18, 28, Color.BLUE)
         binding.pruvve.text = titleColorChanger
         binding.alreadyanaccount.text = loginColorChanger
 

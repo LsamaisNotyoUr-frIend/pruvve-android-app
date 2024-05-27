@@ -194,8 +194,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         val settingIcon = binding.imvSettingIcon
         val iconLocation = IntArray(2)
         settingIcon.getLocationInWindow(iconLocation)
-
-
         popupWindow.showAtLocation(settingIcon, Gravity.START and Gravity.TOP,0,0)
     }
     private fun showDialogue(){

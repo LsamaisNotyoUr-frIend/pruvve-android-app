@@ -3,9 +3,10 @@ package com.fluture.pruvve.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.fluture.pruvve.R
 
 class TeamsAdapter(private val teamMates: List<TeamMates>):RecyclerView.Adapter<TeamsAdapter.TeamsViewHolder>() {
@@ -20,7 +21,10 @@ class TeamsAdapter(private val teamMates: List<TeamMates>):RecyclerView.Adapter<
             findViewById<TextView>(R.id.tvTeamMatesNames).text = currentItem.name
             findViewById<TextView>(R.id.tvTeamMemberPosition).text = currentItem.position
             findViewById<TextView>(R.id.tvTeamMemberLeg).text = currentItem.position
-            findViewById<WebView>(R.id.wvTeamMembers).loadUrl(currentItem.url)
+            Glide.with(context)
+                .load(currentItem.url)
+                .apply(RequestOptions().circleCrop())
+                .into(findViewById(R.id.imvTeamMembers))
         }
         if (position == 0 || position == teamMates.size - 1) {
             holder.itemView.setBackgroundResource(R.drawable.team_background2)

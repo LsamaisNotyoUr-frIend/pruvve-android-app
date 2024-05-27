@@ -3,7 +3,6 @@ package com.fluture.pruvve.retrofittcalls
 
 import com.fluture.pruvve.CoachProfileBody
 import com.fluture.pruvve.adapters.GetUserResponse
-import com.fluture.pruvve.adapters.LoginInfo
 import com.fluture.pruvve.adapters.LoginResponse
 import com.fluture.pruvve.ProfileBody
 import com.fluture.pruvve.ProfileResponse
@@ -11,6 +10,7 @@ import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.POST
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -24,8 +24,6 @@ interface UserService {
     fun createUser(@Body user: User): Call<User>
     @POST("v1/auth/login")
     fun getUser(@Body userToLogin: LoginInfo): Call<LoginResponse>
-    @PUT("v1/user/account-type")
-    fun userAccountType(accountType: AccountType): Call<AccountTypeResponse>
     @POST("v1/s3")
     fun uploadPicture(@Body uploadedImage: UploadImage):Call<UploadResponse>
     @PUT("v1/user/media")
@@ -46,12 +44,20 @@ interface UserService {
     fun makePost(@Body post: PostsMedia):Call<UploadResponse>
     @GET("v1/post")
     fun getPosts(@Query("request") post: GetPostsMedia):Call<GetPost>
+    @PUT("v1/post/{postId}/comment")
+    fun makeComment(@Path("postId")postId:Int, @Body comments: MakeComments):Call<FollowsReply>
     @GET("v1/post/{postId}/comment")
     fun getComments(@Path("postId")postId:Int, @Query("request") requestObject: RequestObjects):Call<ServerComments>
+    @GET("v1/post/{postId}/like")
+    fun getLikes(@Path("postId")postId:Int, @Query("request") requestObject: RequestObjects):Call<ServerLikes>
+    @POST("v1/post/{postId}/like")
+    fun likePost(@Path("postId") postId: Int):Call<FollowsReply>
+    @DELETE("v1/post/{postId}/unlike")
+    fun unLikePost(@Path("postId") postId: Int): Call<FollowsReply>
     @POST("v1/user/{userId}/follow")
-    fun followUser(userId: FollowsAndUnfollows):Call<FollowsReply>
-    @POST("v1/user/{userId}/unfollow")
-    fun unFollowUser(userId: FollowsAndUnfollows):Call<FollowsReply>
+    fun followUser(@Body userId: FollowsAndUnfollows):Call<FollowsReply>
+    @DELETE("v1/user/{userId}/unfollow")
+    fun unFollowUser(@Path("userId") userId: Int): Call<FollowsReply>
 
     @GET("v1/user/follow-status")
     fun getFollowStatus(@Query("followerId")followerId: FollowerId, @Query("followedId")followedId: FollowedId):Call<FollowStatusReply>
@@ -60,4 +66,12 @@ interface UserService {
     fun postStory(@Body post: PostsMedia):Call<UploadResponse>
     @GET("v1/story")
     fun getStories(@Query("request") post: GetPostsMedia):Call<GetPost>
+    @GET("v1/team")
+    fun getTeams(@Query("request") requestObject: RequestObjects):Call<GetTeams>
+    @POST("v1/team")
+    fun makeTeams(@Body name:String):Call<ProfileResponse>
+    @PUT("v1/user/account-type")
+    fun putAccountType(@Body accountType: AccountType):Call<AccountTypeResponse>
+    @GET("v1/user/athlete/profile")
+    fun getAthleteProfile():Call<GetAthletePost>
 }

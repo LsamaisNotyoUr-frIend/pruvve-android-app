@@ -51,8 +51,8 @@
                     app:layout_constraintStart_toStartOf="@+id/guideline26"
                     app:layout_constraintTop_toTopOf="@+id/guideline28" />
 
-                <WebView
-                    android:id="@+id/wvProfilePlace"
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imvProfilePlace"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:background="@drawable/custom_circl"
@@ -227,8 +227,8 @@
                         app:layout_constraintStart_toStartOf="@+id/guideline101"
                         app:layout_constraintTop_toTopOf="parent">
 
-                        <WebView
-                            android:id="@+id/wvfeedsHp"
+                        <ImageView
+                            android:id="@+id/imvfeedsHp"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:src="@color/green"
@@ -279,8 +279,8 @@
                         app:layout_constraintStart_toStartOf="@+id/guideline101"
                         app:layout_constraintTop_toTopOf="@+id/guideline110">
 
-                        <WebView
-                            android:id="@+id/wvFeedsCoverPfp"
+                        <ImageView
+                            android:id="@+id/imvFeedsCoverPfp"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
                     </androidx.cardview.widget.CardView>
@@ -526,8 +526,8 @@
                         app:layout_constraintStart_toStartOf="@+id/guideline138"
                         app:layout_constraintTop_toTopOf="parent">
 
-                        <WebView
-                            android:id="@+id/wvNewsCover"
+                        <ImageView
+                            android:id="@+id/imvNewsCover"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:contentDescription="null"
@@ -579,8 +579,8 @@
                         app:layout_constraintStart_toStartOf="@+id/guideline138"
                         app:layout_constraintTop_toTopOf="@+id/guideline137">
 
-                        <WebView
-                            android:id="@+id/wvNewsCoverPfp"
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/imvNewsCoverPfp"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
                     </androidx.cardview.widget.CardView>

@@ -4,8 +4,10 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.fluture.pruvve.R
 
 class MediaAdapter (private val mediaList: List<MediaFilter>, private val onItemClick: (Uri) -> Unit): RecyclerView.Adapter<MediaAdapter.FilterViewHolder>() {
@@ -19,10 +21,14 @@ class MediaAdapter (private val mediaList: List<MediaFilter>, private val onItem
     override fun onBindViewHolder(holder: FilterViewHolder, position: Int) {
         val currentFilter = mediaList[position]
         holder.itemView.apply {
-            findViewById<WebView>(R.id.imvMediaMedium).loadUrl(currentFilter.imageUri.toString())
+            val imageView = findViewById<ImageView>(R.id.imvMediaMedium)
+            Glide.with(context)
+                .load(currentFilter.mediaUri)
+                .apply(RequestOptions.centerCropTransform())
+                .into(imageView)
         }
         holder.itemView.setOnClickListener {
-            onItemClick(currentFilter.imageUri)
+            onItemClick(currentFilter.mediaUri)
         }
     }
 
@@ -32,5 +38,5 @@ class MediaAdapter (private val mediaList: List<MediaFilter>, private val onItem
 }
 
 data class MediaFilter(
-    val imageUri: Uri
+    val mediaUri: Uri
 )

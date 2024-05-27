@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.fluture.pruvve.R
 
 class CommentAdapter(private var comments:List<Comments>):RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
@@ -42,7 +45,12 @@ class CommentAdapter(private var comments:List<Comments>):RecyclerView.Adapter<C
                 tvViewMore.visibility = View.GONE
             }
             findViewById<TextView>(R.id.tvCommentsUsername).text = index.username
-            findViewById<WebView>(R.id.wvCommentProfilePicture).loadUrl(index.url)
+
+            Glide.with(context)
+                .load(index.url)
+                .apply(RequestOptions.circleCropTransform())
+                .into(findViewById(R.id.wvCommentProfilePicture))
+
         }
     }
 
@@ -73,7 +81,10 @@ class LikeAdapter(private var likes:List<Likes>):RecyclerView.Adapter<LikeAdapte
         val index = likes[position]
         holder.itemView.apply {
             findViewById<TextView>(R.id.tvLikesUsername).text = index.username
-            findViewById<WebView>(R.id.wvLikesProfilePicture).loadUrl(index.url)
+            Glide.with(context)
+                .load(index.url)
+                .apply(RequestOptions.circleCropTransform())
+                .into(findViewById(R.id.wvLikesProfilePicture))
         }
     }
 }
