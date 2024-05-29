@@ -25,7 +25,6 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.text.SimpleDateFormat
-import java.util.Base64
 import java.util.Date
 import java.util.Locale
 
@@ -139,7 +138,7 @@ class CoachScoutAccountcreator : AppCompatActivity() {
     private fun generateFilename(username: String): String {
         val currentTimeMillis = System.currentTimeMillis()
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date(currentTimeMillis))
-        return "${username}_$timestamp"
+        return "${username}_${timestamp}_ProfilePic"
     }
     fun uploadFile(url: String, fileUri: Uri) {
         LoginManager.init(this)
@@ -156,10 +155,7 @@ class CoachScoutAccountcreator : AppCompatActivity() {
         contentResolver.getType(fileUri)?.let { mimeType ->
             val requestBody = InputStreamRequestBody(contentResolver, fileUri)
             service.uploadFile(mimeType, url, requestBody).enqueue(object: Callback<ResponseBody>{
-                override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
-                ) {
+                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     Log.d("RetrofitUploadSuccess", response.body().toString())
                     Log.d("RetrofitUploadSuccess", "your file has been uploaded to $url")
                 }

@@ -37,13 +37,14 @@ class SplashScreen : AppCompatActivity() {
         val httpClient = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(token.toString()))
             .build()
-
         val service = Retrofit.Builder()
             .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
             .client(httpClient)
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
             .create(UserService::class.java)
+
+        val teamId = intent.getIntExtra("Extra_teamId", 5)
 
         Glide.with(this)
             .load(R.drawable.soccer)
@@ -57,9 +58,21 @@ class SplashScreen : AppCompatActivity() {
                     val userName = response.body()?.data?.username.toString()
                     val profileUrl = response.body()?.data?.profilePictureUrl.toString()
                     val id = response.body()?.data?.id
-
-                    CoroutineScope(Dispatchers.Main).launch {
-                        delayAndStartActivity(accountType, userName, profileUrl, id)
+                    if (accountType == "COACH") {
+                        Intent(this@SplashScreen, CoachHomePage::class.java).also {
+                            it.putExtra("profileUsername", userName)
+                            it.putExtra("profileUrl", profileUrl)
+                            it.putExtra("ProfileId", id)
+                            intent.putExtra("Extra_teamId", teamId)
+                            startActivity(it)
+                        }
+                    } else {
+                        Intent(this@SplashScreen, HomePage::class.java).also {
+                            it.putExtra("profileUsername", userName)
+                            it.putExtra("profileUrl", profileUrl)
+                            it.putExtra("ProfileId", id)
+                            startActivity(it)
+                        }
                     }
                 } else {
                     Log.e("RetrofitError", "Couldn't get user credentials ${response.errorBody().toString()}")
@@ -70,30 +83,5 @@ class SplashScreen : AppCompatActivity() {
                 Log.e("RetrofitFailure", "Error reaching server ${t.message.toString()}")
             }
         })
-    }
-
-    private suspend fun delayAndStartActivity(accountType: String, userName: String, profileUrl: String, id: Int?) {
-        delay(SPLASH_SCREEN_DURATION)
-
-        if (accountType == "COACH") {
-            Intent(this@SplashScreen, CoachHomePage::class.java).also {
-                it.putExtra("profileUsername", userName)
-                it.putExtra("profileUrl", profileUrl)
-                it.putExtra("ProfileId", id)
-                startActivity(it)
-            }
-        } else {
-            Intent(this@SplashScreen, HomePage::class.java).also {
-                it.putExtra("profileUsername", userName)
-                it.putExtra("profileUrl", profileUrl)
-                it.putExtra("ProfileId", id)
-                startActivity(it)
-            }
-        }
-        finish()
-    }
-
-    companion object {
-        private const val SPLASH_SCREEN_DURATION = 3000L
     }
 }

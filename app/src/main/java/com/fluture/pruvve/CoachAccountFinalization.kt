@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -17,17 +16,16 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityCoachAccountFinalizationBinding
+import com.fluture.pruvve.retrofittcalls.GetSpecificTeam
 import com.fluture.pruvve.retrofittcalls.GetTeams
 import com.fluture.pruvve.retrofittcalls.RequestObjects
 import com.fluture.pruvve.retrofittcalls.UserService
@@ -105,7 +103,6 @@ class CoachAccountFinalization : AppCompatActivity() {
             val team = binding.etteamview.text.toString()
             if (isUsable){
                  makeTeams(service, team)
-                finishCoachAccount(team, service)
             }else{
                 binding.button1.isEnabled = true
                 binding.button1.setBackgroundResource(R.drawable.primary_button)
@@ -194,22 +191,23 @@ class CoachAccountFinalization : AppCompatActivity() {
     }
     private fun makeTeams(service: UserService, team: String){
         Log.d("RetrofitTeams","Creating new teams")
-        service.makeTeams(binding.etteamview.text.toString()).enqueue(object : Callback<ProfileResponse>{
-            override fun onResponse(call: Call<ProfileResponse>, response: Response<ProfileResponse>) {
+        service.makeTeams(binding.etteamview.text.toString()).enqueue(object : Callback<GetSpecificTeam>{
+            override fun onResponse(call: Call<GetSpecificTeam>, response: Response<GetSpecificTeam>) {
                 if (response.isSuccessful){
                     Toast.makeText(this@CoachAccountFinalization, "Team created successfully", Toast.LENGTH_SHORT).show()
                     Log.d("RetrofitSuccess", "your request was successful ${response.body()?.message}")
-                    finishCoachAccount(team, service)
+                    val teamId = response.body()?.data?.id ?: 5
+                    finishCoachAccount(team, service, teamId)
                 }else{
                     Log.e("RetrofitError","there was an error ${response.errorBody().toString()}")
                 }
             }
-            override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
+            override fun onFailure(call: Call<GetSpecificTeam>, t: Throwable) {
                 Log.e("RetrofitFailure", "couldn't reach the server ${t.message.toString()}")
             }
         })
     }
-    private fun finishCoachAccount(team: String, service: UserService){
+    private fun finishCoachAccount(team: String, service: UserService, teamId:Int){
         val userName = intent.getStringExtra("Extra_username").toString()
         val bio = binding.etbiofield.text.toString()
         val coachProfileBody = CoachProfileBody(
@@ -222,6 +220,7 @@ class CoachAccountFinalization : AppCompatActivity() {
                     Log.d("RetrofitSuccess", "Coach details updated successfully")
                     Intent(this@CoachAccountFinalization, CoachOnboardEnd::class.java).also {
                         it.putExtra("Extra_username", userName)
+                        it.putExtra("Extra_teamId", teamId)
                         startActivity(it)
                     }
                 }else{

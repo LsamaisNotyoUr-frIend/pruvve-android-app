@@ -53,7 +53,7 @@
         app:layout_constraintStart_toStartOf="@+id/guideline40"
         app:layout_constraintTop_toTopOf="@+id/guideline44">
 
-        <com.google.android.gms.common.SignInButton
+        <Button
             android:id="@+id/googleSignInButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

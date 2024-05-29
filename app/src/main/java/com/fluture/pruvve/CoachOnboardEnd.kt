@@ -39,6 +39,7 @@ class CoachOnboardEnd : AppCompatActivity() {
         binding = ActivityCoachOnboardEndBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        val teamId = intent.getIntExtra("Extra_teamId", 5)
 
         val token = LoginManager.getToken()
         Log.d("RetrofitToken", token.toString())
@@ -86,6 +87,7 @@ class CoachOnboardEnd : AppCompatActivity() {
         binding.button.setOnClickListener {
             val intent = Intent(this@CoachOnboardEnd, SplashScreen::class.java)
             intent.putExtra("accountType", accountType)
+            intent.putExtra("Extra_teamId", teamId)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
             finish()

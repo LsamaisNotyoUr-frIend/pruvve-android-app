@@ -1,9 +1,14 @@
 package com.fluture.pruvve.retrofittcalls
 
-import com.google.gson.annotations.SerializedName
-
-class UploadImage(
-    @SerializedName("filename")
+data  class UploadImage(
     val fileName: String,
     val purpose: String
+)
+
+data class PostIdObject(
+    val postId: Int
+)
+
+data class UserIdObject(
+    val userId: Int
 )

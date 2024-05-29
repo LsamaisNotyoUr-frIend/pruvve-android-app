@@ -24,7 +24,7 @@ class MediaAdapter (private val mediaList: List<MediaFilter>, private val onItem
             val imageView = findViewById<ImageView>(R.id.imvMediaMedium)
             Glide.with(context)
                 .load(currentFilter.mediaUri)
-                .apply(RequestOptions.centerCropTransform())
+                .apply(RequestOptions().centerCrop())
                 .into(imageView)
         }
         holder.itemView.setOnClickListener {

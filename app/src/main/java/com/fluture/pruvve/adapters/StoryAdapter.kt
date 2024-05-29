@@ -21,7 +21,7 @@ class StoryAdapter(private var story: List<Stories>):RecyclerView.Adapter<StoryA
         holder.itemView.apply {
             Glide.with(context)
                 .load(story[position].url)
-                .apply(RequestOptions().fitCenter())
+                .apply(RequestOptions().centerCrop())
                 .into(findViewById(R.id.imvStory))
             findViewById<TextView>(R.id.tvStoryName).text = story[position].name
         }

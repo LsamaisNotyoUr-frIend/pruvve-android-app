@@ -150,11 +150,12 @@ class StoryMaker : AppCompatActivity() {
     }
     private fun sortUpload(service: UserService){
         val errorName = "Unknown error"
-        val filename = generateFilename(username)
+        val filenameImage = generateFilename(username)
+        val filenameVideo = generateFilename2(username)
         val purpose = "UPLOAD"
-        val uploadImage = UploadImage(
-            filename,
-            purpose)
+        val uploadImage = UploadImage(filenameImage, purpose)
+        val uploadVideo = UploadImage(filenameVideo, purpose)
+
         if (imageChosen){
             service.uploadPicture(uploadImage).enqueue(object : Callback<UploadResponse>{
                 override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
@@ -163,7 +164,7 @@ class StoryMaker : AppCompatActivity() {
                         val imageUploader = ImageUploader()
                         imageUploader.uploadImage((uriToByteArray(this@StoryMaker, imageUri!!)!!), signedUrl)
                         val post = PostsMedia(
-                            mediaUrl = filename,
+                            mediaUrl = filenameImage,
                             mediaType = "IMAGE",
                             caption = binding.etStoryCaption.text.toString()
                         )
@@ -172,7 +173,7 @@ class StoryMaker : AppCompatActivity() {
                             {
                                 if (response.isSuccessful){
                                     Log.d("RetrofitSuccess", response.body()?.message.toString())
-                                    Intent(this@StoryMaker, MorePage::class.java).also {
+                                    Intent(this@StoryMaker, HomePage::class.java).also {
                                         startActivity(it)
                                     }
                                     finish()
@@ -203,14 +204,14 @@ class StoryMaker : AppCompatActivity() {
                 }
             })
         }else{
-            service.uploadPicture(uploadImage).enqueue(object : Callback<UploadResponse>{
+            service.uploadPicture(uploadVideo).enqueue(object : Callback<UploadResponse>{
                 override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>){
                     if(response.isSuccessful){
                         val signedUrl= response.body()?.data.toString()
                         val imageUploader = VideoUploader()
                         imageUploader.uploadVideo((uriToByteArray(this@StoryMaker, videoUri!!)!!), signedUrl)
                         val post = PostsMedia(
-                            mediaUrl = filename,
+                            mediaUrl = filenameVideo,
                             mediaType = "VIDEO",
                             caption = binding.etStoryCaption.text.toString()
                         )
@@ -297,7 +298,12 @@ class StoryMaker : AppCompatActivity() {
     private fun generateFilename(username: String): String {
         val currentTimeMillis = System.currentTimeMillis()
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date(currentTimeMillis))
-        return "${username}_${timestamp}_Post"
+        return "${username}_${timestamp}_ProfilePic"
+    }
+    private fun generateFilename2(username: String): String {
+        val currentTimeMillis = System.currentTimeMillis()
+        val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date(currentTimeMillis))
+        return "${username}_${timestamp}_Video"
     }
 
     fun uriToByteArray(context: Context, uri: Uri): ByteArray? {

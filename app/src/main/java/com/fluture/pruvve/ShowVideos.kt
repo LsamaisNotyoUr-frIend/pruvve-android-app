@@ -36,9 +36,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 class ShowVideos : AppCompatActivity() {
     private lateinit var binding: ActivityShowVideosBinding
-    private var isLiked = intent.getBooleanExtra("isLiked", false)
-    private val videoUrl = intent.getStringExtra("videoUrl")!!
-    private val videoId = intent.getIntExtra("VideoId", 3)
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityShowVideosBinding.inflate(layoutInflater)
@@ -46,6 +43,9 @@ class ShowVideos : AppCompatActivity() {
         LoginManager.init(this)
         setContentView(binding.root)
         var commentSelected = true
+        var isLiked = intent.getBooleanExtra("isLiked", false)
+        val videoUrl = intent.getStringExtra("videoUrl")!!
+        val videoId = intent.getIntExtra("VideoId", 3)
         val textView = binding.tvCommentOrLikes
         Glide.with(this@ShowVideos)
             .load(videoUrl)
@@ -66,10 +66,10 @@ class ShowVideos : AppCompatActivity() {
             .create(UserService::class.java)
 
         binding.imvCommentOnVideo.setOnClickListener {
-            openCommentSection(true, binding.guideline339, commentSelected, service)
+            openCommentSection(true, binding.guideline339, commentSelected, service, videoId)
         }
         binding.imvExitVideoCommentSection.setOnClickListener {
-            openCommentSection(false, binding.guideline339,commentSelected, service)
+            openCommentSection(false, binding.guideline339,commentSelected, service, videoId)
         }
         textView.setOnClickListener {
             commentSelected = !commentSelected
@@ -78,15 +78,15 @@ class ShowVideos : AppCompatActivity() {
             }else{
                 textView.text = "Likes"
             }
-            openCommentSection(true, binding.guideline339, commentSelected, service)
+            openCommentSection(true, binding.guideline339, commentSelected, service, videoId)
         }
         val likesButton = binding.imvLikeVideo
         likesButton.setOnClickListener {
             isLiked = !isLiked
-            sortLikes(service, likesButton, isLiked)
+            sortLikes(service, likesButton, isLiked, videoId)
         }
     }
-    private fun getComments(service: UserService, context: Context, recyclerView: RecyclerView) {
+    private fun getComments(service: UserService, context: Context, recyclerView: RecyclerView, videoId: Int) {
         val request = RequestObjects(1, 5)
         val comments = mutableListOf<Comments>()
         service.getComments(videoId, request).enqueue(object : Callback<ServerComments> {
@@ -153,23 +153,23 @@ class ShowVideos : AppCompatActivity() {
         })
     }
 
-    private fun openCommentSection(isCommentClicked: Boolean, guideline: Guideline,commentSelected: Boolean, service: UserService
+    private fun openCommentSection(isCommentClicked: Boolean, guideline: Guideline,commentSelected: Boolean, service: UserService, videoId: Int
     ) {
         val params = guideline.layoutParams as ConstraintLayout.LayoutParams
         if (isCommentClicked) {
             params.guidePercent = 0.45f
             guideline.layoutParams = params
             binding.llVideoOptions.visibility = View.GONE
-            getComments(service, this@ShowVideos, binding.rvChosenCommentsOrLikes)
+            getComments(service, this@ShowVideos, binding.rvChosenCommentsOrLikes, videoId)
             binding.imvVideoCommentSend.setOnClickListener {
-                makeComments(service, binding.etVideoCommentText.toString())
+                makeComments(service, binding.etVideoCommentText.text.toString(), videoId)
                 binding.etVideoCommentText.text.clear()
-                getComments(service, this@ShowVideos,binding.rvChosenCommentsOrLikes)
+                getComments(service, this@ShowVideos,binding.rvChosenCommentsOrLikes, videoId)
             }
             if (commentSelected) {
-                getComments(service, this@ShowVideos, binding.rvChosenCommentsOrLikes)
+                getComments(service, this@ShowVideos, binding.rvChosenCommentsOrLikes, videoId)
             } else {
-                getLikes(service, this@ShowVideos, binding.rvChosenCommentsOrLikes)
+                getLikes(service, this@ShowVideos, binding.rvChosenCommentsOrLikes, videoId)
             }
 
         } else {
@@ -178,7 +178,7 @@ class ShowVideos : AppCompatActivity() {
             guideline.layoutParams = params
         }
     }
-    private fun makeComments(service: UserService, textToUpload: String) {
+    private fun makeComments(service: UserService, textToUpload: String, videoId: Int) {
         val makeComments = MakeComments(
             textToUpload
         )
@@ -200,7 +200,7 @@ class ShowVideos : AppCompatActivity() {
         })
     }
 
-    private fun getLikes(service: UserService, context: Context, recyclerView: RecyclerView){
+    private fun getLikes(service: UserService, context: Context, recyclerView: RecyclerView, videoId: Int){
         val request = RequestObjects(1, 20)
         val likes = mutableListOf<Likes>()
         service.getLikes(videoId, request).enqueue(object : Callback<ServerLikes>{
@@ -250,7 +250,7 @@ class ShowVideos : AppCompatActivity() {
         })
     }
 
-    private fun sortLikes(service: UserService, imageView: ImageView, isLiked: Boolean){
+    private fun sortLikes(service: UserService, imageView: ImageView, isLiked: Boolean, videoId: Int){
         if (isLiked){
             service.likePost(videoId).enqueue(object : Callback<FollowsReply>{
                 override fun onResponse(call: Call<FollowsReply>, response: Response<FollowsReply>) {

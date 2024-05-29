@@ -33,7 +33,7 @@ class PitchAdapter(private val pitches: List<Pitches>):RecyclerView.Adapter<Pitc
             findViewById<TextView>(R.id.tvLocations).text = currentItem.location
             Glide.with(context)
                 .load(currentItem.backgroundUrl)
-                .apply(RequestOptions().fitCenter())
+                .apply(RequestOptions().centerCrop())
                 .into(findViewById(R.id.imvPitches))
 
             val rating = currentItem.rating

@@ -7,7 +7,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.fluture.pruvve.R
+import com.fluture.pruvve.retrofittcalls.RequestObjects
 
 class AddPlayersAdapter(private val playerList: MutableList<AddPlayerItems>):RecyclerView.Adapter<AddPlayersAdapter.AddPlayerViewHolder>() {
     inner class AddPlayerViewHolder(itemView: View):RecyclerView.ViewHolder(itemView)
@@ -26,6 +28,7 @@ class AddPlayersAdapter(private val playerList: MutableList<AddPlayerItems>):Rec
             val imageView = findViewById<ImageView>(R.id.imvPlayers)
             Glide.with(context)
                 .load(currentItem.url)
+                .apply(RequestOptions().centerCrop())
                 .into(imageView)
             findViewById<ImageView>(R.id.imvSendALink).setOnClickListener {
                 findViewById<ImageView>(R.id.imvSendALink).setImageResource(R.drawable.sent_link)

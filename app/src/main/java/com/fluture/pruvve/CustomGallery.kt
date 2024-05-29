@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -13,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.bumptech.glide.Glide
 import com.fluture.pruvve.adapters.GetUserResponse
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
@@ -36,12 +38,13 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class CustomGallery : AppCompatActivity(){
+class CustomGallery : AppCompatActivity() {
     private lateinit var binding: ActivityCutomGalleryBinding
     private var imageUri: Uri? = null
     private var videoUri: Uri? = null
     private var imageChosen: Boolean = false
     private lateinit var username: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityCutomGalleryBinding.inflate(layoutInflater)
         LoginManager.init(this)
@@ -50,6 +53,7 @@ class CustomGallery : AppCompatActivity(){
         setContentView(binding.root)
 
         binding.wvGalleryPic1.visibility = View.GONE
+        binding.videoView.visibility = View.GONE
 
         binding.imvOpenGallery.setOnClickListener {
             openImageChooser()
@@ -71,15 +75,16 @@ class CustomGallery : AppCompatActivity(){
 
         binding.btnAddMedia.isEnabled = false
 
-        service.getUserCredentials().enqueue(object : Callback<GetUserResponse>{
+        service.getUserCredentials().enqueue(object : Callback<GetUserResponse> {
             override fun onResponse(call: Call<GetUserResponse>, response: Response<GetUserResponse>) {
-                if (response.isSuccessful){
+                if (response.isSuccessful) {
                     username = response.body()?.data?.username.toString()
                     Log.e("RetrofitSuccess", "User credentials for $username gotten successfully")
-                }else{
+                } else {
                     Log.e("RetrofitError", "Could not get user credentials")
                 }
             }
+
             override fun onFailure(call: Call<GetUserResponse>, t: Throwable) {
                 Log.e("RetrofitFailure", "Could not reach the server")
             }
@@ -91,109 +96,121 @@ class CustomGallery : AppCompatActivity(){
             insets
         }
 
-        binding.btnAddMedia.setOnClickListener{
+        binding.videoView.setOnPreparedListener {
+            it.isLooping = true
+            it.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
+            binding.videoView.start()
+        }
+        binding.btnAddMedia.setOnClickListener {
             binding.btnAddMedia.setBackgroundResource(R.drawable.disabled_button)
             binding.btnAddMedia.isEnabled = false
             sortUpload(service)
         }
     }
 
-    private fun sortUpload(service: UserService){
+    private fun sortUpload(service: UserService) {
         val errorName = "Unknown error"
-        val filename = generateFilename(username)
+        val filenameImage = generateFilename(username)
+        val filenameVideo = generateFilename2(username)
         val purpose = "UPLOAD"
         val uploadImage = UploadImage(
-            filename,
-            purpose)
-        if (imageChosen){
-            service.uploadPicture(uploadImage).enqueue(object : Callback<UploadResponse>{
-                override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>)
-                {
-                    if(response.isSuccessful){
-                        val signedUrl= response.body()?.data.toString()
+            filenameImage,
+            purpose
+        )
+        val uploadVideo = UploadImage(
+            filenameVideo,
+            purpose
+        )
+        if (imageChosen) {
+            service.uploadPicture(uploadImage).enqueue(object : Callback<UploadResponse> {
+                override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
+                    if (response.isSuccessful) {
+                        val signedUrl = response.body()?.data.toString()
                         val imageUploader = ImageUploader()
                         imageUploader.uploadImage((uriToByteArray(this@CustomGallery, imageUri!!)!!), signedUrl)
                         val post = PostsMedia(
-                            mediaUrl = filename,
+                            mediaUrl = filenameImage,
                             mediaType = "IMAGE",
                             caption = binding.etAddMediaCaption.text.toString()
                         )
-                        service.makePost(post).enqueue(object: Callback<UploadResponse>{
-                            override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>)
-                            {
-                                if (response.isSuccessful){
+                        service.makePost(post).enqueue(object : Callback<UploadResponse> {
+                            override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
+                                if (response.isSuccessful) {
                                     Log.d("RetrofitSuccess", response.body()?.message.toString())
                                     Intent(this@CustomGallery, MorePage::class.java).also {
                                         startActivity(it)
                                     }
                                     finish()
-                                }else{
+                                } else {
                                     val errorMessage = response.errorBody()?.string() ?: errorName
                                     Log.e("RetrofitError", "Error uploading file $errorMessage")
                                     binding.btnAddMedia.setBackgroundResource(R.drawable.primary_button)
                                     binding.btnAddMedia.isEnabled = true
                                 }
                             }
-                            override fun onFailure(call: Call<UploadResponse>, t: Throwable){
+
+                            override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
                                 Log.e("RetrofitFailure", t.message.toString())
                                 binding.btnAddMedia.setBackgroundResource(R.drawable.primary_button)
                                 binding.btnAddMedia.isEnabled = true
                             }
                         })
-                    }else{
+                    } else {
                         val errorMessage = response.errorBody()?.string() ?: errorName
                         Log.e("RetrofitError", "Error uploading file $errorMessage")
                         binding.btnAddMedia.setBackgroundResource(R.drawable.primary_button)
                         binding.btnAddMedia.isEnabled = true
                     }
                 }
+
                 override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
                     Log.e("RetrofitFailure", "problem reaching server ${t.message.toString()}")
                     binding.btnAddMedia.setBackgroundResource(R.drawable.primary_button)
                     binding.btnAddMedia.isEnabled = true
                 }
             })
-        }else{
-            service.uploadPicture(uploadImage).enqueue(object : Callback<UploadResponse>{
-                override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>){
-                    if(response.isSuccessful){
-                        val signedUrl= response.body()?.data.toString()
-                        val imageUploader = VideoUploader()
-                        imageUploader.uploadVideo((uriToByteArray(this@CustomGallery, videoUri!!)!!), signedUrl)
+        } else {
+            service.uploadPicture(uploadVideo).enqueue(object : Callback<UploadResponse> {
+                override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
+                    if (response.isSuccessful) {
+                        val signedUrl = response.body()?.data.toString()
+                        val videoUploader = VideoUploader()
+                        videoUploader.uploadVideo((uriToByteArray(this@CustomGallery, videoUri!!)!!), signedUrl)
                         val post = PostsMedia(
-                            mediaUrl = filename,
+                            mediaUrl = filenameVideo,
                             mediaType = "VIDEO",
                             caption = binding.etAddMediaCaption.text.toString()
                         )
-                        service.makePost(post).enqueue(object: Callback<UploadResponse>{
-                            override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>)
-                            {
-                                if (response.isSuccessful){
+                        service.makePost(post).enqueue(object : Callback<UploadResponse> {
+                            override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
+                                if (response.isSuccessful) {
                                     Log.d("RetrofitSuccess", response.body()?.message.toString())
                                     Intent(this@CustomGallery, MorePage::class.java).also {
                                         startActivity(it)
                                     }
                                     finish()
-                                }else{
+                                } else {
                                     val errorMessage = response.errorBody()?.string() ?: errorName
                                     Log.e("RetrofitError", "Error uploading file $errorMessage")
                                     binding.btnAddMedia.setBackgroundResource(R.drawable.primary_button)
                                     binding.btnAddMedia.isEnabled = true
                                 }
                             }
-                            override fun onFailure(call: Call<UploadResponse>, t: Throwable){
+
+                            override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
                                 Log.e("RetrofitFailure", t.message.toString())
                                 binding.btnAddMedia.setBackgroundResource(R.drawable.primary_button)
                                 binding.btnAddMedia.isEnabled = true
                             }
                         })
-                    }else{
+                    } else {
                         val errorMessage = response.errorBody()?.string() ?: errorName
                         Log.e("RetrofitError", "Error uploading file $errorMessage")
                         binding.btnAddMedia.setBackgroundResource(R.drawable.primary_button)
                         binding.btnAddMedia.isEnabled = true
                     }
                 }
+
                 override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
                     Log.e("RetrofitFailure", t.message.toString())
                     binding.btnAddMedia.setBackgroundResource(R.drawable.primary_button)
@@ -202,6 +219,7 @@ class CustomGallery : AppCompatActivity(){
             })
         }
     }
+
     private fun openImageChooser() {
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
             type = "*/*"
@@ -219,14 +237,20 @@ class CustomGallery : AppCompatActivity(){
                     imageUri = uri
                     videoUri = null
                     imageChosen = true
+                    binding.videoView.visibility = View.GONE
                     binding.wvGalleryPic1.visibility = View.VISIBLE
-                    binding.wvGalleryPic1.setImageURI(imageUri)
+                    Glide.with(this@CustomGallery)
+                        .load(uri)
+                        .into(binding.wvGalleryPic1)
                     Log.d("RetrofitImage", "your file is an image")
                 } else if (isVideo(uri)) {
                     videoUri = uri
                     imageUri = null
                     imageChosen = false
-                    binding.wvGalleryPic1.setImageURI(videoUri)
+                    binding.wvGalleryPic1.visibility = View.GONE
+                    binding.videoView.visibility = View.VISIBLE
+                    binding.videoView.setVideoURI(uri)
+                    binding.videoView.start()
                     Log.d("RetrofitImage", "your file is a video")
                 }
                 binding.btnAddMedia.setBackgroundResource(R.drawable.primary_button)
@@ -242,13 +266,19 @@ class CustomGallery : AppCompatActivity(){
     private fun isVideo(uri: Uri): Boolean {
         return contentResolver.getType(uri)?.startsWith("video") ?: false
     }
+
     private fun generateFilename(username: String): String {
         val currentTimeMillis = System.currentTimeMillis()
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date(currentTimeMillis))
-        return "${username}_${timestamp}_Post"
+        return "${username}_${timestamp}_ProfilePic"
+    }
+    private fun generateFilename2(username: String): String {
+        val currentTimeMillis = System.currentTimeMillis()
+        val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date(currentTimeMillis))
+        return "${username}_${timestamp}_Video"
     }
 
-    fun uriToByteArray(context: Context, uri: Uri): ByteArray? {
+    private fun uriToByteArray(context: Context, uri: Uri): ByteArray? {
         var inputStream: InputStream? = null
         var byteArrayOutputStream: ByteArrayOutputStream? = null
         var bytes: ByteArray? = null

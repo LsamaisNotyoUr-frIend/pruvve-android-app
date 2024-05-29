@@ -175,7 +175,7 @@ class AthleteVideoSet : AppCompatActivity() {
     private fun generateFilename(username: String): String {
         val currentTimeMillis = System.currentTimeMillis()
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date(currentTimeMillis))
-        return "${username}_$timestamp"
+        return "${username}_${timestamp}_Video"
     }
 
     fun uriToByteArray(context: Context, uri: Uri): ByteArray? {

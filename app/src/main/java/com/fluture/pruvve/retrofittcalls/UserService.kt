@@ -2,6 +2,7 @@ package com.fluture.pruvve.retrofittcalls
 
 
 import com.fluture.pruvve.CoachProfileBody
+import com.fluture.pruvve.GetCategory
 import com.fluture.pruvve.adapters.GetUserResponse
 import com.fluture.pruvve.adapters.LoginResponse
 import com.fluture.pruvve.ProfileBody
@@ -43,7 +44,8 @@ interface UserService {
     @POST("v1/post")
     fun makePost(@Body post: PostsMedia):Call<UploadResponse>
     @GET("v1/post")
-    fun getPosts(@Query("request") post: GetPostsMedia):Call<GetPost>
+    fun getUsersPosts(@Query("request") post: GetPostsMedia):Call<GetPost>
+
     @PUT("v1/post/{postId}/comment")
     fun makeComment(@Path("postId")postId:Int, @Body comments: MakeComments):Call<FollowsReply>
     @GET("v1/post/{postId}/comment")
@@ -52,6 +54,8 @@ interface UserService {
     fun getLikes(@Path("postId")postId:Int, @Query("request") requestObject: RequestObjects):Call<ServerLikes>
     @POST("v1/post/{postId}/like")
     fun likePost(@Path("postId") postId: Int):Call<FollowsReply>
+    @POST("v1/post/{postId}/view")
+    fun addViews(@Path("postId") postId: Int):Call<ProfileResponse>
     @DELETE("v1/post/{postId}/unlike")
     fun unLikePost(@Path("postId") postId: Int): Call<FollowsReply>
     @POST("v1/user/{userId}/follow")
@@ -66,12 +70,47 @@ interface UserService {
     fun postStory(@Body post: PostsMedia):Call<UploadResponse>
     @GET("v1/story")
     fun getStories(@Query("request") post: GetPostsMedia):Call<GetPost>
+    @PUT("v1/team/{teamId}/media")
+    fun putTeamsMedia(@Path("teamId")teamId :Int, @Body teamMedia: UploadData):Call<ProfileResponse>
     @GET("v1/team")
     fun getTeams(@Query("request") requestObject: RequestObjects):Call<GetTeams>
+    @GET("v1/team/{teamInvitationLink}")
+    fun addToTeam(@Path("teamInvitationLink")teamInvitationLink :String):Call<ProfileResponse>
+    @GET("v1/team/{teamId}")
+    fun getTeamById(@Path("teamId")teamId :Int):Call<GetSpecificTeam>
+    @PUT("v1/team/{teamId}/user")
+    fun getUserInTeam(@Path("teamId")teamId :Int, @Body userId: UserIdObject):Call<ProfileResponse>
     @POST("v1/team")
-    fun makeTeams(@Body name:String):Call<ProfileResponse>
+    fun makeTeams(@Body name:String):Call<GetSpecificTeam>
     @PUT("v1/user/account-type")
     fun putAccountType(@Body accountType: AccountType):Call<AccountTypeResponse>
     @GET("v1/user/athlete/profile")
     fun getAthleteProfile():Call<GetAthletePost>
+    @GET("v1/video/feed")
+    fun getPosts(@Query("request") post: GetPostsMedia):Call<GetAllPosts>
+    @GET("v1/post/{postId}")
+    fun getSelectedPosts(@Path("postId")postId:Int):Call<GetPost>
+    @GET("v1/post/{postId}/summary")
+    fun getPostSummary(@Path("postId")postId:Int):Call<GetPostsSummary>
+    @GET("v1/video/video-of-the-week")
+    fun getVideoOfTheWeek():Call<GetVideoOfWeek>
+    @PUT("v1/video/video-of-the-week")
+    fun putVideoOfheWeek(@Body postId: PostIdObject):Call<ProfileResponse>
+    @GET("v1/video/category")
+    fun getVideoCategory(@Query("request") requestObject: RequestObjects):Call<VideoCategory>
+    @POST("v1/video/category")
+    fun createVideoCategory(@Body videoCategory: VideoCategoryCreator):Call<ProfileResponse>
+    @GET("v1/video/category/{categoryId}")
+    fun getCategory(@Path("categoryId") categoryId: Int):Call<GetCategory>
+    @GET("v1/video/by-category/{categoryId}")
+    fun getVideosInCategory(@Path("categoryId") categoryId: Int, @Query("request") requestObject: RequestObjects):Call<GetAllPosts>
+
+    @GET("v1/news")
+    fun getNews(@Query("request") requestObject: RequestObjects):Call<GetNews>
+
+    @POST("v1/news")
+    fun shareNews(@Body newsItems: News):Call<ProfileResponse>
+
+    @GET("v1/news")
+    fun getNewsById(@Path("newsId") newsId: Int):Call<NewsGotten>
 }

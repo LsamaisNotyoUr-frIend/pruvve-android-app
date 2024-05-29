@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit
 
 object DateUtils {
     fun getRelativeTimeString(creationDateString: String): String {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSS", Locale.getDefault())
         val creationDate: Date? = dateFormat.parse(creationDateString)
         val currentDate = Date()
 

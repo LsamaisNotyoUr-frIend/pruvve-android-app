@@ -26,7 +26,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 class HomePage : AppCompatActivity() {
     private lateinit var binding: ActivityHomePageBinding
-    private var id: Int? = intent.getIntExtra("ProfileId", 3)
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityHomePageBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
@@ -34,9 +33,9 @@ class HomePage : AppCompatActivity() {
         setContentView(binding.root)
         val token = LoginManager.getToken()
         Log.d("RetrofitToken", token.toString())
-        val username = intent.getStringExtra("profileUsername")
-        val profilePic = intent.getStringExtra("profileUrl")
-
+        val id: Int = intent.getIntExtra("ProfileId", 3)
+        val username = intent.getStringExtra("profileUsername") ?: "AdminSomething"
+        val profilePic = intent.getStringExtra("profileUrl") ?: "https://i.pinimg.com/236x/e5/97/79/e59779258a86991a933e45143bf3db4c.jpg"
         val httpClient = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(token.toString()))
             .build()
@@ -49,7 +48,7 @@ class HomePage : AppCompatActivity() {
             .create(UserService::class.java)
 
         val downloadImage = UploadImage(
-            fileName = profilePic.toString(),
+            fileName = profilePic,
             "DOWNLOAD"
         )
         service.uploadPicture(downloadImage).enqueue(object :Callback<UploadResponse>{
@@ -60,7 +59,7 @@ class HomePage : AppCompatActivity() {
                     Glide.with(this@HomePage)
                         .load(url)
                         .apply(RequestOptions.circleCropTransform())
-                        .into(binding.imvNewsCoverPfp)
+                        .into(binding.imvProfilePlace)
                 }else{
                     Log.e("RetrofitError","an error occurred ${response.errorBody().toString()}")
                 }
@@ -72,11 +71,10 @@ class HomePage : AppCompatActivity() {
 
         val myUrl2 = "https://i.pinimg.com/236x/e5/97/79/e59779258a86991a933e45143bf3db4c.jpg"
         val stories = mutableListOf(
-            Stories(username.toString(), url = myUrl2),
+            Stories(username, url = myUrl2),
         )
-        val userid = id ?: 3
-        Log.e("RetrofitId","your id is $userid")
-        getStories(service, userid, stories)
+        Log.e("RetrofitId", "your id is $id")
+        getStories(service, id, stories)
 
         val myUrl = "https://i.pinimg.com/236x/63/cc/06/63cc06edc7c8222eaee125beb92bfc99.jpg"
 
@@ -92,10 +90,12 @@ class HomePage : AppCompatActivity() {
 
         Glide.with(this)
             .load(myUrl2)
+            .apply(RequestOptions().centerCrop())
             .into(binding.imvfeedsHp)
 
         Glide.with(this)
             .load(myUrl2)
+            .apply(RequestOptions().centerCrop())
             .into(binding.imvNewsCover)
 
         binding.homePageButton.setOnClickListener {
@@ -141,6 +141,7 @@ class HomePage : AppCompatActivity() {
         binding.llAddStory.setOnClickListener{
             Intent(this@HomePage, StoryMaker::class.java).also {
                 startActivity(it)
+                finish()
             }
         }
         binding.tvMoreNews.setOnClickListener {

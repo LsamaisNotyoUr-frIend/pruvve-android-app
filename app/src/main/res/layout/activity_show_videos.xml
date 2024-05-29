@@ -122,6 +122,7 @@
                 android:layout_weight="1"
                 android:autofillHints="none"
                 android:hint="Write a comment"
+                android:textColor="@color/white"
                 android:inputType="textMultiLine"
                 android:textColorHint="@color/gray"
                 android:textSize="16sp"

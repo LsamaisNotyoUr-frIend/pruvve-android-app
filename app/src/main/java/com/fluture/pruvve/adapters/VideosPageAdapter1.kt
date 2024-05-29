@@ -34,19 +34,19 @@ class VideosPageAdapter1(private var videos:List<VideoPageItems>):RecyclerView.A
             is VideoSmallViewHolder -> holder.itemView.apply {
                 Glide.with(context)
                     .load(videos[position].url)
-                    .apply(RequestOptions().fitCenter())
+                    .apply(RequestOptions().centerCrop())
                     .into(findViewById(R.id.imvSmallVideos))
             }
             is VideoMediumViewHolder -> holder.itemView.apply {
                 Glide.with(context)
                     .load(videos[position].url)
-                    .apply(RequestOptions().fitCenter())
+                    .apply(RequestOptions().centerCrop())
                     .into(findViewById(R.id.imvMediumVideos))
             }
             is VideoLargeViewHolder -> holder.itemView.apply {
                 Glide.with(context)
                     .load(videos[position].url)
-                    .apply(RequestOptions().fitCenter())
+                    .apply(RequestOptions().centerCrop())
                     .into(findViewById(R.id.imvLargeVideos))
             }
         }
