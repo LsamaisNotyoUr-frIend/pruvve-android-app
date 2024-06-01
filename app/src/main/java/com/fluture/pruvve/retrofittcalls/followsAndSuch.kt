@@ -1,8 +1,4 @@
 package com.fluture.pruvve.retrofittcalls
-
-data class FollowsAndUnfollows(
-    val userId: Int
-)
 data class FollowsReply(
     val code: Int,
     val message: String

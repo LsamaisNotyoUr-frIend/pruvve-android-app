@@ -1,6 +1,5 @@
 package com.fluture.pruvve.retrofittcalls
 
-import retrofit2.http.PUT
 
 data class PostsMedia(
     val mediaUrl: String,
@@ -148,4 +147,72 @@ data class NewsListItems(
     val title: String,
     val body: String,
     val time: String
+)
+
+data class GetPitches(
+    val code: Int,
+    val message: String,
+    val data: GetPitchList
+)
+data class GetPitchList(
+    val list: List<GetPitchItems>,
+    val page: Int,
+    val limit: Int,
+    val total: Int
+)
+
+data class GetPitch(
+    val code: Int,
+    val message: String,
+    val data: GetPitchItems?= GetPitchItems(
+        1,
+        "empty",
+        "empty",
+        "empty",
+        "empty",
+        "empty",
+        1,
+        1,
+        true,
+        true,
+        true,
+        "empty",
+        true,
+        1,
+        1
+    )
+)
+
+data class GetPitchItems(
+    val id:Int,
+    val imageUrl:String,
+    val title: String,
+    val address: String,
+    val format: String,
+    val surface: String,
+    val rating: Int,
+    val price: Int,
+    val hasChangingRoom : Boolean,
+    val hasFreeParking: Boolean,
+    val hasFloodLights: Boolean,
+    val description: String,
+    val hasPruvveCamera: Boolean,
+    val longitude: Int,
+    val latitude: Int
+)
+
+data class GetPitchAvailability(
+    val code: Int,
+    val message: String,
+    val data: PitchTimeItems
+)
+data class PitchTimeItems(
+    val id: Int,
+    val slots: List<TimeSlothsItems>
+)
+
+data class TimeSlothsItems(
+    val slotsLeft: Int,
+    val startTime: String,
+    val endTime: String
 )

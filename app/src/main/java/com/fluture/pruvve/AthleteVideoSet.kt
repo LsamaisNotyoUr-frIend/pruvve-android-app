@@ -70,7 +70,7 @@ class AthleteVideoSet : AppCompatActivity() {
         binding.introvid.setOnPreparedListener {
             binding.intvidplacholder.visibility = View.GONE
             it.isLooping = true
-            it.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
+            it.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT)
             binding.introvid.start()
         }
         binding.tvskip.setOnClickListener {

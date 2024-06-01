@@ -12,6 +12,7 @@ class ViewPitchItem : AppCompatActivity() {
         binding = ActivityViewPitchItemBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        val pitchId = intent.getIntExtra("Extra_id", 2)
         binding.btnBackButoon.setOnClickListener {
             finish()
         }
@@ -55,8 +56,8 @@ class ViewPitchItem : AppCompatActivity() {
             if (clickNumber == 2){
                 clickNumber = 0
                 Intent(this@ViewPitchItem, BookingPitches::class.java).also {
+                    intent.putExtra("Extra_id", pitchId)
                     startActivity(it)
-
                 }
             }
         }

@@ -2,6 +2,7 @@ package com.fluture.pruvve
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,9 +10,11 @@ import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.fluture.pruvve.adapters.CommentAdapter
 import com.fluture.pruvve.adapters.Comments
 import com.fluture.pruvve.adapters.LikeAdapter
@@ -27,6 +30,8 @@ import com.fluture.pruvve.retrofittcalls.ServerLikes
 import com.fluture.pruvve.retrofittcalls.UploadImage
 import com.fluture.pruvve.retrofittcalls.UploadResponse
 import com.fluture.pruvve.retrofittcalls.UserService
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -43,13 +48,46 @@ class ShowVideos : AppCompatActivity() {
         LoginManager.init(this)
         setContentView(binding.root)
         var commentSelected = true
+        val isImage = intent.getBooleanExtra("isImage", false)
         var isLiked = intent.getBooleanExtra("isLiked", false)
         val videoUrl = intent.getStringExtra("videoUrl")!!
         val videoId = intent.getIntExtra("VideoId", 3)
         val textView = binding.tvCommentOrLikes
-        Glide.with(this@ShowVideos)
-            .load(videoUrl)
-            .into(binding.imvShowChosenVideo)
+
+        val playerView = binding.epShowChosenVideo
+        val imageView = binding.imvShowChosenImage
+
+        if (isImage){
+            imageView.visibility = View.VISIBLE
+            Glide.with(this@ShowVideos)
+                .load(videoUrl)
+                .apply(RequestOptions().centerCrop())
+                .into(imageView)
+        }else{
+            imageView.z = -1f
+            imageView.isVisible = false
+            imageView.visibility = View.GONE
+            playerView.visibility = View.VISIBLE
+            playerView.bringToFront()
+            playerView.visibility = View.VISIBLE
+            playerView.bringToFront()
+            val exoPlayer = ExoPlayer.Builder(this).build()
+            playerView.player = exoPlayer
+            val mediaItem = MediaItem.fromUri(Uri.parse(videoUrl))
+            exoPlayer.setMediaItem(mediaItem)
+            exoPlayer.prepare()
+            exoPlayer.playWhenReady = true
+            exoPlayer.repeatMode = ExoPlayer.REPEAT_MODE_ONE
+            playerView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: View) {
+                    //this is an unused line of code that had to be called
+                }
+                override fun onViewDetachedFromWindow(v: View) {
+                    exoPlayer.release()
+                }
+            })
+        }
+
         val token = LoginManager.getToken()
 
         Log.d("RetrofitToken", token.toString())
@@ -64,6 +102,11 @@ class ShowVideos : AppCompatActivity() {
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
             .create(UserService::class.java)
+
+
+        binding.imvExitShowVideos.setOnClickListener {
+            finish()
+        }
 
         binding.imvCommentOnVideo.setOnClickListener {
             openCommentSection(true, binding.guideline339, commentSelected, service, videoId)
@@ -164,7 +207,7 @@ class ShowVideos : AppCompatActivity() {
             binding.imvVideoCommentSend.setOnClickListener {
                 makeComments(service, binding.etVideoCommentText.text.toString(), videoId)
                 binding.etVideoCommentText.text.clear()
-                getComments(service, this@ShowVideos,binding.rvChosenCommentsOrLikes, videoId)
+                openCommentSection(isCommentClicked, guideline, commentSelected, service, videoId)
             }
             if (commentSelected) {
                 getComments(service, this@ShowVideos, binding.rvChosenCommentsOrLikes, videoId)

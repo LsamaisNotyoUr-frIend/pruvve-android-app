@@ -70,6 +70,7 @@ data class DayItems(
 )
 
 class PitchTimesAdapter(private val times: List<TimeItems>):RecyclerView.Adapter<PitchTimesAdapter.TimesViewHolder>(){
+    private var selectedIndex: Int = RecyclerView.NO_POSITION
     inner class TimesViewHolder(itemView: View):RecyclerView.ViewHolder(itemView)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimesViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_pitch_times, parent, false)
@@ -79,6 +80,7 @@ class PitchTimesAdapter(private val times: List<TimeItems>):RecyclerView.Adapter
     override fun onBindViewHolder(holder: TimesViewHolder, position: Int) {
         val currentItem = times[position]
         holder.itemView.apply {
+            var selected : Boolean = false
             findViewById<TextView>(R.id.tvDatesTimes).text = currentItem.time
             val bookedStatus = findViewById<TextView>(R.id.tvDatesBookedStatus)
             if (currentItem.status){
@@ -87,8 +89,19 @@ class PitchTimesAdapter(private val times: List<TimeItems>):RecyclerView.Adapter
             }else{
                 bookedStatus.text = "Available"
                 bookedStatus.setTextColor(ContextCompat.getColor(context, R.color.white))
+                this.setOnClickListener {
+                }
+            }
+            setOnClickListener {
+                selected = !selected
+            }
+            if (selected){
+                setBackgroundResource(R.drawable.primary_button)
+            }else{
+                setBackgroundResource(R.drawable.profile_backgrounds2)
             }
         }
+
     }
     override fun getItemCount(): Int {
         return times.size

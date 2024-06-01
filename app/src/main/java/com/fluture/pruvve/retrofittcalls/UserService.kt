@@ -59,7 +59,7 @@ interface UserService {
     @DELETE("v1/post/{postId}/unlike")
     fun unLikePost(@Path("postId") postId: Int): Call<FollowsReply>
     @POST("v1/user/{userId}/follow")
-    fun followUser(@Body userId: FollowsAndUnfollows):Call<FollowsReply>
+    fun followUser(@Path("userId") userId: Int):Call<FollowsReply>
     @DELETE("v1/user/{userId}/unfollow")
     fun unFollowUser(@Path("userId") userId: Int): Call<FollowsReply>
 
@@ -113,4 +113,19 @@ interface UserService {
 
     @GET("v1/news")
     fun getNewsById(@Path("newsId") newsId: Int):Call<NewsGotten>
+
+    @GET("/v1/pitch/{pitchId}")
+    fun getPitchById(@Path("pitchId") pitchId: Int):Call<GetPitch>
+
+    @GET("v1/pitch")
+    fun getPitches(@Query("request") requestObject: RequestObjects):Call<GetPitches>
+
+    @GET("v1/pitch/{pitchId}/book")
+    fun bookPitch(@Path("pitchId") pitchId: Int, @Query("request") requestObject: PitchRequestObjects)
+
+    @GET("v1/pitch/{pitchId}/availability")
+    fun checkAvailability(@Path("pitchId") pitchId: Int, @Query("date") data: String):Call<GetPitchAvailability>
+
+    @GET("v1/pitch/book/{bookingReference}/complete")
+    fun completeBooking(@Path("bookingReference") bookingReference: String):Call<ProfileResponse>
 }

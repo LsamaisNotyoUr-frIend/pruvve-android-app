@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
-import android.media.MediaPlayer
 import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,9 +14,9 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.VideoView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -26,6 +25,9 @@ import com.fluture.pruvve.ProfileResponse
 import com.fluture.pruvve.R
 import com.fluture.pruvve.ShowVideos
 import com.fluture.pruvve.retrofittcalls.*
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.ui.PlayerView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -45,28 +47,48 @@ class MoreVideosAdapter(private var videos: List<VideoItems>, private val servic
             var isCommentClicked = false
             var isLiked = false
             var commentSelected: Boolean
+            val isImage: Boolean
             val guideline = findViewById<Guideline>(R.id.guideline324)
             val constraintLayout = findViewById<ConstraintLayout>(R.id.clFeedVideos)
-            val videoView = findViewById<VideoView>(R.id.vvFeeds)
+            val playerView = findViewById<PlayerView>(R.id.epFeeds)
             val imageView = findViewById<ImageView>(R.id.imvFeeds)
+            val followButton = findViewById<TextView>(R.id.tvFollowButton)
+            playerView.visibility = View.GONE
+            imageView.visibility = View.GONE
+            toggleFollowStatus(followButton, currentItem.follow)
 
             // Video and Image Handling
             if (isImageUrl(currentItem.videoUrl)) {
-                videoView.visibility = View.GONE
                 imageView.visibility = View.VISIBLE
+                isImage = true
                 Glide.with(context)
                     .load(currentItem.videoUrl)
                     .apply(RequestOptions().centerCrop())
                     .into(imageView)
             } else {
-                videoView.visibility = View.VISIBLE
+                imageView.z = -1f
+                imageView.isVisible = false
                 imageView.visibility = View.GONE
-                videoView.setVideoURI(Uri.parse(currentItem.videoUrl))
-                videoView.setOnPreparedListener {
-                    it.isLooping = true
-                    it.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
-                    videoView.start()
-                }
+                isImage = false
+                playerView.visibility = View.VISIBLE
+                playerView.bringToFront()
+                playerView.visibility = View.VISIBLE
+                playerView.bringToFront()
+                val exoPlayer = ExoPlayer.Builder(context).build()
+                playerView.player = exoPlayer
+                val mediaItem = MediaItem.fromUri(Uri.parse(currentItem.videoUrl))
+                exoPlayer.setMediaItem(mediaItem)
+                exoPlayer.prepare()
+                exoPlayer.playWhenReady = true
+                exoPlayer.repeatMode = ExoPlayer.REPEAT_MODE_ONE
+                playerView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                    override fun onViewAttachedToWindow(v: View) {
+                        //this is an unused line of code that had to be called
+                    }
+                    override fun onViewDetachedFromWindow(v: View) {
+                        exoPlayer.release()
+                    }
+                })
             }
 
             Glide.with(context)
@@ -83,7 +105,6 @@ class MoreVideosAdapter(private var videos: List<VideoItems>, private val servic
 
             val likesButton = findViewById<TextView>(R.id.tvLikeItems)
             val commentButton = findViewById<TextView>(R.id.tvMyComments)
-            val followButton = findViewById<TextView>(R.id.tvFollowButton)
 
             // Like Button Handling
             findViewById<ImageView>(R.id.ivLikeButton).setOnClickListener {
@@ -103,20 +124,22 @@ class MoreVideosAdapter(private var videos: List<VideoItems>, private val servic
 
             // Follow Button Handling
             followButton.setOnClickListener {
-                changeFollowStatus(followButton, currentItem.follow, currentItem.otherUsersId)
+                changeFollowStatus(followButton, currentItem.follow, currentItem.otherUsersId, currentItem)
             }
 
-            toggleFollowStatus(followButton, currentItem.follow)
-
-            // Video Item Click Handling
-            findViewById<ImageView>(R.id.imvFeeds).setOnClickListener {
+            // Click Handling for both ImageView and VideoView
+            val clickListener = View.OnClickListener {
                 val intent = Intent(context, ShowVideos::class.java)
                 addViews(currentItem.postId)
+                intent.putExtra("isImage", isImage)
                 intent.putExtra("isLiked", isLiked)
                 intent.putExtra("videoUrl", currentItem.videoUrl)
                 intent.putExtra("VideoId", currentItem.postId)
                 context.startActivity(intent)
             }
+
+            imageView.setOnClickListener(clickListener)
+            playerView.setOnClickListener(clickListener)
 
             // Likes Button Click Handling
             likesButton.setOnClickListener {
@@ -151,24 +174,24 @@ class MoreVideosAdapter(private var videos: List<VideoItems>, private val servic
         }
     }
 
-    private fun changeFollowStatus(textView: TextView, isFollowed: Boolean, userId: Int) {
-        val currentFollow = FollowsAndUnfollows(userId = userId)
+    private fun changeFollowStatus(textView: TextView, isFollowed: Boolean, userId: Int, currentItem: VideoItems) {
+        val newBoolean = !isFollowed
         val call = if (!isFollowed) {
             service.unFollowUser(userId)
         } else {
-            service.followUser(currentFollow)
+            service.followUser(userId)
         }
         call.enqueue(object : Callback<FollowsReply> {
-            override fun onResponse(call: Call<FollowsReply>, response: Response<FollowsReply>) {
+            override fun onResponse(call: Call<FollowsReply>, response: Response<FollowsReply>){
                 if (response.isSuccessful) {
                     Log.d("RetrofitSuccess", response.body()?.message.toString())
-                    toggleFollowStatus(textView, !isFollowed)
+                    toggleFollowStatus(textView, newBoolean)
+                    currentItem.follow = newBoolean
                 } else {
                     val errorBody = response.errorBody()?.string()
                     Log.e("RetrofitError", "Error in making the request $errorBody")
                 }
             }
-
             override fun onFailure(call: Call<FollowsReply>, t: Throwable) {
                 Log.d("RetrofitFailure", "couldn't reach the server ${t.message.toString()}")
             }
@@ -299,7 +322,6 @@ class MoreVideosAdapter(private var videos: List<VideoItems>, private val servic
                         Log.e("RetrofitLikesError", "problem liking post ${response.errorBody().toString()}")
                     }
                 }
-
                 override fun onFailure(call: Call<FollowsReply>, t: Throwable) {
                     Log.e("RetrofitFailure", "Couldn't reach the server ${t.message.toString()}")
                 }
@@ -358,7 +380,7 @@ class MoreVideosAdapter(private var videos: List<VideoItems>, private val servic
             itemView.findViewById<ImageView>(R.id.imvFeedsProfilePicture).visibility = View.GONE
             itemView.findViewById<ConstraintLayout>(R.id.clCommentsAndLikes).bringToFront()
             itemView.findViewById<LinearLayout>(R.id.llFeedsPosts).visibility = View.GONE
-            itemView.findViewById<ConstraintLayout>(R.id.clMainFeeds).visibility = View.GONE
+
             itemView.findViewById<ImageView>(R.id.imvCommentSend).setOnClickListener {
                 makeComments(postId, itemView.findViewById<EditText>(R.id.etCommentText).text.toString())
                 itemView.findViewById<EditText>(R.id.etCommentText).text.clear()
@@ -379,7 +401,6 @@ class MoreVideosAdapter(private var videos: List<VideoItems>, private val servic
             itemView.findViewById<ImageView>(R.id.imvFeeds).visibility = View.VISIBLE
             itemView.findViewById<ImageView>(R.id.imvFeedsProfilePicture).visibility = View.VISIBLE
             itemView.findViewById<LinearLayout>(R.id.llFeedsPosts).visibility = View.VISIBLE
-            itemView.findViewById<ConstraintLayout>(R.id.clMainFeeds).visibility = View.VISIBLE
         }
     }
 
@@ -403,7 +424,7 @@ class MoreVideosAdapter(private var videos: List<VideoItems>, private val servic
     }
 
     private fun isImageUrl(url: String): Boolean {
-        return url.contains("image", ignoreCase = true) || url.contains("ProfilePic", ignoreCase = true)
+        return url.contains("ProfilePic", ignoreCase = true)
     }
 }
 
@@ -413,7 +434,7 @@ data class VideoItems(
     val name: String,
     val title: String,
     val videoUrl: String,
-    val follow: Boolean,
+    var follow: Boolean,
     val views: String,
     val comments: String,
     val likes: String,

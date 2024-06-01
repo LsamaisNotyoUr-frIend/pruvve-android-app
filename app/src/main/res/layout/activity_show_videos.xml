@@ -7,16 +7,35 @@
     android:background="@drawable/pitch_background"
     tools:context=".ShowVideos">
 
-    <ImageView
-        android:id="@+id/imvShowChosenVideo"
-        android:layout_width="match_parent"
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/pitch_background"
         app:layout_constraintBottom_toTopOf="@+id/guideline339"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintVertical_bias="0.0">
+
+        <ImageView
+            android:id="@+id/imvShowChosenImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/pitch_background"
+            android:visibility="gone"
+            tools:ignore="ContentDescription" />
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/epShowChosenVideo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/dialogue_background3"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            app:resize_mode="fill"
+            app:use_controller="false" />
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/llVideoOptions"
@@ -122,8 +141,8 @@
                 android:layout_weight="1"
                 android:autofillHints="none"
                 android:hint="Write a comment"
-                android:textColor="@color/white"
                 android:inputType="textMultiLine"
+                android:textColor="@color/white"
                 android:textColorHint="@color/gray"
                 android:textSize="16sp"
                 tools:ignore="HardcodedText" />
@@ -148,6 +167,7 @@
             app:layout_constraintTop_toTopOf="@+id/guideline342"
             tools:ignore="ContentDescription" />
 
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline341"
             android:layout_width="wrap_content"
@@ -170,6 +190,18 @@
             app:layout_constraintGuide_percent="0.027363185" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <ImageView
+        android:id="@+id/imvExitShowVideos"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="5dp"
+        android:src="@drawable/ep_back"
+        app:layout_constraintBottom_toTopOf="@+id/guideline343"
+        app:layout_constraintEnd_toStartOf="@+id/guideline168"
+        app:layout_constraintStart_toStartOf="@+id/guideline170"
+        app:layout_constraintTop_toTopOf="@+id/guideline344"
+        tools:ignore="ContentDescription" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline339"
         android:layout_width="wrap_content"
@@ -183,4 +215,32 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.38" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline168"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.21" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline170"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05109489" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline343"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.12" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline344"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.04" />
 </androidx.constraintlayout.widget.ConstraintLayout>

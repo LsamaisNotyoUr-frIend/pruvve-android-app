@@ -176,3 +176,7 @@ r
 Bapp/src/main/java/com/fluture/pruvve/adapters/AddPlayersAdapter.kt,f\4\f48d1aa06f74f50db33464883264a1529273b25e
 p
 @app/src/main/java/com/fluture/pruvve/retrofittcalls/LoginInfo.kt,8\0\80186c8ec53d0aaed4af97ab839eb03a09de8138
+`
+0app/src/main/res/layout/activity_show_videos.xml,a\b\ab0f6e2bd23801a0f66396e6491fd8a70a638115
+\
+,app/src/main/res/layout/item_feed_videos.xml,6\c\6c1dc6e18f8117867ca4a107173575ded45742a5

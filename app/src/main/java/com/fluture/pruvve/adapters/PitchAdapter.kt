@@ -55,6 +55,8 @@ class PitchAdapter(private val pitches: List<Pitches>):RecyclerView.Adapter<Pitc
             findViewById<Button>(R.id.btnChoosePitch).setOnClickListener{
                 val context = holder.itemView.context
                 val intent = Intent(context, ViewPitchItem::class.java)
+                intent.putExtra("Extra_id", currentItem.pitchId)
+                intent.putExtra("Extra_description", currentItem.description)
                 intent.putExtra("Extra_title", currentItem.title)
                 intent.putExtra("Extra_location", currentItem.location)
                 context.startActivity(intent)
@@ -83,5 +85,7 @@ data class Pitches(
     val surface:String,
     val facilities: String,
     val facilities2: String,
-    val facilities3: String
+    val facilities3: String,
+    val pitchId: Int,
+    val description: String
 )

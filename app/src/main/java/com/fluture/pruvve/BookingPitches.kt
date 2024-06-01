@@ -3,18 +3,32 @@ package com.fluture.pruvve
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fluture.pruvve.adapters.DayItems
 import com.fluture.pruvve.adapters.PitchDatesAdapter
 import com.fluture.pruvve.adapters.PitchTimesAdapter
 import com.fluture.pruvve.adapters.TimeItems
+import com.fluture.pruvve.auth.AuthInterceptor
+import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityBookingPitchesBinding
+import com.fluture.pruvve.retrofittcalls.GetPitchAvailability
+import com.fluture.pruvve.retrofittcalls.UserService
+import okhttp3.OkHttpClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.Year
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import kotlin.random.Random
 
 class BookingPitches : AppCompatActivity() {
@@ -27,13 +41,28 @@ class BookingPitches : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityBookingPitchesBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
+        LoginManager.init(this)
         setContentView(binding.root)
-
+        val pitchId = intent.getIntExtra("Extra_id", 2)
         val leftArrow = binding.imvPitchDateLeft
         val rightArrow = binding.imvPitchDateRight
         val monthYearTextView = binding.tvPitchDate
         val recyclerViewDates = binding.rvPitchDateDays
         val recyclerViewTimes = binding.rvPitchDaysTime
+
+        val token = LoginManager.getToken()
+        Log.d("RetrofitToken", token.toString())
+
+        val httpClient = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(token.toString()))
+            .build()
+
+        val service = Retrofit.Builder()
+            .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
+            .client(httpClient)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(UserService::class.java)
 
         pitchDatesAdapter = PitchDatesAdapter(dataList)
         recyclerViewDates.adapter = pitchDatesAdapter
@@ -54,18 +83,30 @@ class BookingPitches : AppCompatActivity() {
             updateRecyclerViewForCurrentMonth()
         }
         val timeIndex = PitchDatesAdapter(dataList).getSelectedIndex()
-        for (i in 1..timeIndex){
-            val randomBoolean = Random.nextBoolean()
-            val placeholderList = listOf(
-                TimeItems("9:00 - 10:00", randomBoolean), TimeItems("10:00 - 11:00", randomBoolean),TimeItems("11:00 - 12:00", randomBoolean),
-                TimeItems("12:00 - 13:00", randomBoolean), TimeItems("13:00 - 14:00", randomBoolean), TimeItems("14:00 - 15:00", randomBoolean),
-                TimeItems("15:00 - 16:00", randomBoolean), TimeItems("16:00 - 17:00", randomBoolean), TimeItems("17:00 - 18:00", randomBoolean)
-            )
-            dataList2.addAll(placeholderList)
-        }
 
-        recyclerViewTimes.adapter = PitchTimesAdapter(dataList2)
-        recyclerViewTimes.layoutManager = LinearLayoutManager(this@BookingPitches, LinearLayoutManager.VERTICAL, false)
+        service.checkAvailability(pitchId, "2023-05-31T17:48:50.695Z").enqueue(object : Callback<GetPitchAvailability>{
+            override fun onResponse(call: Call<GetPitchAvailability>, response: Response<GetPitchAvailability>
+            ) {
+                if (response.isSuccessful){
+                    val list =response.body()?.data?.slots
+                    if (list != null){
+                        for (timeItems in list){
+                            val timesList = TimeItems(convertToTimeRange(timeItems.startTime, timeItems.endTime), false)
+                            dataList2.add(timesList)
+                            if (dataList2.size == (list.size)+1){
+                                recyclerViewTimes.adapter = PitchTimesAdapter(dataList2)
+                                recyclerViewTimes.layoutManager = LinearLayoutManager(this@BookingPitches, LinearLayoutManager.VERTICAL, false)
+                            }
+                        }
+                    }
+                }else{
+                    Log.e("RetrofitError", "An error occurred ${response.errorBody().toString()}")
+                }
+            }
+            override fun onFailure(call: Call<GetPitchAvailability>, t: Throwable) {
+                Log.e("RetrofitFailure", "couldn't reach the server ${t.message.toString()}")
+            }
+        })
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -93,5 +134,24 @@ class BookingPitches : AppCompatActivity() {
     private fun updateMonthYearTextView(textView: TextView) {
         val formattedDate = currentMonthYear.format(DateTimeFormatter.ofPattern("MMMM yyyy"))
         textView.text = formattedDate
+    }
+
+    fun convertToTimeRange(dateStr1: String, dateStr2: String): String {
+
+        val isoFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).apply {
+            timeZone = TimeZone.getTimeZone("UTC")
+        }
+        val outputFormat = SimpleDateFormat("H:mm", Locale.getDefault())
+
+        // Parse the input date strings to Date objects
+        val date1: Date = isoFormat.parse(dateStr1) ?: throw IllegalArgumentException("Invalid date string: $dateStr1")
+        val date2: Date = isoFormat.parse(dateStr2) ?: throw IllegalArgumentException("Invalid date string: $dateStr2")
+
+        // Format the Date objects to the desired time format
+        val time1: String = outputFormat.format(date1)
+        val time2: String = outputFormat.format(date2)
+
+        // Combine the formatted times into the desired range format
+        return "$time1 to $time2"
     }
 }

@@ -5,6 +5,16 @@ data class RequestObjects(
     val size: Int
 )
 
+data class PitchRequestObjects(
+    val pitchTimes: List<PitchTimes>,
+    val bookingReference: String
+)
+
+data class PitchTimes(
+    val startTime: String,
+    val endTime: String
+)
+
 data class ServerComments (
     val code: Int,
     val message: String,
