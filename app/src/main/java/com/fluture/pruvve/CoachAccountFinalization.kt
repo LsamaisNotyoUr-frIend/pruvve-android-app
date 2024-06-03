@@ -6,7 +6,11 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
 import android.text.SpannableString
+import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -16,7 +20,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import com.fluture.pruvve.auth.AuthInterceptor
+import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityCoachAccountFinalizationBinding
+import com.fluture.pruvve.retrofittcalls.GetSpecificTeam
+import com.fluture.pruvve.retrofittcalls.GetTeams
+import com.fluture.pruvve.retrofittcalls.RequestObjects
+import com.fluture.pruvve.retrofittcalls.UserService
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,6 +40,7 @@ import java.io.InputStreamReader
 
 class CoachAccountFinalization : AppCompatActivity() {
     private lateinit var binding: ActivityCoachAccountFinalizationBinding
+    private var isUsable=  true
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityCoachAccountFinalizationBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
@@ -53,6 +66,30 @@ class CoachAccountFinalization : AppCompatActivity() {
             .build()
             .create(UserService::class.java)
 
+        val handler = Handler(Looper.getMainLooper())
+        var searchRunnable: Runnable? = null
+
+        binding.etteamview.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                //no change is expected
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                searchRunnable?.let { handler.removeCallbacks(it) }
+
+                searchRunnable = Runnable {
+                    val teamName = s.toString()
+                    if (teamName.isNotEmpty()) {
+                        getTeams(service, teamName)
+                    }
+                }
+                handler.postDelayed(searchRunnable!!, 300)
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                //no change is expected
+            }
+        })
+
         binding.tvtos.apply {
             text = mySpan
             movementMethod = LinkMovementMethod.getInstance()
@@ -61,30 +98,16 @@ class CoachAccountFinalization : AppCompatActivity() {
         binding.button1.setOnClickListener {
             finish() }
         binding.button.setOnClickListener {
-            val userName = intent.getStringExtra("Extra_username").toString()
+            binding.button1.isEnabled = false
+            binding.button1.setBackgroundResource(R.drawable.disabled_button)
             val team = binding.etteamview.text.toString()
-            val bio = binding.etbiofield.text.toString()
-            val coachProfileBody = CoachProfileBody(
-                team,
-                bio
-            )
-            service.finishCoachProfile(coachProfileBody).enqueue(object : Callback<ProfileResponse>{
-                override fun onResponse(call: Call<ProfileResponse>, response: Response<ProfileResponse>) {
-                    if (response.isSuccessful){
-                        Intent(this@CoachAccountFinalization, CoachOnboardEnd::class.java).also {
-                            it.putExtra("Extra_username", userName)
-                            startActivity(it)
-                        }
-                    }else{
-                        val errorMessage = response.errorBody()?.string() ?: "Unknown error"
-                        Log.e("RetrofitError", "Error uploading file $errorMessage")
-                    }
-                }
-
-                override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
-                    Log.e("RetrofitError", "Error reaching server ${t.message.toString()}")
-                }
-            })
+            if (isUsable){
+                 makeTeams(service, team)
+            }else{
+                binding.button1.isEnabled = true
+                binding.button1.setBackgroundResource(R.drawable.primary_button)
+                showDialog()
+            }
         }
     }
     private fun setClickableSpan(spannableString: SpannableString, targetWord: String) {
@@ -101,7 +124,6 @@ class CoachAccountFinalization : AppCompatActivity() {
             setSpan(UnderlineSpan(), startIndex, endIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
     }
-
     @SuppressLint("InflateParams")
     private fun showTermsAndConditions(term: String){
         val dialogView = LayoutInflater.from(this).inflate(R.layout.terms_and_conditions, null)
@@ -127,5 +149,105 @@ class CoachAccountFinalization : AppCompatActivity() {
         dialogView.setOnClickListener {
             dialog.dismiss()
         }
+    }
+
+    private fun getTeams(service: UserService, team:String){
+        val requestObjects = RequestObjects(
+            10,
+            10
+        )
+        Log.d("RetrofitTeams","Process started")
+        service.getTeams(requestObjects).enqueue(object : Callback<GetTeams>{
+            @SuppressLint("SetTextI18n")
+            override fun onResponse(call: Call<GetTeams>, response: Response<GetTeams>) {
+                if (response.isSuccessful){
+                    val list =  response.body()?.data?.list
+                    if (list == null){
+                        return
+                    }else{
+                        Log.d("RetrofitTeams","Checking teams in list")
+                        for (teamItems in list){
+                            if (teamItems.name == team){
+                                Log.d("RetrofitTeams","Team name not available")
+                                binding.tvTeamNameChecker.text = "Team name already taken"
+                                binding.button1.isEnabled = true
+                                binding.button1.setBackgroundResource(R.drawable.primary_button)
+                                isUsable = false
+                            }else{
+                                binding.tvTeamNameChecker.text = "Team name available"
+                                isUsable = true
+                            }
+                        }
+                    }
+                }
+            }
+            override fun onFailure(call: Call<GetTeams>, t: Throwable) {
+                Log.e("RetrofitFailure","Couldn't reach the server ${t.message.toString()}")
+                binding.button1.isEnabled = true
+                binding.button1.setBackgroundResource(R.drawable.primary_button)
+            }
+
+        })
+    }
+    private fun makeTeams(service: UserService, team: String){
+        Log.d("RetrofitTeams","Creating new teams")
+        service.makeTeams(binding.etteamview.text.toString()).enqueue(object : Callback<GetSpecificTeam>{
+            override fun onResponse(call: Call<GetSpecificTeam>, response: Response<GetSpecificTeam>) {
+                if (response.isSuccessful){
+                    Toast.makeText(this@CoachAccountFinalization, "Team created successfully", Toast.LENGTH_SHORT).show()
+                    Log.d("RetrofitSuccess", "your request was successful ${response.body()?.message}")
+                    val teamId = response.body()?.data?.id ?: 5
+                    finishCoachAccount(team, service, teamId)
+                }else{
+                    Log.e("RetrofitError","there was an error ${response.errorBody().toString()}")
+                }
+            }
+            override fun onFailure(call: Call<GetSpecificTeam>, t: Throwable) {
+                Log.e("RetrofitFailure", "couldn't reach the server ${t.message.toString()}")
+            }
+        })
+    }
+    private fun finishCoachAccount(team: String, service: UserService, teamId:Int){
+        val userName = intent.getStringExtra("Extra_username").toString()
+        val bio = binding.etbiofield.text.toString()
+        val coachProfileBody = CoachProfileBody(
+            team,
+            bio
+        )
+        service.finishCoachProfile(coachProfileBody).enqueue(object : Callback<ProfileResponse>{
+            override fun onResponse(call: Call<ProfileResponse>, response: Response<ProfileResponse>) {
+                if (response.isSuccessful){
+                    Log.d("RetrofitSuccess", "Coach details updated successfully")
+                    Intent(this@CoachAccountFinalization, CoachOnboardEnd::class.java).also {
+                        it.putExtra("Extra_username", userName)
+                        it.putExtra("Extra_teamId", teamId)
+                        startActivity(it)
+                    }
+                }else{
+                    val errorMessage = response.errorBody()?.string() ?: "Unknown error"
+                    Log.e("RetrofitError", "Error uploading file $errorMessage")
+                    binding.button1.isEnabled = true
+                    binding.button1.setBackgroundResource(R.drawable.primary_button)
+                }
+            }
+
+            override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
+                Log.e("RetrofitError", "Error reaching server ${t.message.toString()}")
+                binding.button1.isEnabled = true
+                binding.button1.setBackgroundResource(R.drawable.primary_button)
+            }
+        })
+    }
+    private fun showDialog() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_team_explanation, null)
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(false)
+            .create()
+        dialogView.findViewById<TextView>(R.id.tvTeamProceed).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 }

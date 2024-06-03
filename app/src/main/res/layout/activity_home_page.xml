@@ -23,7 +23,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="450dp"
-                android:background="@color/black">
+                android:background="@drawable/pitch_background">
 
                 <TextView
                     android:id="@+id/textView4"
@@ -52,7 +52,7 @@
                     app:layout_constraintTop_toTopOf="@+id/guideline28" />
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/imvprofilePlace"
+                    android:id="@+id/imvProfilePlace"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:background="@drawable/custom_circl"
@@ -177,7 +177,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/guideline98"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/guideline99"
-                    app:layout_constraintTop_toTopOf="@+id/guideline97"
+                    app:layout_constraintTop_toTopOf="@+id/guideline98"
                     tools:ignore="HardcodedText" />
 
                 <ImageView
@@ -186,10 +186,10 @@
                     android:layout_weight="2"
                     android:contentDescription="to go to the feed page"
                     android:src="@drawable/ep_back2"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline98"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline95"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/guideline96"
-                    app:layout_constraintTop_toTopOf="@+id/guideline97"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="HardcodedText" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -201,7 +201,22 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/guideline95">
 
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline286"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.18" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline285"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.70" />
+
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cardView4"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:layout_margin="10dp"
@@ -212,8 +227,8 @@
                         app:layout_constraintStart_toStartOf="@+id/guideline101"
                         app:layout_constraintTop_toTopOf="parent">
 
-                        <VideoView
-                            android:id="@+id/videoView"
+                        <ImageView
+                            android:id="@+id/imvfeedsHp"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:src="@color/green"
@@ -254,6 +269,70 @@
                         app:layout_constraintEnd_toStartOf="@+id/guideline107"
                         app:layout_constraintStart_toStartOf="@+id/guideline101"
                         app:layout_constraintTop_toTopOf="@+id/guideline108" />
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:cardCornerRadius="180dp"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline285"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline286"
+                        app:layout_constraintStart_toStartOf="@+id/guideline101"
+                        app:layout_constraintTop_toTopOf="@+id/guideline110">
+
+                        <ImageView
+                            android:id="@+id/imvFeedsCoverPfp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="5dp"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline285"
+                        app:layout_constraintEnd_toEndOf="@+id/imageView3"
+                        app:layout_constraintStart_toStartOf="@+id/guideline286"
+                        app:layout_constraintTop_toTopOf="@+id/guideline110">
+
+                        <TextView
+                            android:id="@+id/tvFeedsCoverUsername"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/my_poppins"
+                            android:text="Brandom David"
+                            android:textColor="@color/white"
+                            android:textSize="17sp"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/tvFeedsCoverTimestamp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1.2"
+                            android:fontFamily="@font/my_poppins"
+                            android:text="12 minutes ago"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            tools:ignore="HardcodedText" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvFeedsCoverComment"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_margin="5dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/my_poppins"
+                        android:text="i thinkn the societal norms of toda are so out stupid its jarring"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline103"
+                        app:layout_constraintStart_toStartOf="@+id/guideline101"
+                        app:layout_constraintTop_toTopOf="@+id/guideline285"
+                        tools:ignore="HardcodedText" />
 
                     <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/guideline101"
@@ -338,14 +417,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    app:layout_constraintGuide_percent="0.015" />
+                    app:layout_constraintGuide_percent="1.0" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline98"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    app:layout_constraintGuide_percent="0.11" />
+                    app:layout_constraintGuide_percent="0.08" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline99"
@@ -421,6 +500,20 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/guideline132">
 
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline288"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.18" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline287"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.70" />
+
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cvNewsBackgroundView"
                         android:layout_width="0dp"
@@ -434,7 +527,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <ImageView
-                            android:id="@+id/newsIV"
+                            android:id="@+id/imvNewsCover"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:contentDescription="null"
@@ -476,6 +569,70 @@
                         app:layout_constraintStart_toStartOf="@+id/guideline138"
                         app:layout_constraintTop_toTopOf="@+id/guideline145"
                         app:layout_constraintVertical_bias="0.0" />
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:cardCornerRadius="180dp"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline287"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline288"
+                        app:layout_constraintStart_toStartOf="@+id/guideline138"
+                        app:layout_constraintTop_toTopOf="@+id/guideline137">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/imvNewsCoverPfp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="5dp"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline287"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline139"
+                        app:layout_constraintStart_toStartOf="@+id/guideline288"
+                        app:layout_constraintTop_toTopOf="@+id/guideline137">
+
+                        <TextView
+                            android:id="@+id/tvNewsCoverUsername"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/my_poppins"
+                            android:text="Brandom David"
+                            android:textColor="@color/white"
+                            android:textSize="17sp"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/tvNewsCoverTimestamp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1.2"
+                            android:fontFamily="@font/my_poppins"
+                            android:text="12 minutes ago"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            tools:ignore="HardcodedText" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvNewsCoverComment"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_margin="5dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/my_poppins"
+                        android:text="i thinkn the societal norms of toda are so out stupid its jarring"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline139"
+                        app:layout_constraintStart_toStartOf="@+id/guideline138"
+                        app:layout_constraintTop_toTopOf="@+id/guideline287"
+                        tools:ignore="HardcodedText" />
 
                     <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/guideline137"
@@ -585,6 +742,9 @@
                     app:layout_constraintGuide_percent="0.015" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="50dp"/>
         </LinearLayout>
     </ScrollView>
 
@@ -609,7 +769,8 @@
             app:layout_constraintEnd_toStartOf="@+id/videoPageButton"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline4" />
+            app:layout_constraintTop_toTopOf="@+id/guideline4"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/videoPageButton"
@@ -622,6 +783,7 @@
             app:layout_constraintEnd_toStartOf="@+id/bookPitchButton"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/homePageButton"
+            tools:ignore="ContentDescription"
             app:layout_constraintTop_toTopOf="@+id/guideline4" />
 
         <ImageView
@@ -634,6 +796,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/profileButton"
             app:layout_constraintHorizontal_bias="0.5"
+            tools:ignore="ContentDescription"
             app:layout_constraintStart_toEndOf="@+id/videoPageButton"
             app:layout_constraintTop_toTopOf="@+id/guideline4" />
 
@@ -646,37 +809,43 @@
             android:src="@drawable/profile_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="ContentDescription"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/bookPitchButton"
             app:layout_constraintTop_toTopOf="@+id/guideline4" />
     </LinearLayout>
 
 
-    <TextView
-        android:id="@+id/textView3"
+    <LinearLayout
+        android:id="@+id/llAddStory"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:orientation="vertical"
         android:background="@drawable/add_story_background"
-        android:fontFamily="@font/my_poppins"
-        android:gravity="bottom"
-        android:text="\t\t\tAdd story"
-        android:textColor="@color/green"
-        android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline23"
         app:layout_constraintEnd_toStartOf="@+id/guideline6"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline7"
-        tools:ignore="HardcodedText,SmallSp" />
+        app:layout_constraintTop_toTopOf="@+id/guideline7">
+        <ImageView
+            android:id="@+id/addAStory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/add_story_button"
+            tools:ignore="ContentDescription" />
 
-    <ImageView
-        android:id="@+id/addAStory"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:src="@drawable/add_story_button"
-        app:layout_constraintBottom_toTopOf="@+id/guideline25"
-        app:layout_constraintEnd_toStartOf="@+id/guideline6"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline24" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.2"
+            android:fontFamily="@font/my_poppins"
+            android:gravity="center"
+            android:text="Add story"
+            android:textColor="@color/green"
+            android:textSize="14sp"
+            tools:ignore="HardcodedText,SmallSp" />
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/homeScreenFragment"
@@ -699,7 +868,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.27" />
+        app:layout_constraintGuide_percent="0.22" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline7"

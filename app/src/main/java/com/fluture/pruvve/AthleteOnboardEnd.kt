@@ -11,22 +11,63 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.fluture.pruvve.adapters.GetUserResponse
+import com.fluture.pruvve.auth.AuthInterceptor
+import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityAthleteOnboardEndBinding
+import com.fluture.pruvve.retrofittcalls.UserService
+import okhttp3.OkHttpClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
 class AthleteOnboardEnd : AppCompatActivity() {
     private lateinit var binding: ActivityAthleteOnboardEndBinding
+    private var accountType: String = ""
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityAthleteOnboardEndBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+        LoginManager.init(this)
 
+        val token = LoginManager.getToken()
+        Log.d("RetrofitToken", token.toString())
+
+        val httpClient = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(token.toString()))
+            .build()
+
+        val service = Retrofit.Builder()
+            .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
+            .client(httpClient)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(UserService::class.java)
+
+        service.getUserCredentials().enqueue(object : Callback<GetUserResponse>{
+            override fun onResponse(call: Call<GetUserResponse>, response: Response<GetUserResponse>) {
+                if (response.isSuccessful){
+                    accountType = response.body()?.data?.accountType.toString()
+                    Log.d("RetrofitSuccess", "users account type is $accountType")
+                }else{
+                    Log.e("RetrofitError", "Couldn't get user credentials ${response.errorBody().toString()}")
+                }
+            }
+            override fun onFailure(call: Call<GetUserResponse>, t: Throwable) {
+                Log.e("RetrofitFailure", "Error reaching server ${t.message.toString()}")
+            }
+        })
+
+        setContentView(binding.root)
         val text1 = binding.tvtos.text.toString()
         val mySpan = SpannableString(text1)
         setClickableSpan(mySpan, "terms of service")
@@ -43,10 +84,11 @@ class AthleteOnboardEnd : AppCompatActivity() {
             finish() }
 
         binding.button.setOnClickListener {
-            Intent(this, HomePage::class.java).also {
-                it.putExtra("Extra_username", userName)
-                startActivity(it)
-            }
+            val intent = Intent(this@AthleteOnboardEnd, SplashScreen::class.java)
+            intent.putExtra("accountType", accountType)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+            finish()
         }
     }
     private fun setClickableSpan(spannableString: SpannableString, targetWord: String) {

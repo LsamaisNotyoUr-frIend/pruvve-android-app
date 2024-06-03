@@ -20,7 +20,10 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.NumberPicker
 import android.widget.TextView
+import com.fluture.pruvve.auth.AuthInterceptor
+import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityAthleteAccountFinalizationBinding
+import com.fluture.pruvve.retrofittcalls.UserService
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -67,6 +70,8 @@ class AthleteAccountFinalization : AppCompatActivity() {
         binding.button1.setOnClickListener {
             finish() }
         binding.button.setOnClickListener {
+            binding.button.setBackgroundResource(R.drawable.disabled_button)
+            binding.button.isEnabled = false
             val userName = intent.getStringExtra("Extra_username").toString()
             val position = binding.tvpositionview.text.toString()
             val height = binding.etheightField.text.toString()
@@ -89,11 +94,15 @@ class AthleteAccountFinalization : AppCompatActivity() {
                     }else{
                         val errorMessage = response.errorBody()?.string() ?: "Unknown error"
                         Log.e("RetrofitError", "Error updating user details $errorMessage")
+                        binding.button.setBackgroundResource(R.drawable.primary_button)
+                        binding.button.isEnabled = true
                     }
                 }
 
                 override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
                     Log.e("Retrofit", "Error reaching server${t.message.toString()}")
+                    binding.button.setBackgroundResource(R.drawable.primary_button)
+                    binding.button.isEnabled = true
                 }
             })
         }

@@ -15,13 +15,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
+import com.fluture.pruvve.auth.AuthInterceptor
+import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityAccounttypeSelectorBinding
+import com.fluture.pruvve.retrofittcalls.AccountType
+import com.fluture.pruvve.retrofittcalls.AccountTypeResponse
+import com.fluture.pruvve.retrofittcalls.UserService
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -31,8 +36,8 @@ class AccountTypeSelector : AppCompatActivity() {
     private var selectedTextView: TextView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityAccounttypeSelectorBinding.inflate(layoutInflater)
-        super.onCreate(savedInstanceState)
         LoginManager.init(this)
+        super.onCreate(savedInstanceState)
         setContentView(binding.root)
         binding.pruvve1.alpha = 0.5f
         binding.button1.setOnClickListener {
@@ -40,8 +45,13 @@ class AccountTypeSelector : AppCompatActivity() {
         val token = LoginManager.getToken()
         Log.d("RetrofitToken", token.toString())
 
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
         val httpClient = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(token.toString()))
+            .addInterceptor(loggingInterceptor)
             .build()
 
         val service = Retrofit.Builder()
@@ -87,49 +97,38 @@ class AccountTypeSelector : AppCompatActivity() {
             }
         }
         binding.button.setOnClickListener {
-            val firstName = intent.getStringExtra("Extra_firstname").toString()
-            val lastName = intent.getStringExtra("Extra_lastname").toString()
-            val zipCode = intent.getStringExtra("Extra_zipcode").toString()
-            val gender = intent.getStringExtra("Extra_gender").toString()
-            val dateOfBirth = intent.getStringExtra("Extra_dateOfBirth").toString()
-            val username = intent.getStringExtra("Extra_username").toString()
-            val password = intent.getStringExtra("Extra_password").toString()
+            binding.button.setBackgroundResource(R.drawable.disabled_button)
+            binding.button.isEnabled = false
             val accountType = if (selectedTextView == binding.tvteamcoach) "COACH" else "ATHLETE"
-            val newAccountType = AccountType(
-                accountType
-            )
-            service.userAccountType(newAccountType).enqueue(object : Callback<AccountType> {
-                override fun onResponse(call: Call<AccountType>, response: Response<AccountType>) {
-                    if (response.isSuccessful) {
-                        val intent = when (selectedTextView) {
-                            binding.tvteamcoach -> {
+            val username = intent.getStringExtra("Extra_username").toString()
+                val enterAccountType = AccountType(
+                    accountType
+                )
+            Log.d("RetrofitAccountType", "Your account type is $enterAccountType")
+                service.putAccountType(enterAccountType).enqueue(object : Callback<AccountTypeResponse>{
+                    override fun onResponse(call: Call<AccountTypeResponse>, response: Response<AccountTypeResponse>) {
+                        if(response.isSuccessful){
+                            Log.d("RetrofitSuccess", "Your account type has been updated successfully ${response.body()?.message.toString()}")
+                            val intent:Intent = if (selectedTextView == binding.tvteamcoach) {
+
                                 Intent(this@AccountTypeSelector, CoachScoutAccountcreator::class.java)
+                                }else {
+                                    Intent(this@AccountTypeSelector, AthleteAccountCreator::class.java)
                             }
-                            binding.tvathlete -> {
-                                Intent(this@AccountTypeSelector, AthleteAccountCreator::class.java)
-                            }
-                            else -> {
-                                TODO()
-                            }
+                            intent.putExtra("Extra_username", username)
+                            startActivity(intent)
+                        }else{
+                            Log.e("RetrofitError", "There was an error making the request ${response.errorBody().toString()}")
+                            binding.button.setBackgroundResource(R.drawable.primary_button)
+                            binding.button.isEnabled = true
                         }
-                        intent.putExtra("Extra_firstname", firstName)
-                        intent.putExtra("Extra_lastname", lastName)
-                        intent.putExtra("Extra_zipcode", zipCode)
-                        intent.putExtra("Extra_gender", gender)
-                        intent.putExtra("Extra_dateOfBirth", dateOfBirth)
-                        intent.putExtra("Extra_username", username)
-                        intent.putExtra("Extra_password", password)
-                        startActivity(intent)
-                    } else {
-                        Log.e("RetrofitError", "Error changing user account type:${response.errorBody()?.string()!!}")
-                        Toast.makeText(this@AccountTypeSelector, "Error changing account type", Toast.LENGTH_SHORT).show()
                     }
-                }
-                override fun onFailure(call: Call<AccountType>, t: Throwable) {
-                    Log.e("RetrofitError", "Error reaching server: ${t.message.toString()}")
-                    Toast.makeText(this@AccountTypeSelector, "Error reaching the server", Toast.LENGTH_SHORT).show()
-                }
-            })
+                    override fun onFailure(call: Call<AccountTypeResponse>, t: Throwable) {
+                        Log.e("RetrofitFailure", "Couldn't reach the server ${t.message.toString()}")
+                        binding.button.setBackgroundResource(R.drawable.primary_button)
+                        binding.button.isEnabled = true
+                    }
+                })
         }
     }
     private fun setClickableSpan(spannableString: SpannableString, targetWord: String) {

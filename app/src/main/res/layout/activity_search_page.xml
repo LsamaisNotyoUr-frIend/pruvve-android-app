@@ -7,6 +7,17 @@
     android:background="@color/white"
     tools:context=".BookPitchFragment">
 
+    <ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ep_back4"
+        app:layout_constraintBottom_toTopOf="@+id/guideline173"
+        app:layout_constraintEnd_toStartOf="@+id/guideline178"
+        app:layout_constraintStart_toStartOf="@+id/guideline169"
+        app:layout_constraintTop_toTopOf="@+id/guideline186"
+        tools:ignore="ContentDescription" />
+
     <TextView
         android:id="@+id/textView13"
         android:layout_width="0dp"
@@ -17,40 +28,57 @@
         android:textColor="@color/green"
         android:textSize="26sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/tvsearchBar"
+        app:layout_constraintBottom_toTopOf="@+id/llSearchBar"
         app:layout_constraintEnd_toStartOf="@+id/guideline176"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline186"
         tools:ignore="HardcodedText" />
 
-    <ImageView
-        android:id="@+id/btnBack"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        tools:ignore="ContentDescription"
-        android:src="@drawable/ep_back4"
-        app:layout_constraintBottom_toTopOf="@+id/imageView7"
-        app:layout_constraintEnd_toStartOf="@+id/guideline178"
-        app:layout_constraintStart_toStartOf="@+id/guideline169"
-        app:layout_constraintTop_toTopOf="@+id/guideline186" />
-
-    <TextView
-        android:id="@+id/tvsearchBar"
+    <LinearLayout
+        android:id="@+id/llSearchBar"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/search_background"
-        android:fontFamily="@font/my_poppins"
-        android:gravity="center_vertical"
-        android:text="\t\t\t\t\tSearch by location and name"
-        android:textColor="@color/dark_gray"
-        android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline174"
         app:layout_constraintEnd_toStartOf="@+id/guideline176"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/guideline169"
-        app:layout_constraintTop_toTopOf="@+id/guideline173"
-        app:layout_constraintVertical_bias="0.0"
-        tools:ignore="HardcodedText" />
+        app:layout_constraintTop_toTopOf="@+id/guideline173">
+
+        <TextView
+            android:id="@+id/tvSearchBehindBar"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_marginEnd="2dp"
+            android:background="@color/white"
+            android:fontFamily="@font/my_poppins"
+            android:gravity="center"
+            android:textColor="@color/dark_gray"
+            android:textSize="14sp"
+            tools:ignore="HardcodedText,LabelFor" />
+
+        <EditText
+            android:id="@+id/etSearchBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="38dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_marginEnd="2dp"
+            android:autofillHints="none"
+            android:background="@color/white"
+            android:fontFamily="@font/my_poppins"
+            android:gravity="center"
+            android:hint="Search by location and name"
+            android:importantForAutofill="no"
+            android:inputType="textWebEditText"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            tools:ignore="HardcodedText,LabelFor" />
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/imageView7"

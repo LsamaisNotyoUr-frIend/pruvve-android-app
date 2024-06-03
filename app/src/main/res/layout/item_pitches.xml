@@ -39,10 +39,11 @@
                 app:layout_constraintTop_toTopOf="@+id/guideline191"
                 tools:ignore="HardcodedText" />
 
-            <WebView
-                android:id="@+id/wvPitches"
+            <ImageView
+                android:id="@+id/imvPitches"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:background="@drawable/dialogue_background4"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"

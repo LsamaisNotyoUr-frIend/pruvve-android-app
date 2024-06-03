@@ -2,6 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="dark_blue">#00008B</color>
+    <color name="darker_blue">#000066</color>
+    <color name="darkest_blue">#000044</color>
     <color name="very_light_blue">#00FFFF</color>
     <color name="red">#FF0000</color>
     <color name="green">#008000</color>
@@ -13,6 +15,7 @@
     <color name="pink">#FFC0CB</color>
     <color name="cyan">#00FFFF</color>
     <color name="gray">#808080</color>
+    <color name="mid_gray">#505050</color>
     <color name="silver">#C0C0C0</color>
     <color name="gold">#FFD700</color>
     <color name="navy_blue">#000080</color>
@@ -28,6 +31,10 @@
     <color name="teal">#008080</color>
     <color name="medium_purple">#9370DB</color>
     <color name="lime_green">#32CD32</color>
+    <color name="mid_green">#199919</color>
+    <color name="moderate_green">#0D7F0D</color>
+    <color name="dark_green">#006400</color>
+    <color name="darker_green">#005900</color>
     <color name="powder_blue">#B0E0E6</color>
     <color name="sandy_brown">#F4A460</color>
     <color name="steel_blue">#4682B4</color>
@@ -44,9 +51,13 @@
     <color name="hot_pink">#FF69B4</color>
     <color name="pale_green">#98FB98</color>
     <color name="dark_gray">#333333</color>
+    <color name="mid_dark_gray">#222222</color>
+    <color name="lighter_gray">#EEEEEE</color>
     <color name="light_gray">#CDCDCD</color>
     <color name="darker_gray">#111111</color>
     <color name="white">#FFFFFFFF</color>
     <color name="facebook_blue">#4267B2</color>
     <color name="transparent">#00000000</color>
+    <color name="dark_red">#8B0000</color>
+    <color name="oxblood"> #4A0000</color>
 </resources>

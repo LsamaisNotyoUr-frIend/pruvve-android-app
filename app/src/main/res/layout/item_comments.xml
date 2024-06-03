@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/mid_dark_gray">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:cardCornerRadius="90dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline243"
+        app:layout_constraintStart_toStartOf="@+id/guideline245"
+        app:layout_constraintTop_toTopOf="@+id/guideline246">
+
+        <ImageView
+            android:id="@+id/wvCommentProfilePicture"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:ignore="ContentDescription" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tvCommentsUsername"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:fontFamily="@font/my_exo"
+        android:text="userName"
+        android:textColor="@color/white"
+        android:textSize="21sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/guideline244"
+        app:layout_constraintStart_toStartOf="@+id/guideline243"
+        app:layout_constraintTop_toTopOf="@+id/guideline246"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/tvUserComments"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/my_exo"
+        android:maxLines="4"
+        android:text="comment of the century right here yoiu aint gonna find any better than this to grab your attention"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toTopOf="@+id/tvViewMore"
+        app:layout_constraintEnd_toStartOf="@+id/guideline244"
+        app:layout_constraintStart_toStartOf="@+id/guideline243"
+        app:layout_constraintTop_toBottomOf="@+id/tvCommentsUsername"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/tvViewMore"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="  View more"
+        android:textColor="@color/moderate_green"
+        android:textSize="16sp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline244"
+        tools:ignore="HardcodedText" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline243"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.20" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline244"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline245"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline246"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
+</androidx.constraintlayout.widget.ConstraintLayout>
