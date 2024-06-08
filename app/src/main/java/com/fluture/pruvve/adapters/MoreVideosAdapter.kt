@@ -24,7 +24,15 @@ import com.bumptech.glide.request.RequestOptions
 import com.fluture.pruvve.ProfileResponse
 import com.fluture.pruvve.R
 import com.fluture.pruvve.ShowVideos
-import com.fluture.pruvve.retrofittcalls.*
+import com.fluture.pruvve.localdatabase.SavedPost
+import com.fluture.pruvve.retrofittcalls.FollowsReply
+import com.fluture.pruvve.retrofittcalls.MakeComments
+import com.fluture.pruvve.retrofittcalls.RequestObjects
+import com.fluture.pruvve.retrofittcalls.ServerComments
+import com.fluture.pruvve.retrofittcalls.ServerLikes
+import com.fluture.pruvve.retrofittcalls.UploadImage
+import com.fluture.pruvve.retrofittcalls.UploadResponse
+import com.fluture.pruvve.retrofittcalls.UserService
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.ui.PlayerView
@@ -32,7 +40,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MoreVideosAdapter(private var videos: List<VideoItems>, private val service: UserService) : RecyclerView.Adapter<MoreVideosAdapter.VideosViewHolder>() {
+class MoreVideosAdapter(private var videos: List<SavedPost>, private val service: UserService) : RecyclerView.Adapter<MoreVideosAdapter.VideosViewHolder>() {
 
     inner class VideosViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -99,7 +107,7 @@ class MoreVideosAdapter(private var videos: List<VideoItems>, private val servic
             findViewById<TextView>(R.id.tvTimestamp).text = currentItem.timeStamp
             findViewById<TextView>(R.id.tvTitle).text = currentItem.title
             findViewById<TextView>(R.id.tvProfileName).text = currentItem.name
-            findViewById<TextView>(R.id.tvViews).text = currentItem.views
+            findViewById<TextView>(R.id.tvViews).text = currentItem.views.toString()
             findViewById<TextView>(R.id.tvComments).text = currentItem.comments
             findViewById<TextView>(R.id.tvLikes).text = currentItem.likes
 
@@ -174,7 +182,7 @@ class MoreVideosAdapter(private var videos: List<VideoItems>, private val servic
         }
     }
 
-    private fun changeFollowStatus(textView: TextView, isFollowed: Boolean, userId: Int, currentItem: VideoItems) {
+    private fun changeFollowStatus(textView: TextView, isFollowed: Boolean, userId: Int, currentItem: SavedPost) {
         val newBoolean = !isFollowed
         val call = if (!isFollowed) {
             service.unFollowUser(userId)
@@ -406,17 +414,13 @@ class MoreVideosAdapter(private var videos: List<VideoItems>, private val servic
 
     private fun addViews(postId: Int) {
         service.addViews(postId).enqueue(object : Callback<ProfileResponse> {
-            override fun onResponse(
-                call: Call<ProfileResponse>,
-                response: Response<ProfileResponse>
-            ) {
+            override fun onResponse(call: Call<ProfileResponse>, response: Response<ProfileResponse>) {
                 if (response.isSuccessful) {
                     Log.d("RetrofitSuccess", "your view has been registered")
                 } else {
                     Log.e("RetrofitError", "your view was not registered ${response.errorBody().toString()}")
                 }
             }
-
             override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
                 Log.e("RetrofitFailure", "couldn't reach the server ${t.message.toString()}")
             }
@@ -427,17 +431,3 @@ class MoreVideosAdapter(private var videos: List<VideoItems>, private val servic
         return url.contains("ProfilePic", ignoreCase = true)
     }
 }
-
-data class VideoItems(
-    val profilePicUrl: String,
-    val timeStamp: String,
-    val name: String,
-    val title: String,
-    val videoUrl: String,
-    var follow: Boolean,
-    val views: String,
-    val comments: String,
-    val likes: String,
-    val otherUsersId: Int,
-    val postId: Int
-)

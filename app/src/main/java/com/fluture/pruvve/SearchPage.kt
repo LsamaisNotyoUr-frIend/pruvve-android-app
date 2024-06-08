@@ -1,16 +1,15 @@
 package com.fluture.pruvve
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fluture.pruvve.adapters.SearchAdapter
 import com.fluture.pruvve.adapters.SearchItems
 import com.fluture.pruvve.databinding.ActivitySearchPageBinding
-import com.fluture.pruvve.essentials.TextCarrier
 
-class SearchPage : AppCompatActivity(), TextCarrier{
+class SearchPage : AppCompatActivity(){
     private lateinit var binding: ActivitySearchPageBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +39,7 @@ class SearchPage : AppCompatActivity(), TextCarrier{
             SearchItems("the Kings", "realigouos"),
             SearchItems("Stadium diffurus", "we differentiate ourselves from the rest through our skills")
         )
-        val adapter = SearchAdapter(searches,this@SearchPage, this)
+        val adapter = SearchAdapter(searches,this@SearchPage)
         val recycler = binding.rvSearches
         recycler.adapter = adapter
         recycler.layoutManager = LinearLayoutManager(this@SearchPage, LinearLayoutManager.VERTICAL, false)
@@ -49,7 +48,6 @@ class SearchPage : AppCompatActivity(), TextCarrier{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // Not used
             }
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val searchText = s.toString().lowercase()
 
@@ -65,9 +63,5 @@ class SearchPage : AppCompatActivity(), TextCarrier{
                 // Not used
             }
         })
-    }
-
-    override fun onSearchItemSelected(title: String) {
-        binding.tvSearchBehindBar.text = title
     }
 }
