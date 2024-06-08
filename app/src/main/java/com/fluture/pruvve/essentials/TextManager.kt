@@ -13,8 +13,8 @@ object TextManager {
         sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
     }
 
-    fun saveText(token: String) {
-        sharedPreferences?.edit()?.putString(TEXT, token)?.apply()
+    fun saveText(text: String) {
+        sharedPreferences?.edit()?.putString(TEXT, text)?.apply()
     }
 
     fun getText(): String? {

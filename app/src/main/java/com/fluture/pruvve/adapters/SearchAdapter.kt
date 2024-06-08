@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.fluture.pruvve.R
-import com.fluture.pruvve.essentials.TextCarrier
+import com.fluture.pruvve.essentials.TextManager
 
-class SearchAdapter(private var searches: List<SearchItems>,private val myContext: Activity, private val listenr: TextCarrier): RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
+class SearchAdapter(private var searches: List<SearchItems>,private val myContext: Activity): RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_pitch_locations, parent, false)
         return SearchViewHolder(view)
@@ -24,13 +24,14 @@ class SearchAdapter(private var searches: List<SearchItems>,private val myContex
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
         val currentItem = searches[position]
         holder.itemView.apply {
+            TextManager.init(context)
             val title =  findViewById<TextView>(R.id.tvLocationSearchTitle)
-           title.text = currentItem.title
+            title.text = currentItem.title
             findViewById<TextView>(R.id.tvSearchSummary).text = currentItem.content
-        }
-        holder.itemView.setOnClickListener {
-            listenr.onSearchItemSelected(currentItem.title)
-            myContext.finish()
+            setOnClickListener {
+                TextManager.saveText(currentItem.title)
+                myContext.finish()
+            }
         }
     }
 

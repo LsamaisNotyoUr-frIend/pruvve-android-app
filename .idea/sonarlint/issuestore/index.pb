@@ -102,8 +102,6 @@ s
 Capp/src/main/java/com/fluture/pruvve/adapters/VideosPageAdapter1.kt,8\c\8c5fe9f405b9d839660791fbe2f2f43577b2ceba
 m
 =app/src/main/java/com/fluture/pruvve/adapters/StoryAdapter.kt,1\d\1db35c780cfe387167d21044b92fe3ebd79dea63
-q
-Aapp/src/main/java/com/fluture/pruvve/essentials/AmazonUploader.kt,8\b\8bc93eb37ee1fe0c1b9d7022e6a135a90a9943e7
 a
 1app/src/main/java/com/fluture/pruvve/TeamsPage.kt,c\d\cddbd0e0f98d89d5863323e026127d5e21c468d8
 b
@@ -130,8 +128,6 @@ d
 4app/src/main/java/com/fluture/pruvve/SplashScreen.kt,a\4\a4f11adb56ea2dfeb8b256038096649948a72955
 n
 >app/src/main/java/com/fluture/pruvve/adapters/LoginResponse.kt,e\4\e4fa5e9d21910237ad3e8b30957a447fd21790ff
-n
->app/src/main/java/com/fluture/pruvve/essentials/TextCarrier.kt,4\3\43925fd665e558f7c68925e3a0b875425986055c
 f
 6app/src/main/java/com/fluture/pruvve/BookingPitches.kt,f\8\f8d6391c181100225717eccf16f58e8f1aa83d08
 r
@@ -180,5 +176,15 @@ p
 0app/src/main/res/layout/activity_show_videos.xml,a\b\ab0f6e2bd23801a0f66396e6491fd8a70a638115
 \
 ,app/src/main/res/layout/item_feed_videos.xml,6\c\6c1dc6e18f8117867ca4a107173575ded45742a5
+^
+.app/src/main/res/layout/activity_more_page.xml,d\1\d12205134dd31e5d2137cb79e3c8306f646c1ec5
 o
-?app/src/main/java/com/fluture/pruvve/essentials/CacheHandler.kt,c\f\cff21ec7cb39b2c30dcd150d4f460aa552f1cc05
+?app/src/main/java/com/fluture/pruvve/localdatabase/SavedPost.kt,8\6\86a79620c0385287a934ed3c06e27fefcfec59e3
+m
+=app/src/main/java/com/fluture/pruvve/localdatabase/PostDao.kt,a\e\ae4aecb31f8159cbfa432e0a7a2b9393d672455b
+t
+Dapp/src/main/java/com/fluture/pruvve/localdatabase/PruvveDatabase.kt,e\a\ea2288f6b7dabf4f77bdc5fed10af3d8a5e5a472
+t
+Dapp/src/main/java/com/fluture/pruvve/localdatabase/PostRepository.kt,b\c\bc18afaec2c1af1f0b944605b83e985fa9e1c8c7
+n
+>app/src/main/java/com/fluture/pruvve/essentials/TextManager.kt,a\2\a2db79acbf6069f176323045209ebf131ac1c07c
