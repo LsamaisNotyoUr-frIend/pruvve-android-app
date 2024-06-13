@@ -3,18 +3,19 @@ package com.fluture.pruvve.retrofittcalls
 
 import com.fluture.pruvve.CoachProfileBody
 import com.fluture.pruvve.GetCategory
-import com.fluture.pruvve.adapters.GetUserResponse
-import com.fluture.pruvve.adapters.LoginResponse
 import com.fluture.pruvve.ProfileBody
 import com.fluture.pruvve.ProfileResponse
+import com.fluture.pruvve.adapters.GetAllUserResponse
+import com.fluture.pruvve.adapters.GetUserResponse
+import com.fluture.pruvve.adapters.LoginResponse
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
-import retrofit2.http.POST
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -35,6 +36,8 @@ interface UserService {
     fun finishCoachProfile(@Body profile: CoachProfileBody):Call<ProfileResponse>
     @GET("v1/user")
     fun getUserCredentials():Call<GetUserResponse>
+    @GET("v1/user/search")
+    fun getAllUsers(@Query("request") request: UserRequestObjects):Call<GetAllUserResponse>
     @PUT
     fun uploadFile(@Header("Content-Type") contentType: String, @Url uploadUrl: String, @Body file: RequestBody): Call<ResponseBody>
     @GET("oauth2/authorization/google")

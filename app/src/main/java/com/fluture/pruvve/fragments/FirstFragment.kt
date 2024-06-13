@@ -1,4 +1,4 @@
-package com.fluture.pruvve
+package com.fluture.pruvve.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import com.fluture.pruvve.R
 import com.fluture.pruvve.databinding.FragmentFirstBinding
 
 /**

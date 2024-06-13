@@ -32,3 +32,13 @@ data class CommentUser(
     val id: Int,
     val profilePictureUrl: String
 )
+
+data class teamMembers(
+    val firstName:String,
+    val lastName:String,
+    val username:String,
+    val id: Int,
+    val profilePictureUrl: String,
+    val preferredFoot: String,
+    val position: String
+)

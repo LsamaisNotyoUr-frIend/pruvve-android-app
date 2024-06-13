@@ -188,3 +188,15 @@ t
 Dapp/src/main/java/com/fluture/pruvve/localdatabase/PostRepository.kt,b\c\bc18afaec2c1af1f0b944605b83e985fa9e1c8c7
 n
 >app/src/main/java/com/fluture/pruvve/essentials/TextManager.kt,a\2\a2db79acbf6069f176323045209ebf131ac1c07c
+p
+@app/src/main/java/com/fluture/pruvve/fragments/SecondFragment.kt,d\d\dd610730faa790d4aac108466dbaa0d8ab9913d4
+o
+?app/src/main/java/com/fluture/pruvve/fragments/FirstFragment.kt,8\3\830110a7d3dfb29d09a021a58fee572f7b81d1bc
+r
+Bapp/src/main/java/com/fluture/pruvve/fragments/AddStoryFragment.kt,e\b\ebf7ccfd31aff37c46025f918de63c36e3af5222
+q
+Aapp/src/main/java/com/fluture/pruvve/fragments/ProfileFragment.kt,3\a\3ad6593192b6e837bb5e768a0faa04b8ac8e73c9
+n
+>app/src/main/java/com/fluture/pruvve/fragments/NewsFragment.kt,f\4\f4507a4060497dff8360c7d56f3b7c009539dad1
+o
+?app/src/main/java/com/fluture/pruvve/fragments/TeamsFragment.kt,c\1\c122932b802479c437673280a2d080f0dfb787bb

@@ -22,14 +22,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/imvSmallVideos"
+            <VideoView
+                android:id="@+id/vvSmallVideos"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/dialogue_background3"
                 tools:ignore="ContentDescription" />
 
             <ImageView
+                android:id="@+id/imvPlayVideos"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:src="@drawable/videos_small"

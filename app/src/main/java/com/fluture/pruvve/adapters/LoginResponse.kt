@@ -21,3 +21,15 @@ data class GetUserResponse (
     @SerializedName("data")
     val data: GetData,
 )
+
+data class GetAllUserResponse(
+    val code: String,
+    val message: String,
+    val data: GetAllUsers
+)
+data class GetAllUsers(
+    val list: List<GetData>,
+    val page: Int,
+    val limit: Int,
+    val total: Int
+)

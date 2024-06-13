@@ -33,7 +33,7 @@ data class GetSpecificTeam(
 )
 data class GetTeamItem(
     val id: Int,
-    val teamMembers: List<CommentUser>,
+    val teamMembers: List<teamMembers>,
     val name: String,
     val invitationLink: String,
     val profilePictureUrl: String,

@@ -1,9 +1,10 @@
-package com.fluture.pruvve
+package com.fluture.pruvve.fragments
 
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
+import com.fluture.pruvve.R
 import com.fluture.pruvve.databinding.FragmentAddStoryBinding
 
 class AddStoryFragment : Fragment(R.layout.fragment_add_story) {

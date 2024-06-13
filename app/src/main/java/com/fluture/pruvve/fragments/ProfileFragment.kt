@@ -1,4 +1,4 @@
-package com.fluture.pruvve
+package com.fluture.pruvve.fragments
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -17,6 +17,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import com.fluture.pruvve.R
+import com.fluture.pruvve.TeamsPage
+import com.fluture.pruvve.TeamsPage2
 import com.fluture.pruvve.adapters.VideoPageItems
 import com.fluture.pruvve.adapters.VideosPageAdapter1
 import com.fluture.pruvve.databinding.FragmentProfileBinding
