@@ -2,7 +2,7 @@ package com.fluture.pruvve.localdatabase
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-@Entity
+@Entity(tableName = "savedpost")
 data class SavedPost (
     val profilePicUrl: String,
     val timeStamp: String,
@@ -10,7 +10,7 @@ data class SavedPost (
     val title: String,
     val videoUrl: String,
     var follow: Boolean,
-    val views: Int,
+    val views: String,
     val comments: String,
     val likes: String,
     val otherUsersId: Int,

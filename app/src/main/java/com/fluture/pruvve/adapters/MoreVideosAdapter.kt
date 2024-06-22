@@ -108,8 +108,8 @@ class MoreVideosAdapter(private var videos: List<SavedPost>, private val service
             findViewById<TextView>(R.id.tvTitle).text = currentItem.title
             findViewById<TextView>(R.id.tvProfileName).text = currentItem.name
             findViewById<TextView>(R.id.tvViews).text = currentItem.views.toString()
-            findViewById<TextView>(R.id.tvComments).text = currentItem.comments
-            findViewById<TextView>(R.id.tvLikes).text = currentItem.likes
+            findViewById<TextView>(R.id.tvComments).text = currentItem.comments.toString()
+            findViewById<TextView>(R.id.tvLikes).text = currentItem.likes.toString()
 
             val likesButton = findViewById<TextView>(R.id.tvLikeItems)
             val commentButton = findViewById<TextView>(R.id.tvMyComments)

@@ -7,13 +7,13 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.fluture.pruvve.adapters.MoreVideosAdapter
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityMorePageBinding
+import com.fluture.pruvve.essentials.DateUtils
 import com.fluture.pruvve.localdatabase.PostRepository
 import com.fluture.pruvve.localdatabase.PostViewModel
 import com.fluture.pruvve.localdatabase.PostViewModelFactory
@@ -29,21 +29,17 @@ import com.fluture.pruvve.retrofittcalls.GetPostsSummary
 import com.fluture.pruvve.retrofittcalls.UploadImage
 import com.fluture.pruvve.retrofittcalls.UploadResponse
 import com.fluture.pruvve.retrofittcalls.UserService
-import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import java.text.SimpleDateFormat
 
 
 class MorePage : AppCompatActivity() {
     private lateinit var binding: ActivityMorePageBinding
     private lateinit var repository: PostRepository
-    private val onFailure = "RetrofitFailure"
-    private val onError= "RetrofitError"
     private val postViewModel: PostViewModel by viewModels {
         PostViewModelFactory(PostRepository(PruvveDatabase.getDatabase(this).postDao))
     }
@@ -60,7 +56,7 @@ class MorePage : AppCompatActivity() {
         val listPosts = mutableListOf(
             SavedPost(
                 "empty", "10minutes ago", "user1",
-                "The end of times", "empty", true, 1000, 500, 250, 5, 3
+                "The end of times", "empty", true, "1000 views", "500 comments", "250 likes", 5, 3
             )
         )
         val token = LoginManager.getToken()
@@ -76,31 +72,35 @@ class MorePage : AppCompatActivity() {
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
             .create(UserService::class.java)
+
+        val adapter = MoreVideosAdapter(listPosts, service)
+        Log.d("Database2", "Recycler being filled")
+        binding.rvFeeds.adapter = adapter
+        binding.rvFeeds.layoutManager = LinearLayoutManager(this@MorePage)
         val id = intent.getIntExtra("userId", 5)
-        getPosts(service, id)
+//        getPosts(service, id)
 
         postViewModel.allPosts.observe(this@MorePage) { posts ->
             Log.e("Database", "Started")
             if (posts.isNotEmpty()) {
-                Log.d("Database", "posts collecting")
-                val adapter = MoreVideosAdapter(posts, service)
-                binding.rvFeeds.adapter = adapter
-                binding.rvFeeds.layoutManager = LinearLayoutManager(this@MorePage)
+                listPosts.clear()  // Clear the initial post
+                for (post in posts) {
+                    Log.d("Url", post.videoUrl)
+                    val postToUpload = SavedPost(
+                        post.profilePicUrl, post.timeStamp, post.name, post.title,
+                        post.videoUrl, post.follow, post.views, post.comments, post.likes, post.otherUsersId, post.postId
+                    )
+                    listPosts.add(postToUpload)
+                }
                 adapter.notifyDataSetChanged()
+                binding.rvFeeds.visibility = View.VISIBLE
             } else {
                 Log.d("Database", "No posts collected")
             }
         }
 
-        lifecycleScope.launch {
-            repository.allPosts.collect{ posts ->
-                Log.d("Database", "posts collecting")
-                val adapter = MoreVideosAdapter(posts, service)
-                binding.rvFeeds.adapter = adapter
-                binding.rvFeeds.layoutManager = LinearLayoutManager(this@MorePage)
-                adapter.notifyDataSetChanged()
-            }
-        }
+        Log.d("RetrofitPosts", "your list size is ${listPosts.size}")
+
         Log.d("RetrofitPosts", "your list size is ${listPosts.size}")
         val popular = binding.tvPopular
         val nearby = binding.tvNearby
@@ -169,10 +169,11 @@ class MorePage : AppCompatActivity() {
     }
 
     private fun getPosts(service: UserService, id: Int) {
-        service.getPosts(GetFeedsMedia(1, 5)).enqueue(object : Callback<GetAllPosts> {
+        service.getPosts(GetFeedsMedia(1, 10)).enqueue(object : Callback<GetAllPosts> {
             override fun onResponse(call: Call<GetAllPosts>, response: Response<GetAllPosts>) {
                 if (response.isSuccessful) {
                     response.body()?.data?.list?.let {
+                        Log.d("Database1", "Uploading Posts")
                         it.forEach { post -> uploadMediaAndProfilePictures(service, post, id) }
                     } ?: Log.e("Error", "List is empty")
                 } else {
@@ -188,32 +189,18 @@ class MorePage : AppCompatActivity() {
 
     private fun uploadMediaAndProfilePictures(service: UserService, posts: AllPostItems, id: Int) {
         uploadImage(service, posts.mediaUrl) { mediaToUploadUrl ->
+            Log.d("Database2", "Uploading Posts")
             uploadImage(service, posts.user.profilePictureUrl) { profilePicToUploadUrl ->
-                getFollowStatus(service, posts, mediaToUploadUrl, profilePicToUploadUrl, id)
+                Log.d("Database3", "Uploading Posts")
+                getPostSummary(service, posts,true, mediaToUploadUrl, profilePicToUploadUrl)
             }
         }
     }
-
-    private fun uploadImage(service: UserService, url: String, onSuccess: (String?) -> Unit) {
-        service.uploadPicture(UploadImage(url, "DOWNLOAD")).enqueue(object : Callback<UploadResponse> {
-            override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
-                if (response.isSuccessful) {
-                    onSuccess(response.body()?.data)
-                } else {
-                    logError(response.errorBody()?.toString(), "Couldn't get the image URL")
-                }
-            }
-
-            override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
-                logFailure(t, "Couldn't reach the server")
-            }
-        })
-    }
-
     private fun getFollowStatus(service: UserService, posts: AllPostItems, mediaUrl: String?, profilePicUrl: String?, id: Int) {
         service.getFollowStatus(FollowerId(id), FollowedId(posts.user.id)).enqueue(object : Callback<FollowStatusReply> {
             override fun onResponse(call: Call<FollowStatusReply>, response: Response<FollowStatusReply>) {
                 if (response.isSuccessful) {
+                    Log.d("Database4", "Uploading Posts")
                     getPostSummary(service, posts, response.body()?.data ?: true, mediaUrl, profilePicUrl)
                 } else {
                     logError(response.errorBody()?.toString(), "Couldn't get follow status")
@@ -230,11 +217,12 @@ class MorePage : AppCompatActivity() {
         service.getPostSummary(posts.id).enqueue(object : Callback<GetPostsSummary> {
             override fun onResponse(call: Call<GetPostsSummary>, response: Response<GetPostsSummary>) {
                 if (response.isSuccessful) {
+                    Log.d("Database6", "Uploading Posts")
                     val summary = response.body()?.data
                     savePostToDatabase(posts, mediaUrl, profilePicUrl, followStatus,
                         summary?.viewCount ?: 1000,
                         summary?.likeCount ?: 500,
-                        summary?.commentCount ?: 20)
+                        summary?.commentCount ?: 20,)
                 } else {
                     logError(response.errorBody()?.toString(), "Couldn't get post summary")
                 }
@@ -248,20 +236,28 @@ class MorePage : AppCompatActivity() {
 
     private fun savePostToDatabase(posts: AllPostItems, mediaUrl: String?, profilePicUrl: String?, followStatus: Boolean,
                                    viewCount: Int, likeCount: Int, commentCount: Int) {
-        val postToUpload = SavedPost(
-            profilePicUrl = profilePicUrl ?: "s",
-            timeStamp = SimpleDateFormat.getDateInstance().toString(),
-            name = posts.user.username,
-            title = posts.caption,
-            videoUrl = mediaUrl ?: "weee",
-            follow = followStatus,
-            views = viewCount,
-            comments = commentCount,
-            likes = likeCount,
-            otherUsersId = posts.user.id,
-            postId = posts.id
-        )
+        Log.d("DatabaseFinal", "Uploading Posts")
+        val postToUpload = SavedPost(profilePicUrl = profilePicUrl ?: "s", timeStamp = DateUtils.getRelativeTimeString(posts.creationDate) ,
+            name = posts.user.username, title = posts.caption, videoUrl = mediaUrl ?: "weee", follow = followStatus,
+            views = "$viewCount views", comments = "$commentCount comments", likes = "$likeCount likes",
+            otherUsersId = posts.user.id, postId = posts.id)
         postViewModel.upsertPost(postToUpload)
+        Log.d("Database", "Posts Uploaded")
+    }
+
+    private fun uploadImage(service: UserService, url: String, onSuccess: (String?) -> Unit) {
+        service.uploadPicture(UploadImage(url, "DOWNLOAD")).enqueue(object : Callback<UploadResponse> {
+            override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
+                if (response.isSuccessful) {
+                    onSuccess(response.body()?.data)
+                } else {
+                    logError(response.errorBody()?.toString(), "Couldn't get the image URL")
+                }
+            }
+            override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
+                logFailure(t, "Couldn't reach the server")
+            }
+        })
     }
 
     private fun logError(errorBody: String?, message: String) {

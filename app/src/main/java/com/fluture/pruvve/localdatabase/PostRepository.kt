@@ -19,6 +19,10 @@ class PostRepository(private val postDao: PostDao) {
             postDao.deletePosts(post)
         }
     }
+    fun deleteAllPosts() {
+        postDao.deleteAllPosts()
+    }
+
     suspend fun upsertPosts(posts: List<SavedPost>) {
         withContext(Dispatchers.IO) {
             posts.forEach {

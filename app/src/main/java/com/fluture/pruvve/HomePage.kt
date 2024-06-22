@@ -134,8 +134,15 @@ class HomePage : AppCompatActivity() {
             }
         }
         binding.profileButton.setOnClickListener {
+            val bundle = Bundle().apply {
+                putInt("userId", id)
+            }
+
+            val profileFragment = ProfileFragment().apply {
+                arguments = bundle
+            }
             supportFragmentManager.beginTransaction().apply {
-                replace(R.id.homeScreenFragment, ProfileFragment())
+                replace(R.id.homeScreenFragment, profileFragment)
                 binding.homePageButton.setImageResource(R.drawable.home_button)
                 binding.videoPageButton.setImageResource(R.drawable.video_icon)
                 binding.bookPitchButton.setImageResource(R.drawable.book_pitch_icon)
@@ -157,6 +164,7 @@ class HomePage : AppCompatActivity() {
         }
         binding.tvMoreFeeds.setOnClickListener {
             Intent(this, MorePage::class.java).also{
+                it.putExtra("userId", id)
                 startActivity(it)
             }
         }

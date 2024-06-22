@@ -34,6 +34,9 @@ interface UserService {
     fun finishAthleteProfile(@Body profile: ProfileBody):Call<ProfileResponse>
     @PUT("v1/user/coach/profile")
     fun finishCoachProfile(@Body profile: CoachProfileBody):Call<ProfileResponse>
+
+    @GET("v1/user/coach/profile")
+    fun getCoachProfile(@Body profile: CoachProfileBody):Call<ProfileResponse>
     @GET("v1/user")
     fun getUserCredentials():Call<GetUserResponse>
     @GET("v1/user/search")
@@ -71,26 +74,43 @@ interface UserService {
 
     @POST("v1/story")
     fun postStory(@Body post: PostsMedia):Call<UploadResponse>
+
     @GET("v1/story")
     fun getStories(@Query("request") post: GetPostsMedia):Call<GetPost>
+
     @PUT("v1/team/{teamId}/media")
     fun putTeamsMedia(@Path("teamId")teamId :Int, @Body teamMedia: UploadData):Call<ProfileResponse>
+
     @GET("v1/team")
     fun getTeams(@Query("request") requestObject: RequestObjects):Call<GetTeams>
+
     @GET("v1/team/{teamInvitationLink}")
     fun addToTeam(@Path("teamInvitationLink")teamInvitationLink :String):Call<ProfileResponse>
+
     @GET("v1/team/{teamId}")
     fun getTeamById(@Path("teamId")teamId :Int):Call<GetSpecificTeam>
+
     @PUT("v1/team/{teamId}/user")
     fun getUserInTeam(@Path("teamId")teamId :Int, @Body userId: UserIdObject):Call<ProfileResponse>
+
     @POST("v1/team")
     fun makeTeams(@Body name:String):Call<GetSpecificTeam>
+
     @PUT("v1/user/account-type")
     fun putAccountType(@Body accountType: AccountType):Call<AccountTypeResponse>
+
     @GET("v1/user/athlete/profile")
-    fun getAthleteProfile():Call<GetAthletePost>
+    fun getAthleteProfile():Call<GetAthleteProfile>
+
     @GET("v1/video/feed")
-    fun getPosts(@Query("request") post: GetPostsMedia):Call<GetAllPosts>
+    fun getFeeds(@Query("request") post: GetFeedsMedia):Call<GetAllPosts>
+
+    @GET("v1/post/feed")
+    fun getPosts(@Query("request") post: GetFeedsMedia):Call<GetAllPosts>
+
+    @GET("v1/user/{userId}/video")
+    fun getMyPosts(@Path("userId")userId:Int, @Query("request") post: GetFeedsMedia):Call<GetAllPosts>
+
     @GET("v1/post/{postId}")
     fun getSelectedPosts(@Path("postId")postId:Int):Call<GetPost>
     @GET("v1/post/{postId}/summary")
@@ -117,7 +137,7 @@ interface UserService {
     @GET("v1/news")
     fun getNewsById(@Path("newsId") newsId: Int):Call<NewsGotten>
 
-    @GET("/v1/pitch/{pitchId}")
+    @GET("v1/pitch/{pitchId}")
     fun getPitchById(@Path("pitchId") pitchId: Int):Call<GetPitch>
 
     @GET("v1/pitch")

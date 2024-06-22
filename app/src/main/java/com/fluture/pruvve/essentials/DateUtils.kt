@@ -1,13 +1,14 @@
 package com.fluture.pruvve.essentials
 
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 object DateUtils {
-    fun getRelativeTimeString(creationDateString: String): String {
+    fun getRelativeTimeString(creationDateString: String?): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSS", Locale.getDefault())
-        val creationDate: Date? = dateFormat.parse(creationDateString)
+        val creationDate: Date? = dateFormat.parse(creationDateString ?: "2024-06-22T16:22:28.046Z")
         val currentDate = Date()
 
         if (creationDate == null) {
@@ -26,11 +27,7 @@ object DateUtils {
             diffInHours < 24 -> "$diffInHours hours ago"
             diffInDays == 1L -> "1 day ago"
             diffInDays < 30 -> "$diffInDays days ago"
-            else -> creationDateString
+            else -> creationDateString ?: "Unknown date"
         }
-    }
-
-    private fun abs(value: Long): Long {
-        return if (value < 0) -value else value
     }
 }

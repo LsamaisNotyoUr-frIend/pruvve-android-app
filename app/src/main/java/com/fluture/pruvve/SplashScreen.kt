@@ -2,19 +2,15 @@ package com.fluture.pruvve
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.fluture.pruvve.adapters.GetUserResponse
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivitySplashScreenBinding
 import com.fluture.pruvve.retrofittcalls.UserService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.delay
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -63,7 +59,7 @@ class SplashScreen : AppCompatActivity() {
                             it.putExtra("profileUsername", userName)
                             it.putExtra("profileUrl", profileUrl)
                             it.putExtra("ProfileId", id)
-                            intent.putExtra("Extra_teamId", teamId)
+                            it.putExtra("Extra_teamId", teamId)
                             startActivity(it)
                         }
                     } else {

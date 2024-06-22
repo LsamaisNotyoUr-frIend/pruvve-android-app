@@ -12,7 +12,7 @@ import com.fluture.pruvve.databinding.ActivityCoachHomePageBinding
 import com.fluture.pruvve.fragments.BookPitchFragment
 import com.fluture.pruvve.fragments.TeamsFragment
 import com.fluture.pruvve.retrofittcalls.GetAllPosts
-import com.fluture.pruvve.retrofittcalls.GetPostsMedia
+import com.fluture.pruvve.retrofittcalls.GetFeedsMedia
 import com.fluture.pruvve.retrofittcalls.UploadImage
 import com.fluture.pruvve.retrofittcalls.UploadResponse
 import com.fluture.pruvve.retrofittcalls.UserService
@@ -52,7 +52,7 @@ class CoachHomePage : AppCompatActivity() {
 
         val video = mutableListOf(VideoPageItems(myUrl))
 
-        val getPostMedia = GetPostsMedia(1, 20, id)
+        val getPostMedia = GetFeedsMedia(1, 20)
         service.getPosts(getPostMedia).enqueue(object : Callback<GetAllPosts>{
             override fun onResponse(call: Call<GetAllPosts>, response: Response<GetAllPosts>) {
                 if(response.isSuccessful){

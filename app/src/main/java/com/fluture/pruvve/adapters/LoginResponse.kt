@@ -15,15 +15,25 @@ data class LoginResponse (
 
 data class GetUserResponse (
     @SerializedName("code")
-    val code: String,
+    val code: Int,
     @SerializedName("message")
     val message: String,
     @SerializedName("data")
     val data: GetData,
 )
 
+data class GetCoachProfile(
+    val code:Int,
+    val message: String,
+    val data: CoachUsersInformation
+)
+data class CoachUsersInformation(
+    val schoolOrTeam: String,
+    val bio: String
+)
+
 data class GetAllUserResponse(
-    val code: String,
+    val code: Int,
     val message: String,
     val data: GetAllUsers
 )
