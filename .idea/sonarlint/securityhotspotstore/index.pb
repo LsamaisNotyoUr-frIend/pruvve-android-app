@@ -190,3 +190,5 @@ s
 Capp/src/main/java/com/fluture/pruvve/localdatabase/PostViewModel.kt,0\0\008c1b583ba072894f52cb6da2b1cf8582adbf03
 s
 Capp/src/main/java/com/fluture/pruvve/fragments/BookPitchFragment.kt,3\0\30c9ed9ae7a74d1a1b9b2be480dbf20be6e77177
+v
+Fapp/src/main/java/com/fluture/pruvve/fragments/VideoScreenFragments.kt,b\4\b42094ecd2efc2eba8567c6594cd71353c8d6de4
