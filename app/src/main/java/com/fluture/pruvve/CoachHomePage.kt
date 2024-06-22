@@ -1,15 +1,20 @@
 package com.fluture.pruvve
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.fluture.pruvve.adapters.VideoPageItems
 import com.fluture.pruvve.adapters.VideosPageAdapter1
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityCoachHomePageBinding
-import com.fluture.pruvve.retrofittcalls.GetSpecificTeam
+import com.fluture.pruvve.fragments.BookPitchFragment
+import com.fluture.pruvve.fragments.TeamsFragment
+import com.fluture.pruvve.retrofittcalls.GetAllPosts
+import com.fluture.pruvve.retrofittcalls.GetFeedsMedia
+import com.fluture.pruvve.retrofittcalls.UploadImage
+import com.fluture.pruvve.retrofittcalls.UploadResponse
 import com.fluture.pruvve.retrofittcalls.UserService
 import okhttp3.OkHttpClient
 import retrofit2.Call
@@ -25,6 +30,7 @@ class CoachHomePage : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         LoginManager.init(this)
+        val id: Int = intent.getIntExtra("ProfileId", 3)
         val token = LoginManager.getToken()
         Log.d("RetrofitToken", token.toString())
 
@@ -42,36 +48,55 @@ class CoachHomePage : AppCompatActivity() {
         val teamId = intent.getIntExtra("Extra_teamId", 5)
 
         val myUrl = "https://i.pinimg.com/236x/4e/80/50/4e80508b0f22dfc42ce98bb8d0acb563.jpg"
-        val myUrl2 = "https://i.pinimg.com/236x/0e/88/20/0e8820df856a51cdcb7a791396846421.jpg"
-        val thisURL = "https://i.pinimg.com/236x/c8/71/8e/c8718e9e41758a502a709765792b7de3.jpg"
         val recycler1 = binding.rvCoachFeeds1
 
+        val video = mutableListOf(VideoPageItems(myUrl))
 
-        val videos1 = mutableListOf(
-            VideoPageItems(myUrl),
-            VideoPageItems(myUrl2),
-            VideoPageItems(thisURL),
-            VideoPageItems(myUrl),
-            VideoPageItems(myUrl2),
-            VideoPageItems(myUrl),
-            VideoPageItems(myUrl2),
-            VideoPageItems(thisURL),
-            VideoPageItems(myUrl2),
-            VideoPageItems(thisURL),
-            VideoPageItems(myUrl),
-            VideoPageItems(myUrl2),
-            VideoPageItems(myUrl),
-            VideoPageItems(thisURL),
-            VideoPageItems(myUrl),
-            VideoPageItems(myUrl),
-            VideoPageItems(myUrl2),
-            VideoPageItems(myUrl)
-        )
-        val adapter1 = VideosPageAdapter1(videos1)
-        val layoutManager = GridLayoutManager(this@CoachHomePage, 2, GridLayoutManager.VERTICAL, false)
-        recycler1.adapter = adapter1
-        recycler1.layoutManager = layoutManager
-
+        val getPostMedia = GetFeedsMedia(1, 20)
+        service.getPosts(getPostMedia).enqueue(object : Callback<GetAllPosts>{
+            override fun onResponse(call: Call<GetAllPosts>, response: Response<GetAllPosts>) {
+                if(response.isSuccessful){
+                    val list = response.body()?.data?.list
+                    if (list!= null){
+                        for (post in list){
+                            val url = post.mediaUrl
+                            val downloadImage2 = UploadImage(
+                                fileName = url,
+                                purpose = "DOWNLOAD"
+                            )
+                            service.uploadPicture(downloadImage2).enqueue(object: Callback<UploadResponse>{
+                                override fun onResponse(
+                                    call: Call<UploadResponse>,
+                                    response: Response<UploadResponse>
+                                ) {
+                                    if (response.isSuccessful){
+                                        video.add(VideoPageItems(response.body()?.data.toString()))
+                                        if (video.size == list.size){
+                                            val adapter1 = VideosPageAdapter1(video)
+                                            val layoutManager = GridLayoutManager(this@CoachHomePage, 2, GridLayoutManager.VERTICAL, false)
+                                            recycler1.adapter = adapter1
+                                            recycler1.layoutManager = layoutManager
+                                        }
+                                    }else{
+                                        Log.e("RetrofitError", "Error taking data from the server")
+                                    }
+                                }
+                                override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
+                                    Log.e("RetrofitFailure", "Couldn't reach the server")
+                                }
+                            })
+                        }
+                    }else{
+                        Log.e("RetrofitError", "Your list is empty")
+                    }
+                }else{
+                    Log.e("RetrofitError", "Error taking data from the server")
+                }
+            }
+            override fun onFailure(call: Call<GetAllPosts>, t: Throwable) {
+                Log.e("RetrofitFailure", "Couldn't reach the server")
+            }
+        })
         binding.videoPageButton.setImageResource(R.drawable.clicked_video_icon)
         binding.bookPitchButton.setImageResource(R.drawable.book_pitch_icon)
         binding.profileButton.setImageResource(R.drawable.profile_icon)

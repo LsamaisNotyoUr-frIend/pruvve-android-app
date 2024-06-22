@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/pitch_background"
-    tools:context=".TeamsFragment">
+    tools:context=".fragments.TeamsFragment">
 
     <TextView
         android:id="@+id/pruvve1"
@@ -44,7 +44,7 @@
         app:layout_constraintTop_toTopOf="@+id/guideline247"
         tools:ignore="HardcodedText" />
 
-    <WebView
+    <ImageView
         android:id="@+id/wvTeamMembersPfp"
         android:layout_width="0dp"
         android:layout_height="0dp"

@@ -12,6 +12,10 @@ interface PostDao {
     fun upsertPosts(savedPost: SavedPost)
     @Delete
     fun deletePosts(savedPost: SavedPost)
+
+    @Query("DELETE FROM savedpost")
+    fun deleteAllPosts()
+
     @Query("SELECT * FROM savedpost ORDER BY views ASC")
     fun getPostsByLikes(): Flow<List<SavedPost>>
 

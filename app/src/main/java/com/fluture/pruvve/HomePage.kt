@@ -1,9 +1,9 @@
 package com.fluture.pruvve
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -12,6 +12,10 @@ import com.fluture.pruvve.adapters.StoryAdapter
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityHomePageBinding
+import com.fluture.pruvve.fragments.BookPitchFragment
+import com.fluture.pruvve.fragments.NewsFragment
+import com.fluture.pruvve.fragments.ProfileFragment
+import com.fluture.pruvve.fragments.VideoScreenFragments
 import com.fluture.pruvve.retrofittcalls.GetPost
 import com.fluture.pruvve.retrofittcalls.GetPostsMedia
 import com.fluture.pruvve.retrofittcalls.UploadImage
@@ -51,6 +55,7 @@ class HomePage : AppCompatActivity() {
             fileName = profilePic,
             "DOWNLOAD"
         )
+        binding.tvUsername.text = username
         service.uploadPicture(downloadImage).enqueue(object :Callback<UploadResponse>{
             override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>
             ) {
@@ -129,8 +134,15 @@ class HomePage : AppCompatActivity() {
             }
         }
         binding.profileButton.setOnClickListener {
+            val bundle = Bundle().apply {
+                putInt("userId", id)
+            }
+
+            val profileFragment = ProfileFragment().apply {
+                arguments = bundle
+            }
             supportFragmentManager.beginTransaction().apply {
-                replace(R.id.homeScreenFragment, ProfileFragment())
+                replace(R.id.homeScreenFragment, profileFragment)
                 binding.homePageButton.setImageResource(R.drawable.home_button)
                 binding.videoPageButton.setImageResource(R.drawable.video_icon)
                 binding.bookPitchButton.setImageResource(R.drawable.book_pitch_icon)
@@ -152,6 +164,7 @@ class HomePage : AppCompatActivity() {
         }
         binding.tvMoreFeeds.setOnClickListener {
             Intent(this, MorePage::class.java).also{
+                it.putExtra("userId", id)
                 startActivity(it)
             }
         }

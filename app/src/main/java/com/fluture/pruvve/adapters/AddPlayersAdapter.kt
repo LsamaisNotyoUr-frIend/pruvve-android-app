@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.fluture.pruvve.R
-import com.fluture.pruvve.retrofittcalls.RequestObjects
 
 class AddPlayersAdapter(private val playerList: MutableList<AddPlayerItems>):RecyclerView.Adapter<AddPlayersAdapter.AddPlayerViewHolder>() {
     inner class AddPlayerViewHolder(itemView: View):RecyclerView.ViewHolder(itemView)
@@ -18,7 +17,6 @@ class AddPlayersAdapter(private val playerList: MutableList<AddPlayerItems>):Rec
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_add_player, parent, false)
         return AddPlayerViewHolder(view)
     }
-
     override fun onBindViewHolder(holder: AddPlayerViewHolder, position: Int) {
         holder.itemView.apply {
             val currentItem = playerList[position]

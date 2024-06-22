@@ -10,6 +10,13 @@ data class PitchRequestObjects(
     val bookingReference: String
 )
 
+data class UserRequestObjects(
+    val page: Int,
+    val size: Int,
+    val name: String,
+    val accountType: String
+)
+
 data class PitchTimes(
     val startTime: String,
     val endTime: String

@@ -3,18 +3,19 @@ package com.fluture.pruvve.retrofittcalls
 
 import com.fluture.pruvve.CoachProfileBody
 import com.fluture.pruvve.GetCategory
-import com.fluture.pruvve.adapters.GetUserResponse
-import com.fluture.pruvve.adapters.LoginResponse
 import com.fluture.pruvve.ProfileBody
 import com.fluture.pruvve.ProfileResponse
+import com.fluture.pruvve.adapters.GetAllUserResponse
+import com.fluture.pruvve.adapters.GetUserResponse
+import com.fluture.pruvve.adapters.LoginResponse
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
-import retrofit2.http.POST
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -33,8 +34,13 @@ interface UserService {
     fun finishAthleteProfile(@Body profile: ProfileBody):Call<ProfileResponse>
     @PUT("v1/user/coach/profile")
     fun finishCoachProfile(@Body profile: CoachProfileBody):Call<ProfileResponse>
+
+    @GET("v1/user/coach/profile")
+    fun getCoachProfile(@Body profile: CoachProfileBody):Call<ProfileResponse>
     @GET("v1/user")
     fun getUserCredentials():Call<GetUserResponse>
+    @GET("v1/user/search")
+    fun getAllUsers(@Query("request") request: UserRequestObjects):Call<GetAllUserResponse>
     @PUT
     fun uploadFile(@Header("Content-Type") contentType: String, @Url uploadUrl: String, @Body file: RequestBody): Call<ResponseBody>
     @GET("oauth2/authorization/google")
@@ -68,26 +74,43 @@ interface UserService {
 
     @POST("v1/story")
     fun postStory(@Body post: PostsMedia):Call<UploadResponse>
+
     @GET("v1/story")
     fun getStories(@Query("request") post: GetPostsMedia):Call<GetPost>
+
     @PUT("v1/team/{teamId}/media")
     fun putTeamsMedia(@Path("teamId")teamId :Int, @Body teamMedia: UploadData):Call<ProfileResponse>
+
     @GET("v1/team")
     fun getTeams(@Query("request") requestObject: RequestObjects):Call<GetTeams>
+
     @GET("v1/team/{teamInvitationLink}")
     fun addToTeam(@Path("teamInvitationLink")teamInvitationLink :String):Call<ProfileResponse>
+
     @GET("v1/team/{teamId}")
     fun getTeamById(@Path("teamId")teamId :Int):Call<GetSpecificTeam>
+
     @PUT("v1/team/{teamId}/user")
     fun getUserInTeam(@Path("teamId")teamId :Int, @Body userId: UserIdObject):Call<ProfileResponse>
+
     @POST("v1/team")
     fun makeTeams(@Body name:String):Call<GetSpecificTeam>
+
     @PUT("v1/user/account-type")
     fun putAccountType(@Body accountType: AccountType):Call<AccountTypeResponse>
+
     @GET("v1/user/athlete/profile")
-    fun getAthleteProfile():Call<GetAthletePost>
+    fun getAthleteProfile():Call<GetAthleteProfile>
+
     @GET("v1/video/feed")
-    fun getPosts(@Query("request") post: GetPostsMedia):Call<GetAllPosts>
+    fun getFeeds(@Query("request") post: GetFeedsMedia):Call<GetAllPosts>
+
+    @GET("v1/post/feed")
+    fun getPosts(@Query("request") post: GetFeedsMedia):Call<GetAllPosts>
+
+    @GET("v1/user/{userId}/video")
+    fun getMyPosts(@Path("userId")userId:Int, @Query("request") post: GetFeedsMedia):Call<GetAllPosts>
+
     @GET("v1/post/{postId}")
     fun getSelectedPosts(@Path("postId")postId:Int):Call<GetPost>
     @GET("v1/post/{postId}/summary")
@@ -114,7 +137,7 @@ interface UserService {
     @GET("v1/news")
     fun getNewsById(@Path("newsId") newsId: Int):Call<NewsGotten>
 
-    @GET("/v1/pitch/{pitchId}")
+    @GET("v1/pitch/{pitchId}")
     fun getPitchById(@Path("pitchId") pitchId: Int):Call<GetPitch>
 
     @GET("v1/pitch")

@@ -11,6 +11,11 @@ data class GetPostsMedia(
     val size: Int,
     val userId: Int
 )
+
+data class GetFeedsMedia(
+    val page: Int,
+    val size: Int,
+)
 data class GetPost(
     val code: Int,
     val message: String,
@@ -52,7 +57,7 @@ data class GetPostsSummary(
     )
 )
 
-data class GetAthletePost(
+data class GetAthleteProfile(
     val code: Int,
     val message: String,
     val data: AthleteProfile,

@@ -1,11 +1,13 @@
 package com.fluture.pruvve.adapters
 
+import android.media.MediaPlayer
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.VideoView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.fluture.pruvve.R
 
 class VideosPageAdapter1(private var videos:List<VideoPageItems>):RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -32,23 +34,32 @@ class VideosPageAdapter1(private var videos:List<VideoPageItems>):RecyclerView.A
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder){
             is VideoSmallViewHolder -> holder.itemView.apply {
-                Glide.with(context)
-                    .load(videos[position].url)
-                    .apply(RequestOptions().centerCrop())
-                    .into(findViewById(R.id.imvSmallVideos))
+                val videoView = findViewById<VideoView>(R.id.vvSmallVideos)
+                val imageView = findViewById<ImageView>(R.id.imvPlayVideos)
+                setUpVideoView(videoView, imageView, videos[position].url)
             }
             is VideoMediumViewHolder -> holder.itemView.apply {
-                Glide.with(context)
-                    .load(videos[position].url)
-                    .apply(RequestOptions().centerCrop())
-                    .into(findViewById(R.id.imvMediumVideos))
+                val videoView = findViewById<VideoView>(R.id.vvMediumVideos)
+                val imageView = findViewById<ImageView>(R.id.imvPlayVideos)
+                setUpVideoView(videoView, imageView, videos[position].url)
             }
             is VideoLargeViewHolder -> holder.itemView.apply {
-                Glide.with(context)
-                    .load(videos[position].url)
-                    .apply(RequestOptions().centerCrop())
-                    .into(findViewById(R.id.imvLargeVideos))
+                val videoView = findViewById<VideoView>(R.id.vvLargeVideos)
+                val imageView = findViewById<ImageView>(R.id.imvPlayVideos)
+                setUpVideoView(videoView, imageView, videos[position].url)
             }
+        }
+    }
+
+    private fun setUpVideoView(videoView: VideoView, imageView: ImageView, videoUrl: String) {
+        val videoUri = Uri.parse(videoUrl)
+        videoView.setVideoURI(videoUri)
+        videoView.setMediaController(null)
+        videoView.setOnPreparedListener {
+            imageView.visibility = View.GONE
+            it.isLooping = true
+            it.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT)
+            it.start()
         }
     }
 
