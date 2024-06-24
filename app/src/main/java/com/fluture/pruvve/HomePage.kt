@@ -3,11 +3,10 @@ package com.fluture.pruvve
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.fluture.pruvve.adapters.Stories
 import com.fluture.pruvve.adapters.StoryAdapter
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
@@ -16,6 +15,10 @@ import com.fluture.pruvve.fragments.BookPitchFragment
 import com.fluture.pruvve.fragments.NewsFragment
 import com.fluture.pruvve.fragments.ProfileFragment
 import com.fluture.pruvve.fragments.VideoScreenFragments
+import com.fluture.pruvve.localdatabase.PruvveDatabase
+import com.fluture.pruvve.localdatabase.SavedStory
+import com.fluture.pruvve.localdatabase.StoryRepository
+import com.fluture.pruvve.localdatabase.StoryViewModel
 import com.fluture.pruvve.retrofittcalls.GetPost
 import com.fluture.pruvve.retrofittcalls.GetPostsMedia
 import com.fluture.pruvve.retrofittcalls.UploadImage
@@ -30,6 +33,11 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 class HomePage : AppCompatActivity() {
     private lateinit var binding: ActivityHomePageBinding
+    private lateinit var repository: StoryRepository
+    private val storyViewModel: StoryViewModel by viewModels {
+        StoryViewModel.StoryViewModelFactory(StoryRepository(PruvveDatabase.getDatabase(this).storyDao))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityHomePageBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
@@ -50,6 +58,27 @@ class HomePage : AppCompatActivity() {
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
             .create(UserService::class.java)
+
+        val myUrl2 = "https://i.pinimg.com/236x/e5/97/79/e59779258a86991a933e45143bf3db4c.jpg"
+        val listStories = mutableListOf(
+            SavedStory(username, url = myUrl2),
+        )
+        val adapter = StoryAdapter(listStories)
+
+        storyViewModel.allStories.observe(this@HomePage) { stories ->
+            Log.e("Database", "Started")
+            if (stories.isNotEmpty()) {
+                listStories.clear()  // Clear the initial post
+                for (story in stories) {
+                    Log.d("Url", story.url)
+                    val storyToUpload = SavedStory(story.name, story.url)
+                    listStories.add(storyToUpload)
+                }
+                adapter.notifyItemRangeInserted(0, stories.size)
+            } else {
+                Log.d("Database", "No posts collected")
+            }
+        }
 
         val downloadImage = UploadImage(
             fileName = profilePic,
@@ -74,12 +103,8 @@ class HomePage : AppCompatActivity() {
             }
         })
 
-        val myUrl2 = "https://i.pinimg.com/236x/e5/97/79/e59779258a86991a933e45143bf3db4c.jpg"
-        val stories = mutableListOf(
-            Stories(username, url = myUrl2),
-        )
         Log.e("RetrofitId", "your id is $id")
-        getStories(service, id, stories)
+        getStories(service, id)
 
         val myUrl = "https://i.pinimg.com/236x/63/cc/06/63cc06edc7c8222eaee125beb92bfc99.jpg"
 
@@ -169,13 +194,12 @@ class HomePage : AppCompatActivity() {
             }
         }
     }
-    private fun getStories(service: UserService,userid: Int, stories: MutableList<Stories>){
+    private fun getStories(service: UserService,userid: Int){
         val postMedia = GetPostsMedia(
             page = 1,
             size = 10,
             userId = userid
         )
-        val storiesRecycler = binding.rvStories
         service.getStories(postMedia).enqueue(object: Callback<GetPost>{
             override fun onResponse(call: Call<GetPost>, response: Response<GetPost>) {
                 Log.e("RetrofitService", "Service starting")
@@ -192,16 +216,8 @@ class HomePage : AppCompatActivity() {
                                 override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
                                     if (response.isSuccessful) {
                                         val signedUrl2 = response.body()?.data.toString()
-                                        val postToAdd = Stories(user.username, signedUrl2)
-                                        stories.add(postToAdd)
-                                        if (stories.size == postList.size) {
-                                            Log.d("RetrofitSuccess", "the loop is done")
-                                            val adapter = StoryAdapter(stories)
-                                            storiesRecycler.adapter = adapter
-                                            storiesRecycler.layoutManager = LinearLayoutManager(this@HomePage, LinearLayoutManager.HORIZONTAL, false)
-                                        }else{
-                                            Log.d("RetrofitSuccess", "the loop is done")
-                                        }
+                                        val postToAdd = SavedStory(user.username, signedUrl2)
+                                        storyViewModel.upsertStory(postToAdd)
                                     } else {
                                         Log.e("RetrofitError", "An error has occurred ${response.errorBody().toString()}")
                                     }

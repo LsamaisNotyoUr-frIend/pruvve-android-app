@@ -8,7 +8,7 @@ import kotlinx.coroutines.withContext
 class PostRepository(private val postDao: PostDao) {
 
     val allPosts = postDao.getPostsByLikes()
-
+//    posts
     suspend fun upsertPost(post: SavedPost) {
         withContext(Dispatchers.IO) {
             postDao.upsertPosts(post)
@@ -19,10 +19,6 @@ class PostRepository(private val postDao: PostDao) {
             postDao.deletePosts(post)
         }
     }
-    fun deleteAllPosts() {
-        postDao.deleteAllPosts()
-    }
-
     suspend fun upsertPosts(posts: List<SavedPost>) {
         withContext(Dispatchers.IO) {
             posts.forEach {
@@ -35,5 +31,38 @@ class PostRepository(private val postDao: PostDao) {
     }
     fun getPostCount(): Flow<Int> {
         return postDao.getPostCount()
+    }
+
+//    Stories
+}
+
+class StoryRepository(private val storyDao: StoryDao) {
+
+    val allStories = storyDao.getStoriesByNames()
+
+    suspend fun upsertStory(story: SavedStory) {
+        withContext(Dispatchers.IO) {
+            storyDao.upsertStories(story)
+        }
+    }
+
+    suspend fun deleteStory(story: SavedStory) {
+        withContext(Dispatchers.IO) {
+            storyDao.deleteStories(story)
+        }
+    }
+
+    suspend fun upsertStories(posts: List<SavedStory>) {
+        withContext(Dispatchers.IO) {
+            posts.forEach {
+                storyDao.upsertStories(it)
+            }
+        }
+    }
+    fun isDatabaseForStoriesEmpty(): Flow<Boolean> {
+        return storyDao.getStoryCount().map { it == 0 }
+    }
+    fun getStoryCount(): Flow<Int> {
+        return storyDao.getStoryCount()
     }
 }

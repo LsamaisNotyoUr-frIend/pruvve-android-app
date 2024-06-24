@@ -2,6 +2,7 @@ package com.fluture.pruvve.localdatabase
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+
 @Entity(tableName = "savedpost")
 data class SavedPost (
     val profilePicUrl: String,

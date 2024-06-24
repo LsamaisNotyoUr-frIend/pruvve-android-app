@@ -8,8 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.fluture.pruvve.R
+import com.fluture.pruvve.localdatabase.SavedStory
 
-class StoryAdapter(private var story: List<Stories>):RecyclerView.Adapter<StoryAdapter.StoryViewHolder>() {
+class StoryAdapter(private var story: List<SavedStory>):RecyclerView.Adapter<StoryAdapter.StoryViewHolder>() {
     inner class StoryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryViewHolder {
@@ -31,8 +32,3 @@ class StoryAdapter(private var story: List<Stories>):RecyclerView.Adapter<StoryA
         return story.size
     }
 }
-
-data class Stories(
-    val name:String,
-    val url: String
-)
