@@ -1,10 +1,10 @@
 package com.fluture.pruvve
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fluture.pruvve.adapters.DayItems
 import com.fluture.pruvve.adapters.PitchDatesAdapter
@@ -29,7 +29,6 @@ import java.time.format.TextStyle
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
-import kotlin.random.Random
 
 class BookingPitches : AppCompatActivity() {
     private lateinit var binding: ActivityBookingPitchesBinding

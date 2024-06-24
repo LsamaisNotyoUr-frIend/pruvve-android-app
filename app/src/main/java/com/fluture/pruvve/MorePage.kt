@@ -78,20 +78,19 @@ class MorePage : AppCompatActivity() {
         binding.rvFeeds.adapter = adapter
         binding.rvFeeds.layoutManager = LinearLayoutManager(this@MorePage)
         val id = intent.getIntExtra("userId", 5)
-//        getPosts(service, id)
+        getPosts(service, id)
 
         postViewModel.allPosts.observe(this@MorePage) { posts ->
             Log.e("Database", "Started")
             if (posts.isNotEmpty()) {
                 listPosts.clear()  // Clear the initial post
                 for (post in posts) {
-                    postViewModel.deletePost(post)
-//                    Log.d("Url", post.videoUrl)
-//                    val postToUpload = SavedPost(
-//                        post.profilePicUrl, post.timeStamp, post.name, post.title,
-//                        post.videoUrl, post.follow, post.views, post.comments, post.likes, post.otherUsersId, post.postId
-//                    )
-//                    listPosts.add(postToUpload)
+                    Log.d("Url", post.videoUrl)
+                    val postToUpload = SavedPost(
+                        post.profilePicUrl, post.timeStamp, post.name, post.title,
+                        post.videoUrl, post.follow, post.views, post.comments, post.likes, post.otherUsersId, post.postId
+                    )
+                    listPosts.add(postToUpload)
                 }
                 adapter.notifyDataSetChanged()
                 binding.rvFeeds.visibility = View.VISIBLE
@@ -170,7 +169,7 @@ class MorePage : AppCompatActivity() {
     }
 
     private fun getPosts(service: UserService, id: Int) {
-        service.getPosts(GetFeedsMedia(1, 10)).enqueue(object : Callback<GetAllPosts> {
+        service.getPosts(GetFeedsMedia(1, 5)).enqueue(object : Callback<GetAllPosts> {
             override fun onResponse(call: Call<GetAllPosts>, response: Response<GetAllPosts>) {
                 if (response.isSuccessful) {
                     response.body()?.data?.list?.let {

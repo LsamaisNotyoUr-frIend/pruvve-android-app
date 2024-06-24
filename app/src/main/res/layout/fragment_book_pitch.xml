@@ -69,6 +69,7 @@
         app:layout_constraintTop_toTopOf="@+id/guideline173" />
 
     <LinearLayout
+        android:id="@+id/llViewAllPitches"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/search_view_all"
