@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.fluture.pruvve.adapters.SearchAdapter
 import com.fluture.pruvve.adapters.SearchItems
 import com.fluture.pruvve.databinding.ActivitySearchPageBinding
+import com.fluture.pruvve.essentials.TextManager
 
 class SearchPage : AppCompatActivity(){
     private lateinit var binding: ActivitySearchPageBinding
@@ -19,7 +20,6 @@ class SearchPage : AppCompatActivity(){
         binding.btnBack.setOnClickListener {
             finish()
         }
-        binding.etSearchBar
 
         val searches = mutableListOf(
             SearchItems("Word", "what is english and what is gibberish"),
@@ -50,6 +50,7 @@ class SearchPage : AppCompatActivity(){
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val searchText = s.toString().lowercase()
+                TextManager.saveText(searchText.toString())
 
                 val filteredSearches = searches.filter { it.title.lowercase()
                     .contains(searchText) }

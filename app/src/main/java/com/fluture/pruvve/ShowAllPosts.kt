@@ -1,72 +1,40 @@
-package com.fluture.pruvve.fragments
+package com.fluture.pruvve
 
-import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
-import android.view.View
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.fluture.pruvve.R
-import com.fluture.pruvve.SearchPage
-import com.fluture.pruvve.ShowAllPosts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.recyclerview.widget.GridLayoutManager
 import com.fluture.pruvve.adapters.PitchAdapter
 import com.fluture.pruvve.adapters.Pitches
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
-import com.fluture.pruvve.databinding.FragmentBookPitchBinding
-import com.fluture.pruvve.essentials.TextManager
+import com.fluture.pruvve.databinding.ActivityShowAllPostsBinding
 import com.fluture.pruvve.retrofittcalls.GetPitches
 import com.fluture.pruvve.retrofittcalls.RequestObjects
 import com.fluture.pruvve.retrofittcalls.UserService
 import okhttp3.OkHttpClient
-import org.osmdroid.config.Configuration
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
-import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-class BookPitchFragment : Fragment(R.layout.fragment_book_pitch){
-    private lateinit var binding: FragmentBookPitchBinding
+class ShowAllPosts : AppCompatActivity() {
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding = FragmentBookPitchBinding.bind(view)
-        LoginManager.init(requireContext())
-        super.onViewCreated(view, savedInstanceState)
-        val ctx = requireActivity().applicationContext
-        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx))
-        val mapView = binding.mvBookPitch
-        val tileSource = TileSourceFactory.WIKIMEDIA
-        mapView.setTileSource(tileSource)
-        mapView.setBuiltInZoomControls(false)
-        mapView.setMultiTouchControls(true)
-        mapView.setUseDataConnection(true)
-        val locationOverlay = MyLocationNewOverlay(mapView)
-        locationOverlay.setEnabled(true)
-        mapView.getOverlays().add(locationOverlay)
-        locationOverlay.enableMyLocation()
-        locationOverlay.enableFollowLocation()
-        val nigeriaCenter = GeoPoint(9.0579, 7.4951)
-        val nextCenter = GeoPoint(8.8834, 7.2302)
-        val mapController = mapView.controller
-        mapController.setCenter(nigeriaCenter)
-        mapController.setZoom(3)
-        val startMarker =  Marker(mapView)
-        val pitchMarker =  Marker(mapView)
-        startMarker.position = nigeriaCenter
-        pitchMarker.position = nextCenter
-        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-        mapView.overlays.add(startMarker)
-        mapView.overlays.add(pitchMarker)
+    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var binding: ActivityShowAllPostsBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        LoginManager.init(this)
+        binding = ActivityShowAllPostsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         val token = LoginManager.getToken()
         Log.d("RetrofitToken", token.toString())
-
-        binding.tvSearchBar.text = TextManager.getText()
 
         val httpClient = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(token.toString()))
@@ -78,25 +46,11 @@ class BookPitchFragment : Fragment(R.layout.fragment_book_pitch){
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
             .create(UserService::class.java)
-
-
-        binding.tvSearchBar.setOnClickListener {
-            Intent(requireContext(), SearchPage::class.java).also {
-                startActivity(it)
-            }
-        }
-        binding.llViewAllPitches.setOnClickListener{
-            Intent(requireContext(), ShowAllPosts::class.java).also { thisActivity ->
-                startActivity(thisActivity)
-            }
-        }
-        getPitches(service = service)
     }
-
     private fun getPitches(service: UserService){
         val requestObject = RequestObjects(1, 10)
         val pitchList = mutableListOf<Pitches>()
-        service.getPitches(requestObject).enqueue(object : Callback<GetPitches>{
+        service.getPitches(requestObject).enqueue(object : Callback<GetPitches> {
             override fun onResponse(call: Call<GetPitches>, response: Response<GetPitches>) {
                 if (response.isSuccessful){
                     val list = response.body()?.data?.list
@@ -116,7 +70,28 @@ class BookPitchFragment : Fragment(R.layout.fragment_book_pitch){
                                 val adapter = PitchAdapter(pitchList)
                                 val recycler = binding.rvPitches
                                 recycler.adapter = adapter
-                                recycler.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false)
+                                recycler.layoutManager = GridLayoutManager(this@ShowAllPosts, 2)
+
+                                binding.etSearchBar.addTextChangedListener(object : TextWatcher {
+                                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                                        TODO("Not yet implemented")
+                                    }
+
+                                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                                        val searchText = s.toString().lowercase()
+
+                                        val filteredSearches = pitchList.filter { it.title.lowercase()
+                                            .contains(searchText) }
+
+                                        val sortedFilteredSearches = filteredSearches.sortedByDescending { it.title.count { char -> char in searchText } }
+
+                                        adapter.setData(sortedFilteredSearches)
+                                    }
+
+                                    override fun afterTextChanged(s: Editable?) {
+                                        TODO("Not yet implemented")
+                                    }
+                                })
                             }
                         }
                     }else{

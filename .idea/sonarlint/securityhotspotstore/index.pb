@@ -192,3 +192,5 @@ s
 Capp/src/main/java/com/fluture/pruvve/fragments/BookPitchFragment.kt,3\0\30c9ed9ae7a74d1a1b9b2be480dbf20be6e77177
 v
 Fapp/src/main/java/com/fluture/pruvve/fragments/VideoScreenFragments.kt,b\4\b42094ecd2efc2eba8567c6594cd71353c8d6de4
+d
+4app/src/main/java/com/fluture/pruvve/ShowAllPosts.kt,b\7\b75d1f1c1a3027e71fc32f4b3d1a18105162a72e
