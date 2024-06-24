@@ -194,3 +194,7 @@ v
 Fapp/src/main/java/com/fluture/pruvve/fragments/VideoScreenFragments.kt,b\4\b42094ecd2efc2eba8567c6594cd71353c8d6de4
 d
 4app/src/main/java/com/fluture/pruvve/ShowAllPosts.kt,b\7\b75d1f1c1a3027e71fc32f4b3d1a18105162a72e
+t
+Dapp/src/main/java/com/fluture/pruvve/localdatabase/StoryViewModel.kt,e\9\e97ed21a9cb01b6f7576f93e02fea52feca8d4ae
+p
+@app/src/main/java/com/fluture/pruvve/localdatabase/SavedStory.kt,b\7\b7997f7c233bdd7b792094164a2ab1dc9a9ee4f0

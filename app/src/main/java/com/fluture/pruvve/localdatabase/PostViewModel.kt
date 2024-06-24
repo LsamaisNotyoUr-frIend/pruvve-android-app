@@ -12,6 +12,7 @@ class PostViewModel(private val repository: PostRepository) : ViewModel() {
     val allPosts: LiveData<List<SavedPost>> = repository.allPosts.asLiveData()
     val postCount: LiveData<Int> = repository.getPostCount().asLiveData()
     val isDatabaseEmpty: LiveData<Boolean> = repository.isDatabaseEmpty().asLiveData()
+//Posts
 
     fun upsertPost(post: SavedPost) {
         viewModelScope.launch {
@@ -22,12 +23,6 @@ class PostViewModel(private val repository: PostRepository) : ViewModel() {
     fun deletePost(post: SavedPost) {
         viewModelScope.launch {
             repository.deletePost(post)
-        }
-    }
-
-    fun clearPosts() {
-        viewModelScope.launch {
-            repository.deleteAllPosts()
         }
     }
 
