@@ -82,9 +82,11 @@ class BookingPitches : AppCompatActivity() {
             updateMonthYearTextView(monthYearTextView)
             updateRecyclerViewForCurrentMonth()
         }
-        val timeIndex = PitchDatesAdapter(dataList).getSelectedIndex()
+        val dateString = PitchDatesAdapter(dataList).getSelectedDate().currentDate.format(
+            DateTimeFormatter.ISO_DATE
+        )
 
-        service.checkAvailability(pitchId, "2023-05-31T17:48:50.695Z").enqueue(object : Callback<GetPitchAvailability>{
+        service.checkAvailability(pitchId, dateString).enqueue(object : Callback<GetPitchAvailability>{
             override fun onResponse(call: Call<GetPitchAvailability>, response: Response<GetPitchAvailability>
             ) {
                 if (response.isSuccessful){
@@ -125,7 +127,7 @@ class BookingPitches : AppCompatActivity() {
             val currentDate = LocalDate.of(currentYear, currentMonth, dayOfMonth)
             val dayOfWeek = currentDate.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
 
-            val dayItem = DayItems(dayOfMonth, dayOfWeek)
+            val dayItem = DayItems(dayOfMonth, dayOfWeek, currentDate)
             dataList.add(dayItem)
         }
         return dataList

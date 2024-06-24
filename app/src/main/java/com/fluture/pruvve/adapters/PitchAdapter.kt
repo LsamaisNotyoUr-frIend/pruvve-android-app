@@ -1,5 +1,6 @@
 package com.fluture.pruvve.adapters
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +15,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.fluture.pruvve.R
 import com.fluture.pruvve.ViewPitchItem
 
-class PitchAdapter(private val pitches: List<Pitches>):RecyclerView.Adapter<PitchAdapter.PitchViewHolder>() {
+class PitchAdapter(private val pitches: ArrayList<Pitches>):RecyclerView.Adapter<PitchAdapter.PitchViewHolder>() {
     inner class PitchViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PitchViewHolder {
@@ -62,6 +63,13 @@ class PitchAdapter(private val pitches: List<Pitches>):RecyclerView.Adapter<Pitc
                 context.startActivity(intent)
             }
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun update(newList: List<Pitches>) {
+        pitches.clear()
+        pitches.addAll(newList)
+        notifyDataSetChanged()
     }
 
 

@@ -78,7 +78,7 @@ class MorePage : AppCompatActivity() {
         binding.rvFeeds.adapter = adapter
         binding.rvFeeds.layoutManager = LinearLayoutManager(this@MorePage)
         val id = intent.getIntExtra("userId", 5)
-//        getPosts(service, id)
+        getPosts(service, id)
 
         postViewModel.allPosts.observe(this@MorePage) { posts ->
             Log.e("Database", "Started")
