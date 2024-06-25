@@ -8,11 +8,10 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.fluture.pruvve.R
-import java.time.LocalDate
 import com.fluture.pruvve.retrofittcalls.PitchTimes
-import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
-import java.util.Locale
 
 class PitchDatesAdapter(private val days:List<DayItems>):RecyclerView.Adapter<PitchDatesAdapter.DaysViewHolder>() {
     private var selectedIndex: Int = RecyclerView.NO_POSITION
@@ -93,17 +92,18 @@ class PitchDatesAdapter(private val days:List<DayItems>):RecyclerView.Adapter<Pi
     }
 
     private fun formatDate(year: Int, month: Int, day: Int): String {
-        val calendar = Calendar.getInstance()
-        calendar.set(year, month - 1, day)
-        val dateFormat = SimpleDateFormat("yy,MMdd", Locale.getDefault())
-        return dateFormat.format(calendar.time)
+        val dateFormat = LocalDate.of( year, month, day).format(
+            DateTimeFormatter.ISO_DATE
+        )
+        return dateFormat
     }
 
 }
 data class DayItems(
     val dayOfTheMonth:Int,
     val dayOfTheWeek: String,
-    val currentDate: LocalDate,
+    val year: Int,
+    val month: Int
 )
 
 class PitchTimesAdapter(private val times: List<TimeItems>):RecyclerView.Adapter<PitchTimesAdapter.TimesViewHolder>(){

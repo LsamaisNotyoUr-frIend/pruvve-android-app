@@ -3,6 +3,7 @@ package com.fluture.pruvve
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -37,12 +38,16 @@ class HomePage : AppCompatActivity() {
     private val storyViewModel: StoryViewModel by viewModels {
         StoryViewModel.StoryViewModelFactory(StoryRepository(PruvveDatabase.getDatabase(this).storyDao))
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityHomePageBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         LoginManager.init(this)
         setContentView(binding.root)
+
+    }
+
+    override fun onStart() {
+        super.onStart()
         val token = LoginManager.getToken()
         Log.d("RetrofitToken", token.toString())
         val id: Int = intent.getIntExtra("ProfileId", 3)
@@ -64,6 +69,7 @@ class HomePage : AppCompatActivity() {
             SavedStory(username, url = myUrl2),
         )
         val adapter = StoryAdapter(listStories)
+        getStories(service, id)
 
         storyViewModel.allStories.observe(this@HomePage) { stories ->
             Log.e("Database", "Started")
@@ -74,7 +80,8 @@ class HomePage : AppCompatActivity() {
                     val storyToUpload = SavedStory(story.name, story.url)
                     listStories.add(storyToUpload)
                 }
-                adapter.notifyItemRangeInserted(0, stories.size)
+                adapter.notifyDataSetChanged()
+                binding.rvStories.visibility = View.VISIBLE
             } else {
                 Log.d("Database", "No posts collected")
             }
@@ -102,9 +109,6 @@ class HomePage : AppCompatActivity() {
                 Log.e("RetrofitError","an error occurred ${t.message.toString()}")
             }
         })
-
-        Log.e("RetrofitId", "your id is $id")
-        getStories(service, id)
 
         val myUrl = "https://i.pinimg.com/236x/63/cc/06/63cc06edc7c8222eaee125beb92bfc99.jpg"
 

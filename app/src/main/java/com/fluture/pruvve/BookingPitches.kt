@@ -42,6 +42,7 @@ class BookingPitches : AppCompatActivity() {
     private var currentMonthYear: LocalDate = LocalDate.now()
     private lateinit var pitchDatesAdapter: PitchDatesAdapter
     private var dataList = mutableListOf<DayItems>()
+    private var userId = 3
     private var dataList2 = mutableListOf<TimeItems>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,16 +50,11 @@ class BookingPitches : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         LoginManager.init(this)
         setContentView(binding.root)
-        val webView = binding.wvMakePayment
-        webView.visibility =View.GONE
-        val pitchId = intent.getIntExtra("Extra_id", 2)
+
         val leftArrow = binding.imvPitchDateLeft
         val rightArrow = binding.imvPitchDateRight
         val monthYearTextView = binding.tvPitchDate
         val recyclerViewDates = binding.rvPitchDateDays
-        val recyclerViewTimes = binding.rvPitchDaysTime
-
-        val pitchName = intent.getStringExtra("Extra_pitch_name") ?: "provingGrounds"
 
         val token = LoginManager.getToken()
         Log.d("RetrofitToken", token.toString())
@@ -74,7 +70,10 @@ class BookingPitches : AppCompatActivity() {
             .build()
             .create(UserService::class.java)
 
-        var userId = 3
+        binding.button1.setOnClickListener{
+            finish()
+        }
+
         service.getUserCredentials().enqueue(object : Callback<GetUserResponse>{
             override fun onResponse(call: Call<GetUserResponse>, response: Response<GetUserResponse>) {
                 if (response.isSuccessful){
@@ -106,9 +105,37 @@ class BookingPitches : AppCompatActivity() {
             updateMonthYearTextView(monthYearTextView)
             updateRecyclerViewForCurrentMonth()
         }
-        val timeIndex = PitchDatesAdapter(dataList).getSelectedDateString()
+    }
 
+    override fun onStart() {
+        super.onStart()
+        LoginManager.init(this)
+        val token = LoginManager.getToken()
+        Log.d("RetrofitToken", token.toString())
+
+        val httpClient = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(token.toString()))
+            .build()
+
+        val service = Retrofit.Builder()
+            .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
+            .client(httpClient)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(UserService::class.java)
+
+        val webView = binding.wvMakePayment
+        webView.visibility =View.GONE
+
+        val pitchId = intent.getIntExtra("Extra_id", 2)
+        val recyclerViewTimes = binding.rvPitchDaysTime
+        val timeIndex = PitchDatesAdapter(dataList).getSelectedDateString()
+        val pitchName = intent.getStringExtra("Extra_pitch_name") ?: "provingGrounds"
+        val adapter = PitchTimesAdapter(dataList2)
+        recyclerViewTimes.adapter = adapter
+        recyclerViewTimes.layoutManager = LinearLayoutManager(this@BookingPitches, LinearLayoutManager.VERTICAL, false)
         service.checkAvailability(pitchId, timeIndex!!).enqueue(object : Callback<GetPitchAvailability>{
+            @SuppressLint("NotifyDataSetChanged")
             override fun onResponse(call: Call<GetPitchAvailability>, response: Response<GetPitchAvailability>
             ) {
                 if (response.isSuccessful){
@@ -119,10 +146,12 @@ class BookingPitches : AppCompatActivity() {
                             val timesList = TimeItems(timeItems.startTime, timeItems.endTime, getStatus(slotsLeft), pitchId)
                             dataList2.add(timesList)
                         }
-                        val adapter = PitchTimesAdapter(dataList2)
-                        recyclerViewTimes.adapter = adapter
-                        recyclerViewTimes.layoutManager = LinearLayoutManager(this@BookingPitches, LinearLayoutManager.VERTICAL, false)
+                        recyclerViewTimes.visibility = View.VISIBLE
+                        adapter.notifyDataSetChanged()
+
                         binding.btnPitchDays.setOnClickListener{
+                            binding.btnPitchDays.setBackgroundResource(R.drawable.disabled_button)
+                            binding.btnPitchDays.isEnabled = false
                             val selectedTimes = adapter.getSelectedTimes()
                             val bookingReference = createBookingReference(pitchName, userId)
                             val pitchRequestObjects = PitchRequestObjects(
@@ -134,7 +163,7 @@ class BookingPitches : AppCompatActivity() {
                                     response: Response<GetPitch>
                                 ) {
                                     if (response.isSuccessful){
-                                       webView.visibility = View.VISIBLE
+                                        webView.visibility = View.VISIBLE
                                         val url = "https://pruvve-pay-ab34e3cd9a37.herokuapp.com/?token=$token&bookingReference=$bookingReference"
                                         val webSettings: WebSettings = webView.settings
                                         webSettings.javaScriptEnabled = true
@@ -150,10 +179,14 @@ class BookingPitches : AppCompatActivity() {
                                         }
                                         webView.loadUrl(url)
                                     }else{
+                                        binding.btnPitchDays.setBackgroundResource(R.drawable.disabled_button)
+                                        binding.btnPitchDays.isEnabled = false
                                         logError(response.errorBody().toString(), "couldn't book the pitch")
                                     }
                                 }
                                 override fun onFailure(call: Call<GetPitch>, t: Throwable) {
+                                    binding.btnPitchDays.setBackgroundResource(R.drawable.disabled_button)
+                                    binding.btnPitchDays.isEnabled = false
                                     logFailure(t, "Unable to reach the server at this moment")
                                 }
                             })
@@ -185,7 +218,7 @@ class BookingPitches : AppCompatActivity() {
             val currentDate = LocalDate.of(currentYear, currentMonth, dayOfMonth)
             val dayOfWeek = currentDate.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
 
-            val dayItem = DayItems(dayOfMonth, dayOfWeek, currentDate)
+            val dayItem = DayItems(dayOfMonth, dayOfWeek, LocalDate.now().year, LocalDate.now().monthValue)
             dataList.add(dayItem)
         }
         return dataList

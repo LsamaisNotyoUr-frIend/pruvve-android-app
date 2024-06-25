@@ -143,7 +143,7 @@ interface UserService {
     @GET("v1/pitch")
     fun getPitches(@Query("request") requestObject: RequestObjects):Call<GetPitches>
 
-    @GET("v1/pitch/{pitchId}/book")
+    @POST("v1/pitch/{pitchId}/book")
     fun bookPitch(@Path("pitchId") pitchId: Int, @Query("request") requestObject: PitchRequestObjects):Call<GetPitch>
 
     @GET("v1/pitch/{pitchId}/availability")

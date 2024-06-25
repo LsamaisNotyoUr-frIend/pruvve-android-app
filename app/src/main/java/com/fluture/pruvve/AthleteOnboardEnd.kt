@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
@@ -16,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.fluture.pruvve.adapters.GetUserResponse
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
@@ -52,10 +52,11 @@ class AthleteOnboardEnd : AppCompatActivity() {
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
             .create(UserService::class.java)
-
+        var firstName = ""
         service.getUserCredentials().enqueue(object : Callback<GetUserResponse>{
             override fun onResponse(call: Call<GetUserResponse>, response: Response<GetUserResponse>) {
                 if (response.isSuccessful){
+                    firstName = response.body()?.data?.firstName.toString()
                     accountType = response.body()?.data?.accountType.toString()
                     Log.d("RetrofitSuccess", "users account type is $accountType")
                 }else{
@@ -73,8 +74,7 @@ class AthleteOnboardEnd : AppCompatActivity() {
         setClickableSpan(mySpan, "terms of service")
         setClickableSpan(mySpan, "additional terms")
         setClickableSpan(mySpan, "privacy policy")
-        val userName = intent.getStringExtra("Extra_username")
-        binding.tvwelcome.text = "Welcome to Pruvve, \n${userName.toString()}!"
+        binding.tvwelcome.text = "Welcome to Pruvve, \n$firstName!"
 
         binding.tvtos.apply {
             text = mySpan

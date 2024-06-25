@@ -6,7 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 
-@Database(entities = [SavedPost::class], version = 1,  exportSchema = false)
 @Database(entities = [SavedPost::class, SavedStory::class], version = 1,  exportSchema = false)
 abstract class PruvveDatabase: RoomDatabase() {
     abstract val postDao: PostDao

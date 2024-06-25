@@ -23,7 +23,7 @@ class PitchAdapter(private var pitches: ArrayList<Pitches>):RecyclerView.Adapter
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(newPitches: List<Pitches>) {
+    fun setData(newPitches: ArrayList<Pitches>) {
         pitches = newPitches
         notifyDataSetChanged()
     }
