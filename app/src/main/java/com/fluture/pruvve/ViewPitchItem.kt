@@ -112,6 +112,7 @@ class ViewPitchItem : AppCompatActivity() {
                 clickNumber = 0
                 Intent(this@ViewPitchItem, BookingPitches::class.java).also {
                     intent.putExtra("Extra_id", pitchId)
+                    intent.putExtra("Extra_pitch_name", title)
                     startActivity(it)
                 }
             }

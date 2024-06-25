@@ -4,11 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityCoachScoutAccountcreatorBinding
@@ -129,7 +129,7 @@ class CoachScoutAccountcreator : AppCompatActivity() {
             data?.data?.let { uri ->
                 imageUri = uri
                 binding.profpicplacholder.setImageURI(uri)
-                binding.btnaddimage.text = "Add Another Image"
+                binding.btnaddimage.text = "Change profile picture"
                 binding.button.isEnabled = true
                 binding.button.setBackgroundResource(R.drawable.primary_button)
             }

@@ -41,16 +41,16 @@
         android:id="@+id/imvPitchDateLeft"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:src="@drawable/left_date"
         android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
         android:layout_marginTop="12dp"
+        android:layout_marginEnd="5dp"
         android:layout_marginBottom="12dp"
+        android:contentDescription="To change to the previous date"
+        android:src="@drawable/left_date"
         app:layout_constraintBottom_toTopOf="@+id/guideline35"
         app:layout_constraintEnd_toStartOf="@+id/guideline30"
         app:layout_constraintStart_toStartOf="@+id/guideline29"
         app:layout_constraintTop_toTopOf="@+id/guideline32"
-        android:contentDescription="To change to the previous date"
         tools:ignore="HardcodedText" />
 
     <ImageView
@@ -58,8 +58,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
         android:layout_marginTop="12dp"
+        android:layout_marginEnd="5dp"
         android:layout_marginBottom="12dp"
         android:contentDescription="To change to the next date in the sequence"
         android:src="@drawable/right_date"
@@ -109,7 +109,7 @@
         android:layout_margin="10dp"
         android:background="@drawable/primary_button"
         android:fontFamily="@font/my_exo"
-        android:text="Let's go"
+        android:text="Book Pitch"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@color/white"
@@ -120,6 +120,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline66"
         tools:ignore="HardcodedText" />
+
+    <WebView
+        android:id="@+id/wvMakePayment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline346"
+        app:layout_constraintTop_toTopOf="@+id/guideline10" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline10"
@@ -211,5 +219,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.88" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline346"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.82" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

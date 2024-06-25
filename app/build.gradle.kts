@@ -17,13 +17,6 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                val argumentsMap = mapOf("room.schemaLocation" to "C:/Users/thega/flutreintegral/schemas")
-                arguments(argumentsMap)
-            }
-        }
     }
     buildFeatures{
         viewBinding = true
@@ -48,6 +41,7 @@ android {
 
 dependencies {
 implementation("androidx.compose.runtime:runtime-livedata:1.6.8")
+
     //    room
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
@@ -114,8 +108,8 @@ implementation("androidx.compose.runtime:runtime-livedata:1.6.8")
 //    glide
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.ext:junit:1.2.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
