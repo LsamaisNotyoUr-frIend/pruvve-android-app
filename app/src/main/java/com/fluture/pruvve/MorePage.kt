@@ -85,7 +85,6 @@ class MorePage : AppCompatActivity() {
             if (posts.isNotEmpty()) {
                 listPosts.clear()  // Clear the initial post
                 for (post in posts) {
-                    postViewModel.deletePost(post)
                     Log.d("Url", post.videoUrl)
                     val postToUpload = SavedPost(
                         post.profilePicUrl, post.timeStamp, post.name, post.title,

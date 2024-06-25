@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/black"
     tools:context=".HomePage">
 
@@ -11,8 +11,8 @@
         android:id="@+id/svHomePage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".HomeScreenFragments"
-        android:background="@color/black">
+        android:background="@color/black"
+        tools:context=".HomeScreenFragments">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -742,17 +742,18 @@
                     app:layout_constraintGuide_percent="0.015" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
             <View
                 android:layout_width="match_parent"
-                android:layout_height="50dp"/>
+                android:layout_height="50dp" />
         </LinearLayout>
     </ScrollView>
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="horizontal"
         android:background="@color/black"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -783,8 +784,8 @@
             app:layout_constraintEnd_toStartOf="@+id/bookPitchButton"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/homePageButton"
-            tools:ignore="ContentDescription"
-            app:layout_constraintTop_toTopOf="@+id/guideline4" />
+            app:layout_constraintTop_toTopOf="@+id/guideline4"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/bookPitchButton"
@@ -796,9 +797,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/profileButton"
             app:layout_constraintHorizontal_bias="0.5"
-            tools:ignore="ContentDescription"
             app:layout_constraintStart_toEndOf="@+id/videoPageButton"
-            app:layout_constraintTop_toTopOf="@+id/guideline4" />
+            app:layout_constraintTop_toTopOf="@+id/guideline4"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/profileButton"
@@ -809,10 +810,10 @@
             android:src="@drawable/profile_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:ignore="ContentDescription"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/bookPitchButton"
-            app:layout_constraintTop_toTopOf="@+id/guideline4" />
+            app:layout_constraintTop_toTopOf="@+id/guideline4"
+            tools:ignore="ContentDescription" />
     </LinearLayout>
 
 
@@ -820,18 +821,19 @@
         android:id="@+id/llAddStory"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="vertical"
         android:background="@drawable/add_story_background"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/guideline23"
         app:layout_constraintEnd_toStartOf="@+id/guideline6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline7">
+
         <ImageView
             android:id="@+id/addAStory"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_marginTop="10dp"
+            android:layout_weight="1"
             android:src="@drawable/add_story_button"
             tools:ignore="ContentDescription" />
 

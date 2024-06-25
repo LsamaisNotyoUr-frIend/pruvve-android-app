@@ -1,21 +1,76 @@
 package com.fluture.pruvve
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.fluture.pruvve.auth.AuthInterceptor
+import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityViewPitchItemBinding
+import com.fluture.pruvve.retrofittcalls.GetPitch
+import com.fluture.pruvve.retrofittcalls.UserService
+import okhttp3.OkHttpClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 class ViewPitchItem : AppCompatActivity() {
     private lateinit var binding: ActivityViewPitchItemBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityViewPitchItemBinding.inflate(layoutInflater)
+        LoginManager.init(this@ViewPitchItem)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        val token = LoginManager.getToken()
+        Log.d("RetrofitToken", token.toString())
+        val httpClient = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(token.toString()))
+            .build()
+
+        val service = Retrofit.Builder()
+            .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
+            .client(httpClient)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(UserService::class.java)
+
         val pitchId = intent.getIntExtra("Extra_id", 2)
         binding.btnBackButoon.setOnClickListener {
             finish()
         }
+        val id = intent.getIntExtra("Extra_id", 5)
+        val descriptions = intent.getStringExtra("Extra_description") ?: "where the master make their name known"
+        val title = intent.getStringExtra("Extra_title") ?: "proving grounds"
+        val location = intent.getStringExtra("Extra_description") ?: "Off breach side avenue, right of olusegun road"
+
+        service.getPitchById(id).enqueue(object: Callback<GetPitch> {
+            override fun onResponse(call: Call<GetPitch>, response: Response<GetPitch>) {
+                if (response.isSuccessful){
+                    Log.d("RetrofitSuccess", "Pitch has been gotten from the server successfully")
+                    val data = response.body()?.data
+                    getRating(data?.rating!!)
+                    returnAllFacilities(data.hasFreeParking, data.hasChangingRoom , data.hasFloodLights)
+                    updateFeatures(data.surface , data.format)
+                    binding.tvPrice.text = data.price.toString()
+                }else{
+                    Log.e("RetrofitError", "There was a problem getting the pitch from the server")
+                }
+            }
+            override fun onFailure(call: Call<GetPitch>, t: Throwable) {
+                Log.e("RetrofitFailure", "Could not reach the server")
+            }
+        })
+
+        binding.tvDescription.text = descriptions
+        binding.tvPitchName.text = title
+        binding.tvPitchLocation.text = location
+
+
         var clickNumber = 0
         binding.wvViewPitches.loadUrl("https://i.pinimg.com/564x/10/63/58/106358e2a6f2b341468d494158dfe4cc.jpg")
         binding.btnPitchLetGo.setOnClickListener {
@@ -60,6 +115,39 @@ class ViewPitchItem : AppCompatActivity() {
                     startActivity(it)
                 }
             }
+        }
+    }
+    private fun updateFeatures(surface: String, format:String){
+        binding.tvPitchSurface.text = surface
+        binding.tvPitchFormat.text = format
+    }
+    private fun returnAllFacilities(bool1: Boolean, bool2: Boolean, bool3:Boolean){
+        returnFacilities1(bool1)
+        returnFacilities2(bool2)
+        returnFacilities3(bool3)
+    }
+    private fun returnFacilities1(boolean: Boolean){
+        val stringToReturn:String = if (boolean) "Free Parking" else "empty"
+
+        binding.tvPitchFeatures1.text = stringToReturn
+    }
+
+    private fun returnFacilities2(boolean: Boolean){
+        val stringToReturn = if (boolean) "Changing room" else "empty"
+
+        binding.tvPitchFeatures2.text = stringToReturn
+    }
+
+    private fun returnFacilities3(boolean: Boolean){
+        val stringToReturn = if (boolean) "Floodlights" else "empty"
+        binding.tvPitchFeatures3.text = stringToReturn
+    }
+
+    private fun getRating(rating: Int){
+        val stars = listOf(binding.ivStar1, binding.ivStar2,
+            binding.ivStar3, binding.ivStar4, binding.ivStar5)
+        stars.forEachIndexed { index, imageView ->
+            imageView.visibility = if (index < rating) View.VISIBLE else View.INVISIBLE
         }
     }
 }

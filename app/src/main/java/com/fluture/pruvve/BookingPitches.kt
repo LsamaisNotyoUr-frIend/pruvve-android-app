@@ -21,14 +21,11 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.Year
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
-import java.util.Date
 import java.util.Locale
-import java.util.TimeZone
 
 class BookingPitches : AppCompatActivity() {
     private lateinit var binding: ActivityBookingPitchesBinding
@@ -83,14 +80,14 @@ class BookingPitches : AppCompatActivity() {
         }
         val timeIndex = PitchDatesAdapter(dataList).getSelectedIndex()
 
-        service.checkAvailability(pitchId, "2023-05-31T17:48:50.695Z").enqueue(object : Callback<GetPitchAvailability>{
+        service.checkAvailability(pitchId, "2024-06-26").enqueue(object : Callback<GetPitchAvailability>{
             override fun onResponse(call: Call<GetPitchAvailability>, response: Response<GetPitchAvailability>
             ) {
                 if (response.isSuccessful){
                     val list =response.body()?.data?.slots
                     if (list != null){
                         for (timeItems in list){
-                            val timesList = TimeItems(convertToTimeRange(timeItems.startTime, timeItems.endTime), false)
+                            val timesList = TimeItems(timeItems.startTime, timeItems.endTime, false)
                             dataList2.add(timesList)
                             if (dataList2.size == (list.size)+1){
                                 recyclerViewTimes.adapter = PitchTimesAdapter(dataList2)
@@ -133,24 +130,5 @@ class BookingPitches : AppCompatActivity() {
     private fun updateMonthYearTextView(textView: TextView) {
         val formattedDate = currentMonthYear.format(DateTimeFormatter.ofPattern("MMMM yyyy"))
         textView.text = formattedDate
-    }
-
-    fun convertToTimeRange(dateStr1: String, dateStr2: String): String {
-
-        val isoFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).apply {
-            timeZone = TimeZone.getTimeZone("UTC")
-        }
-        val outputFormat = SimpleDateFormat("H:mm", Locale.getDefault())
-
-        // Parse the input date strings to Date objects
-        val date1: Date = isoFormat.parse(dateStr1) ?: throw IllegalArgumentException("Invalid date string: $dateStr1")
-        val date2: Date = isoFormat.parse(dateStr2) ?: throw IllegalArgumentException("Invalid date string: $dateStr2")
-
-        // Format the Date objects to the desired time format
-        val time1: String = outputFormat.format(date1)
-        val time2: String = outputFormat.format(date2)
-
-        // Combine the formatted times into the desired range format
-        return "$time1 to $time2"
     }
 }

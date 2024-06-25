@@ -66,7 +66,7 @@ class PitchDatesAdapter(private val days:List<DayItems>):RecyclerView.Adapter<Pi
 }
 data class DayItems(
     val dayOfTheMonth:Int,
-    val dayOfTheWeek: String
+    val dayOfTheWeek: String,
 )
 
 class PitchTimesAdapter(private val times: List<TimeItems>):RecyclerView.Adapter<PitchTimesAdapter.TimesViewHolder>(){
@@ -76,12 +76,13 @@ class PitchTimesAdapter(private val times: List<TimeItems>):RecyclerView.Adapter
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_pitch_times, parent, false)
         return TimesViewHolder(view)
     }
+
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TimesViewHolder, position: Int) {
         val currentItem = times[position]
         holder.itemView.apply {
             var selected : Boolean = false
-            findViewById<TextView>(R.id.tvDatesTimes).text = currentItem.time
+            findViewById<TextView>(R.id.tvDatesTimes).text = currentItem.startTime
             val bookedStatus = findViewById<TextView>(R.id.tvDatesBookedStatus)
             if (currentItem.status){
                 bookedStatus.text = "Booked"
@@ -94,6 +95,7 @@ class PitchTimesAdapter(private val times: List<TimeItems>):RecyclerView.Adapter
             }
             setOnClickListener {
                 selected = !selected
+
             }
             if (selected){
                 setBackgroundResource(R.drawable.primary_button)
@@ -109,6 +111,7 @@ class PitchTimesAdapter(private val times: List<TimeItems>):RecyclerView.Adapter
 }
 
 data class TimeItems(
-    val time: String,
+    val startTime: String,
+    val endTime: String,
     val status: Boolean
 )
