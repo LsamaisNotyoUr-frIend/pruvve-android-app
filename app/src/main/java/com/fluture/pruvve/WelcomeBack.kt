@@ -1,14 +1,14 @@
 package com.fluture.pruvve
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.fluture.pruvve.retrofittcalls.LoginInfo
+import androidx.appcompat.app.AppCompatActivity
 import com.fluture.pruvve.adapters.LoginResponse
 import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityWelcomeBackBinding
+import com.fluture.pruvve.retrofittcalls.LoginInfo
 import com.fluture.pruvve.retrofittcalls.UserService
 import retrofit2.Call
 import retrofit2.Callback
@@ -60,7 +60,6 @@ class WelcomeBack : AppCompatActivity() {
                         finish()
                     } else {
                         Log.e("RetrofitGetUserError", "Error calling user API, body:${response.errorBody()?.string()!!}")
-                        Toast.makeText(this@WelcomeBack, "couldn't fetch user", Toast.LENGTH_SHORT).show()
                         binding.btngetbackin.setBackgroundResource(R.drawable.primary_button)
                         binding.btngetbackin.isEnabled = true
                     }

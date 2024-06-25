@@ -43,7 +43,7 @@ class CustomGallery : AppCompatActivity() {
     private var imageUri: Uri? = null
     private var videoUri: Uri? = null
     private var imageChosen: Boolean = false
-    private lateinit var username: String
+    private var username: String = "empty"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityCutomGalleryBinding.inflate(layoutInflater)

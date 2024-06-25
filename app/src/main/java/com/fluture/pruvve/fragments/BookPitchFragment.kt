@@ -94,7 +94,7 @@ class BookPitchFragment : Fragment(R.layout.fragment_book_pitch){
     }
 
     private fun getPitches(service: UserService){
-        val requestObject = RequestObjects(1, 10)
+        val requestObject = RequestObjects(1, 5)
         val pitchList = mutableListOf<Pitches>()
         service.getPitches(requestObject).enqueue(object : Callback<GetPitches>{
             override fun onResponse(call: Call<GetPitches>, response: Response<GetPitches>) {
@@ -117,6 +117,7 @@ class BookPitchFragment : Fragment(R.layout.fragment_book_pitch){
                                 val recycler = binding.rvPitches
                                 recycler.adapter = adapter
                                 recycler.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false)
+                                recycler.visibility= View.VISIBLE
                             }
                         }
                     }else{
