@@ -185,7 +185,7 @@ class BookingPitches : AppCompatActivity() {
             val currentDate = LocalDate.of(currentYear, currentMonth, dayOfMonth)
             val dayOfWeek = currentDate.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
 
-            val dayItem = DayItems(dayOfMonth, dayOfWeek, LocalDate.now().year, LocalDate.now().monthValue)
+            val dayItem = DayItems(dayOfMonth, dayOfWeek, currentDate)
             dataList.add(dayItem)
         }
         return dataList

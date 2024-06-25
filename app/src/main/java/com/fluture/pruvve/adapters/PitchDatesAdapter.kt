@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.fluture.pruvve.R
+import java.time.LocalDate
 import com.fluture.pruvve.retrofittcalls.PitchTimes
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -65,8 +66,8 @@ class PitchDatesAdapter(private val days:List<DayItems>):RecyclerView.Adapter<Pi
         }
     }
 
-    fun getSelectedIndex(): Int {
-        return selectedIndex
+    fun getSelectedDate(): DayItems {
+        return days[selectedIndex]
     }
 
     fun getSelectedItem(): DayItems? {
@@ -102,8 +103,7 @@ class PitchDatesAdapter(private val days:List<DayItems>):RecyclerView.Adapter<Pi
 data class DayItems(
     val dayOfTheMonth:Int,
     val dayOfTheWeek: String,
-    val year: Int,
-    val month: Int,
+    val currentDate: LocalDate,
 )
 
 class PitchTimesAdapter(private val times: List<TimeItems>):RecyclerView.Adapter<PitchTimesAdapter.TimesViewHolder>(){

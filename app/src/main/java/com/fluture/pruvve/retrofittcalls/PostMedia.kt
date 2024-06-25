@@ -183,8 +183,8 @@ data class GetPitch(
         true,
         "empty",
         true,
-        1,
-        1
+        1.0,
+        1.0,
     )
 )
 
@@ -195,15 +195,15 @@ data class GetPitchItems(
     val address: String,
     val format: String,
     val surface: String,
-    val rating: Int,
-    val price: Int,
+    val rating: Int?,
+    val price: Int?,
     val hasChangingRoom : Boolean,
     val hasFreeParking: Boolean,
     val hasFloodLights: Boolean,
     val description: String,
     val hasPruvveCamera: Boolean,
-    val longitude: Int,
-    val latitude: Int
+    val longitude: Double,
+    val latitude: Double,
 )
 
 data class GetPitchAvailability(
