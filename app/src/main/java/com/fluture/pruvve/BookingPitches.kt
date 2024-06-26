@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -97,14 +98,19 @@ class BookingPitches : AppCompatActivity() {
         leftArrow.setOnClickListener {
             currentMonthYear = currentMonthYear.minusMonths(1)
             updateMonthYearTextView(monthYearTextView)
+            val newDataList = updateDateListForCurrentMonth()
+            updateData(newDataList, pitchDatesAdapter)
             updateRecyclerViewForCurrentMonth()
         }
 
         rightArrow.setOnClickListener {
             currentMonthYear = currentMonthYear.plusMonths(1)
             updateMonthYearTextView(monthYearTextView)
+            val newDataList = updateDateListForCurrentMonth()
+            updateData(newDataList, pitchDatesAdapter)
             updateRecyclerViewForCurrentMonth()
         }
+
     }
 
     override fun onStart() {
@@ -125,7 +131,7 @@ class BookingPitches : AppCompatActivity() {
             .create(UserService::class.java)
 
         val webView = binding.wvMakePayment
-        webView.visibility =View.GONE
+        webView.visibility = View.GONE
 
         val pitchId = intent.getIntExtra("Extra_id", 2)
         val recyclerViewTimes = binding.rvPitchDaysTime
@@ -134,14 +140,14 @@ class BookingPitches : AppCompatActivity() {
         val adapter = PitchTimesAdapter(dataList2)
         recyclerViewTimes.adapter = adapter
         recyclerViewTimes.layoutManager = LinearLayoutManager(this@BookingPitches, LinearLayoutManager.VERTICAL, false)
-        service.checkAvailability(pitchId, timeIndex!!).enqueue(object : Callback<GetPitchAvailability>{
+
+        service.checkAvailability(pitchId, timeIndex!!).enqueue(object : Callback<GetPitchAvailability> {
             @SuppressLint("NotifyDataSetChanged")
-            override fun onResponse(call: Call<GetPitchAvailability>, response: Response<GetPitchAvailability>
-            ) {
-                if (response.isSuccessful){
-                    val list =response.body()?.data?.slots
-                    if (list != null){
-                        for (timeItems in list){
+            override fun onResponse(call: Call<GetPitchAvailability>, response: Response<GetPitchAvailability>) {
+                if (response.isSuccessful) {
+                    val list = response.body()?.data?.slots
+                    if (list != null) {
+                        for (timeItems in list) {
                             val slotsLeft = timeItems.slotsLeft
                             val timesList = TimeItems(timeItems.startTime, timeItems.endTime, getStatus(slotsLeft), pitchId)
                             dataList2.add(timesList)
@@ -149,20 +155,16 @@ class BookingPitches : AppCompatActivity() {
                         recyclerViewTimes.visibility = View.VISIBLE
                         adapter.notifyDataSetChanged()
 
-                        binding.btnPitchDays.setOnClickListener{
+                        binding.btnPitchDays.setOnClickListener {
                             binding.btnPitchDays.setBackgroundResource(R.drawable.disabled_button)
                             binding.btnPitchDays.isEnabled = false
                             val selectedTimes = adapter.getSelectedTimes()
                             val bookingReference = createBookingReference(pitchName, userId)
-                            val pitchRequestObjects = PitchRequestObjects(
-                                selectedTimes, bookingReference)
-                            service.bookPitch(pitchId, pitchRequestObjects).enqueue(object: Callback<GetPitch>{
+                            val pitchRequestObjects = PitchRequestObjects(selectedTimes, bookingReference)
+                            service.bookPitch(pitchId, pitchRequestObjects).enqueue(object : Callback<GetPitch> {
                                 @SuppressLint("SetJavaScriptEnabled")
-                                override fun onResponse(
-                                    call: Call<GetPitch>,
-                                    response: Response<GetPitch>
-                                ) {
-                                    if (response.isSuccessful){
+                                override fun onResponse(call: Call<GetPitch>, response: Response<GetPitch>) {
+                                    if (response.isSuccessful) {
                                         webView.visibility = View.VISIBLE
                                         val url = "https://pruvve-pay-ab34e3cd9a37.herokuapp.com/?token=$token&bookingReference=$bookingReference"
                                         val webSettings: WebSettings = webView.settings
@@ -176,14 +178,26 @@ class BookingPitches : AppCompatActivity() {
                                                 view.loadUrl(request.url.toString())
                                                 return true
                                             }
+
+                                            override fun onPageFinished(view: WebView?, url: String?) {
+                                                super.onPageFinished(view, url)
+                                                Log.d("WebView", "Page loaded: $url")
+                                            }
+
+                                            override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+                                                super.onReceivedError(view, request, error)
+                                                Log.e("WebViewError", "Error: ${error?.description}")
+                                            }
                                         }
                                         webView.loadUrl(url)
-                                    }else{
+                                        Log.d("WebView", "Loading URL: $url")
+                                    } else {
                                         binding.btnPitchDays.setBackgroundResource(R.drawable.disabled_button)
                                         binding.btnPitchDays.isEnabled = false
                                         logError(response.errorBody().toString(), "couldn't book the pitch")
                                     }
                                 }
+
                                 override fun onFailure(call: Call<GetPitch>, t: Throwable) {
                                     binding.btnPitchDays.setBackgroundResource(R.drawable.disabled_button)
                                     binding.btnPitchDays.isEnabled = false
@@ -192,10 +206,11 @@ class BookingPitches : AppCompatActivity() {
                             })
                         }
                     }
-                }else{
+                } else {
                     Log.e("RetrofitError", "An error occurred ${response.errorBody().toString()}")
                 }
             }
+
             override fun onFailure(call: Call<GetPitchAvailability>, t: Throwable) {
                 Log.e("RetrofitFailure", "couldn't reach the server ${t.message.toString()}")
             }
@@ -209,7 +224,7 @@ class BookingPitches : AppCompatActivity() {
         pitchDatesAdapter.notifyDataSetChanged()
     }
 
-    private fun updateDateListForCurrentMonth(): List<DayItems> {
+    private fun updateDateListForCurrentMonth(): MutableList<DayItems> {
         val currentMonth = currentMonthYear.month
         val currentYear = currentMonthYear.year
         val daysInMonth = currentMonth.length(Year.isLeap(currentYear.toLong()))
@@ -238,6 +253,11 @@ class BookingPitches : AppCompatActivity() {
             Date(currentTimeMillis)
         )
         return "${pitchName}_${timeStamp}_${userId}"
+    }
+
+    fun updateData(newDataList: MutableList<DayItems>, adapter: PitchDatesAdapter){
+        dataList = newDataList
+        adapter.notifyDataSetChanged()
     }
 
     private fun logError(errorBody: String?, message: String) {
