@@ -40,19 +40,11 @@ class HomePage : AppCompatActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityHomePageBinding.inflate(layoutInflater)
-        super.onCreate(savedInstanceState)
         LoginManager.init(this)
+        super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-    }
-
-    override fun onStart() {
-        super.onStart()
         val token = LoginManager.getToken()
-        Log.d("RetrofitToken", token.toString())
-        val id: Int = intent.getIntExtra("ProfileId", 3)
-        val username = intent.getStringExtra("profileUsername") ?: "AdminSomething"
-        val profilePic = intent.getStringExtra("profileUrl") ?: "https://i.pinimg.com/236x/e5/97/79/e59779258a86991a933e45143bf3db4c.jpg"
+
         val httpClient = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(token.toString()))
             .build()
@@ -64,13 +56,15 @@ class HomePage : AppCompatActivity() {
             .build()
             .create(UserService::class.java)
 
+        val username = intent.getStringExtra("profileUsername") ?: "AdminSomething"
+        val id: Int = intent.getIntExtra("ProfileId", 3)
+
         val myUrl2 = "https://i.pinimg.com/236x/e5/97/79/e59779258a86991a933e45143bf3db4c.jpg"
         val listStories = mutableListOf(
             SavedStory(username, url = myUrl2),
         )
         val adapter = StoryAdapter(listStories)
         getStories(service, id)
-
         storyViewModel.allStories.observe(this@HomePage) { stories ->
             Log.e("Database", "Started")
             if (stories.isNotEmpty()) {
@@ -86,6 +80,26 @@ class HomePage : AppCompatActivity() {
                 Log.d("Database", "No posts collected")
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val token = LoginManager.getToken()
+        Log.d("RetrofitToken", token.toString())
+        val id: Int = intent.getIntExtra("ProfileId", 3)
+        val myUrl2 = "https://i.pinimg.com/236x/e5/97/79/e59779258a86991a933e45143bf3db4c.jpg"
+        val username = intent.getStringExtra("profileUsername") ?: "AdminSomething"
+        val profilePic = intent.getStringExtra("profileUrl") ?: "https://i.pinimg.com/236x/e5/97/79/e59779258a86991a933e45143bf3db4c.jpg"
+        val httpClient = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(token.toString()))
+            .build()
+
+        val service = Retrofit.Builder()
+            .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
+            .client(httpClient)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(UserService::class.java)
 
         val downloadImage = UploadImage(
             fileName = profilePic,
@@ -197,7 +211,9 @@ class HomePage : AppCompatActivity() {
                 startActivity(it)
             }
         }
+        storyViewModel.getStories()
     }
+
     private fun getStories(service: UserService,userid: Int){
         val postMedia = GetPostsMedia(
             page = 1,

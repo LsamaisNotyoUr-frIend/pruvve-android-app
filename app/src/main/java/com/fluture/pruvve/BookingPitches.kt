@@ -98,16 +98,12 @@ class BookingPitches : AppCompatActivity() {
         leftArrow.setOnClickListener {
             currentMonthYear = currentMonthYear.minusMonths(1)
             updateMonthYearTextView(monthYearTextView)
-            val newDataList = updateDateListForCurrentMonth()
-            updateData(newDataList, pitchDatesAdapter)
             updateRecyclerViewForCurrentMonth()
         }
 
         rightArrow.setOnClickListener {
             currentMonthYear = currentMonthYear.plusMonths(1)
             updateMonthYearTextView(monthYearTextView)
-            val newDataList = updateDateListForCurrentMonth()
-            updateData(newDataList, pitchDatesAdapter)
             updateRecyclerViewForCurrentMonth()
         }
 
@@ -127,15 +123,18 @@ class BookingPitches : AppCompatActivity() {
             .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
             .client(httpClient)
             .addConverterFactory(MoshiConverterFactory.create())
-            .build()
+            .build()////
             .create(UserService::class.java)
+
+        val closeButton = binding.btnClosePayment
+        closeButton.visibility = View.GONE
 
         val webView = binding.wvMakePayment
         webView.visibility = View.GONE
 
         val pitchId = intent.getIntExtra("Extra_id", 2)
         val recyclerViewTimes = binding.rvPitchDaysTime
-        val timeIndex = PitchDatesAdapter(dataList).getSelectedDateString()
+        val timeIndex = pitchDatesAdapter.getSelectedDateString() ?: "2024-11-24"
         val pitchName = intent.getStringExtra("Extra_pitch_name") ?: "provingGrounds"
         val adapter = PitchTimesAdapter(dataList2)
         recyclerViewTimes.adapter = adapter
@@ -165,6 +164,7 @@ class BookingPitches : AppCompatActivity() {
                                 @SuppressLint("SetJavaScriptEnabled")
                                 override fun onResponse(call: Call<GetPitch>, response: Response<GetPitch>) {
                                     if (response.isSuccessful) {
+                                        closeButton.visibility = View.VISIBLE
                                         webView.visibility = View.VISIBLE
                                         val url = "https://pruvve-pay-ab34e3cd9a37.herokuapp.com/?token=$token&bookingReference=$bookingReference"
                                         val webSettings: WebSettings = webView.settings
@@ -191,6 +191,11 @@ class BookingPitches : AppCompatActivity() {
                                         }
                                         webView.loadUrl(url)
                                         Log.d("WebView", "Loading URL: $url")
+                                        closeButton.setOnClickListener{ it ->
+                                            webView.loadUrl("")
+                                            webView.visibility = View.GONE
+                                            it.visibility = View.GONE
+                                        }
                                     } else {
                                         binding.btnPitchDays.setBackgroundResource(R.drawable.disabled_button)
                                         binding.btnPitchDays.isEnabled = false

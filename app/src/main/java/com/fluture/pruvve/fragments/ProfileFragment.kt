@@ -96,11 +96,11 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     Log.e("RetrofitError","Couldn't get the athlete's information${response.errorBody().toString()}")
                 }
             }
-
             override fun onFailure(call: Call<GetAthleteProfile>, t: Throwable) {
                 Log.e("RetrofitFailure", "Couldn't reach the server${t.message.toString()}")
             }
         })
+
         val myUrl = "https://i.pinimg.com/236x/5a/6b/ea/5a6beaca00190835c3ba144424156afb.jpg"
         val myUrl2 = "https://i.pinimg.com/236x/6b/38/ef/6b38ef66e69c53fc92a56766ff56adff.jpg"
         val userId = arguments?.getInt("userId", 5) ?: 5

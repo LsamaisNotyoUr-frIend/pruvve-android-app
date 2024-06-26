@@ -52,16 +52,21 @@ class PitchDatesAdapter(private val days:List<DayItems>):RecyclerView.Adapter<Pi
         return days.size
     }
 
-    override fun onBindViewHolder(holder: DaysViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DaysViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val currentItem = days[position]
         holder.itemView.apply {
             findViewById<TextView>(R.id.tvDaysOfMonth).text = currentItem.dayOfTheMonth.toString()
             findViewById<TextView>(R.id.tvDatesOfWeek).text = currentItem.dayOfTheWeek
             findViewById<View>(R.id.llDates).setBackgroundResource(
-                if (position == selectedIndex) {
+                if (holder.adapterPosition == selectedIndex) {
                     R.drawable.dates_backgrounds
                 } else R.drawable.dates_backgrounds2
             )
+            setOnClickListener {
+                notifyItemChanged(selectedIndex)
+                selectedIndex = position
+                notifyItemChanged(selectedIndex)
+            }
         }
     }
 

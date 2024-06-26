@@ -33,8 +33,8 @@ interface StoryDao {
     fun deleteStories(savedStory: SavedStory)
 
     @Query("SELECT * FROM savedstory ORDER BY name ASC")
-    fun getStoriesByNames(): Flow<List<SavedStory>>
+    suspend fun getStoriesByNames(): List<SavedStory>
 
     @Query("SELECT COUNT(*) FROM savedstory")
-    fun getStoryCount(): Flow<Int>
+    suspend fun getStoryCount(): Int
 }

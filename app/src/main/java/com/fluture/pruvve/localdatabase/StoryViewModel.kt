@@ -1,19 +1,21 @@
 package com.fluture.pruvve.localdatabase
 
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
 class StoryViewModel(private val repository: StoryRepository) : ViewModel() {
 
-    val allStories: LiveData<List<SavedStory>> = repository.allStories.asLiveData()
-    val storyCount: LiveData<Int> = repository.getStoryCount().asLiveData()
-    val isDatabaseForStoriesEmpty: LiveData<Boolean> = repository.isDatabaseForStoriesEmpty().asLiveData()
+    val allStories: MutableLiveData<List<SavedStory>> = MutableLiveData()
 
 
+    fun getStories(){
+        viewModelScope.launch {
+            allStories.postValue(repository.getStories())
+        }
+    }
     fun upsertStory(story: SavedStory) {
         viewModelScope.launch {
             repository.upsertStory(story)

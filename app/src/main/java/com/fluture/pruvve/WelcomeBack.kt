@@ -42,7 +42,7 @@ class WelcomeBack : AppCompatActivity() {
             val username = binding.etusername.text.toString()
             val password =  binding.etpasswordfield.text.toString()
             val userLogin = LoginInfo(
-                username,
+                username.trim(),
                 password
             )
             service.getUser(userLogin).enqueue(object : Callback<LoginResponse> {
