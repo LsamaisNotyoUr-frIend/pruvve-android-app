@@ -40,6 +40,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 class MorePage : AppCompatActivity() {
     private lateinit var binding: ActivityMorePageBinding
     private lateinit var repository: PostRepository
+    private val postsList = mutableListOf<SavedPost>()
     private val postViewModel: PostViewModel by viewModels {
         PostViewModelFactory(PostRepository(PruvveDatabase.getDatabase(this).postDao))
     }
@@ -98,6 +99,7 @@ class MorePage : AppCompatActivity() {
                 Log.d("Database", "No posts collected")
             }
         }
+        getPostsToUpdate(service, id, adapter)
 
         Log.d("RetrofitPosts", "your list size is ${listPosts.size}")
 
@@ -192,7 +194,7 @@ class MorePage : AppCompatActivity() {
             Log.d("Database2", "Uploading Posts")
             uploadImage(service, posts.user.profilePictureUrl) { profilePicToUploadUrl ->
                 Log.d("Database3", "Uploading Posts")
-                getPostSummary(service, posts,true, mediaToUploadUrl, profilePicToUploadUrl)
+                getFollowStatus(service, posts,mediaToUploadUrl, profilePicToUploadUrl, id)
             }
         }
     }
@@ -242,6 +244,103 @@ class MorePage : AppCompatActivity() {
             views = "$viewCount views", comments = "$commentCount comments", likes = "$likeCount likes",
             otherUsersId = posts.user.id, postId = posts.id)
         postViewModel.upsertPost(postToUpload)
+        Log.d("Database", "Posts Uploaded")
+    }
+
+    private fun getPostsToUpdate(service: UserService, id: Int, adapter: MoreVideosAdapter) {
+        service.getPosts(GetFeedsMedia(1, 15)).enqueue(object : Callback<GetAllPosts> {
+            override fun onResponse(call: Call<GetAllPosts>, response: Response<GetAllPosts>) {
+                if (response.isSuccessful) {
+                    val list = response.body()?.data?.list!!
+                    if (list != null) {
+                    for (posts in list) {
+                        Log.d("Database1", "Uploading Posts")
+                        uploadMediaAndProfilePictures2(service, posts, id, adapter)
+                    }
+                    }else{
+                        Log.e("Error", "List is empty")
+                    }
+                    }else {
+                    logError(response.errorBody()?.toString(), "Couldn't get the media URL")
+                }
+            }
+
+            override fun onFailure(call: Call<GetAllPosts>, t: Throwable) {
+                logFailure(t, "Couldn't reach the server")
+            }
+        })
+    }
+
+    private fun uploadMediaAndProfilePictures2(service: UserService, posts: AllPostItems, id: Int, adapter: MoreVideosAdapter) {
+        uploadImage(service, posts.mediaUrl) { mediaToUploadUrl ->
+            Log.d("Database2", "Uploading Posts")
+            uploadImage(service, posts.user.profilePictureUrl) { profilePicToUploadUrl ->
+                Log.d("Database3", "Uploading Posts")
+                getFollowStatus2(service, posts, mediaToUploadUrl, profilePicToUploadUrl,id, adapter)
+            }
+        }
+    }
+
+    private fun getFollowStatus2(service: UserService, posts: AllPostItems, mediaUrl: String?, profilePicUrl: String?, id: Int, adapter:MoreVideosAdapter) {
+        service.getFollowStatus(FollowerId(id), FollowedId(posts.user.id)).enqueue(object : Callback<FollowStatusReply> {
+            override fun onResponse(call: Call<FollowStatusReply>, response: Response<FollowStatusReply>) {
+                if (response.isSuccessful) {
+                    Log.d("Database4", "Uploading Posts")
+                    getPostSummary2(service, posts, response.body()?.data ?: true, mediaUrl, profilePicUrl, adapter)
+                } else {
+                    logError(response.errorBody()?.toString(), "Couldn't get follow status")
+                }
+            }
+
+            override fun onFailure(call: Call<FollowStatusReply>, t: Throwable) {
+                logFailure(t, "Couldn't reach the server for follow status")
+            }
+        })
+    }
+
+    private fun getPostSummary2(service: UserService, posts: AllPostItems, followStatus: Boolean, mediaUrl: String?, profilePicUrl: String?, adapter: MoreVideosAdapter) {
+        service.getPostSummary(posts.id).enqueue(object : Callback<GetPostsSummary> {
+            override fun onResponse(call: Call<GetPostsSummary>, response: Response<GetPostsSummary>) {
+                if (response.isSuccessful) {
+                    Log.d("Database6", "Uploading Posts")
+                    val summary = response.body()?.data
+                    updateRecycler(posts, mediaUrl, profilePicUrl, followStatus, adapter,
+                        summary?.viewCount ?: 1000,
+                        summary?.likeCount ?: 500,
+                        summary?.commentCount ?: 20,)
+                } else {
+                    logError(response.errorBody()?.toString(), "Couldn't get post summary")
+                }
+            }
+
+            override fun onFailure(call: Call<GetPostsSummary>, t: Throwable) {
+                logFailure(t, "Couldn't reach the server for post summary")
+            }
+        })
+    }
+
+    private fun updateRecycler(posts: AllPostItems, mediaUrl: String?, profilePicUrl: String?, followStatus: Boolean, adapter: MoreVideosAdapter, viewCount: Int, likeCount: Int, commentCount: Int) {
+        Log.d("DatabaseFinal", "Uploading Posts")
+        val postToUpload = SavedPost(
+            profilePicUrl = profilePicUrl ?: "s",
+            timeStamp = DateUtils.getRelativeTimeString(posts.creationDate),
+            name = posts.user.username,
+            title = posts.caption,
+            videoUrl = mediaUrl ?: "weee",
+            follow = followStatus,
+            views = "$viewCount views",
+            comments = "$commentCount comments",
+            likes = "$likeCount likes",
+            otherUsersId = posts.user.id,
+            postId = posts.id
+        )
+
+        // Add post to the list
+        postsList.add(postToUpload)
+
+        // Update the adapter
+        adapter.updateData(postsList)
+
         Log.d("Database", "Posts Uploaded")
     }
 

@@ -49,6 +49,11 @@ class MoreVideosAdapter(private var videos: List<SavedPost>, private val service
         return VideosViewHolder(view)
     }
 
+    fun updateData(newData: List<SavedPost>) {
+        videos = newData
+        notifyItemInserted(0)
+    }
+
     override fun onBindViewHolder(holder: VideosViewHolder, position: Int) {
         val currentItem = videos[position]
         holder.itemView.apply {
@@ -211,7 +216,7 @@ class MoreVideosAdapter(private var videos: List<SavedPost>, private val service
         return (dp * density).toInt()
     }
 
-    private fun getComments(context: Context, postId: Int, recyclerView: RecyclerView) {
+    private fun getComments(context: Context, postId: Int, recyclerView: RecyclerView, itemView: View) {
         val request = RequestObjects(
             1,
             5)
@@ -234,15 +239,6 @@ class MoreVideosAdapter(private var videos: List<SavedPost>, private val service
                                         val signedUrl = response.body()?.data.toString()
                                         val commentToAdd = Comments(user.username, signedUrl, commentItems.comment)
                                         comments.add(commentToAdd)
-                                        if (comments.size == commentLists.size) {
-                                            Log.d("RetrofitSuccess", "the loop is done")
-                                            val commentAdapter = CommentAdapter(comments)
-                                            recyclerView.adapter = commentAdapter
-                                            recyclerView.layoutManager = LinearLayoutManager(context)
-                                            commentAdapter.notifyDataSetChanged()
-                                        } else {
-                                            Log.e("RetrofitError", "problem finishing the loop")
-                                        }
                                     } else {
                                         Log.e("RetrofitError", "An error has occurred ${response.errorBody().toString()}")
                                     }
@@ -253,6 +249,12 @@ class MoreVideosAdapter(private var videos: List<SavedPost>, private val service
                                 }
                             })
                         }
+                        itemView.findViewById<ImageView>(R.id.ivLoadingImage).visibility = View.GONE
+                        Log.d("RetrofitSuccess", "the loop is done")
+                        val commentAdapter = CommentAdapter(comments)
+                        recyclerView.adapter = commentAdapter
+                        recyclerView.layoutManager = LinearLayoutManager(context)
+                        commentAdapter.notifyDataSetChanged()
                     } else {
                         Log.e("RetrofitLists", "Your list is null")
                     }
@@ -383,7 +385,8 @@ class MoreVideosAdapter(private var videos: List<SavedPost>, private val service
             itemView.findViewById<ConstraintLayout>(R.id.clFeedVideos)
             clParams.height = ConstraintLayout.LayoutParams.MATCH_PARENT
             constraintLayout.layoutParams = clParams
-            getComments(context, postId, itemView.findViewById(R.id.rvCommentsAndLikes))
+
+            getComments(context, postId, itemView.findViewById(R.id.rvCommentsAndLikes), itemView)
             itemView.findViewById<ImageView>(R.id.imvFeeds).visibility = View.GONE
             itemView.findViewById<ImageView>(R.id.imvFeedsProfilePicture).visibility = View.GONE
             itemView.findViewById<ConstraintLayout>(R.id.clCommentsAndLikes).bringToFront()
@@ -392,10 +395,10 @@ class MoreVideosAdapter(private var videos: List<SavedPost>, private val service
             itemView.findViewById<ImageView>(R.id.imvCommentSend).setOnClickListener {
                 makeComments(postId, itemView.findViewById<EditText>(R.id.etCommentText).text.toString())
                 itemView.findViewById<EditText>(R.id.etCommentText).text.clear()
-                getComments(itemView.context, postId, itemView.findViewById(R.id.rvCommentsAndLikes))
+                getComments(itemView.context, postId, itemView.findViewById(R.id.rvCommentsAndLikes), itemView)
             }
             if (commentSelected) {
-                getComments(itemView.context, postId, itemView.findViewById(R.id.rvCommentsAndLikes))
+                getComments(itemView.context, postId, itemView.findViewById(R.id.rvCommentsAndLikes), itemView)
             } else {
                 getLikes(itemView.context, postId, itemView.findViewById(R.id.rvCommentsAndLikes))
             }

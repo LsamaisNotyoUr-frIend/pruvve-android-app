@@ -10,7 +10,6 @@ class StoryViewModel(private val repository: StoryRepository) : ViewModel() {
 
     val allStories: MutableLiveData<List<SavedStory>> = MutableLiveData()
 
-
     fun getStories(){
         viewModelScope.launch {
             allStories.postValue(repository.getStories())

@@ -56,18 +56,27 @@ interface UserService {
     fun makeComment(@Path("postId")postId:Int, @Body comments: MakeComments):Call<FollowsReply>
     @GET("v1/post/{postId}/comment")
     fun getComments(@Path("postId")postId:Int, @Query("request") requestObject: RequestObjects):Call<ServerComments>
+
     @GET("v1/post/{postId}/like")
     fun getLikes(@Path("postId")postId:Int, @Query("request") requestObject: RequestObjects):Call<ServerLikes>
+
     @POST("v1/post/{postId}/like")
     fun likePost(@Path("postId") postId: Int):Call<FollowsReply>
+
     @POST("v1/post/{postId}/view")
     fun addViews(@Path("postId") postId: Int):Call<ProfileResponse>
+
     @DELETE("v1/post/{postId}/unlike")
     fun unLikePost(@Path("postId") postId: Int): Call<FollowsReply>
+
     @POST("v1/user/{userId}/follow")
     fun followUser(@Path("userId") userId: Int):Call<FollowsReply>
+
     @DELETE("v1/user/{userId}/unfollow")
     fun unFollowUser(@Path("userId") userId: Int): Call<FollowsReply>
+
+    @GET("v1/user/following-summary")
+    fun getFollowersAndFollowing(): Call<Follow>
 
     @GET("v1/user/follow-status")
     fun getFollowStatus(@Query("followerId")followerId: FollowerId, @Query("followedId")followedId: FollowedId):Call<FollowStatusReply>
@@ -113,18 +122,25 @@ interface UserService {
 
     @GET("v1/post/{postId}")
     fun getSelectedPosts(@Path("postId")postId:Int):Call<GetPost>
+
     @GET("v1/post/{postId}/summary")
     fun getPostSummary(@Path("postId")postId:Int):Call<GetPostsSummary>
+
     @GET("v1/video/video-of-the-week")
     fun getVideoOfTheWeek():Call<GetVideoOfWeek>
+
     @PUT("v1/video/video-of-the-week")
     fun putVideoOfheWeek(@Body postId: PostIdObject):Call<ProfileResponse>
+
     @GET("v1/video/category")
     fun getVideoCategory(@Query("request") requestObject: RequestObjects):Call<VideoCategory>
+
     @POST("v1/video/category")
     fun createVideoCategory(@Body videoCategory: VideoCategoryCreator):Call<ProfileResponse>
+
     @GET("v1/video/category/{categoryId}")
     fun getCategory(@Path("categoryId") categoryId: Int):Call<GetCategory>
+
     @GET("v1/video/by-category/{categoryId}")
     fun getVideosInCategory(@Path("categoryId") categoryId: Int, @Query("request") requestObject: RequestObjects):Call<GetAllPosts>
 

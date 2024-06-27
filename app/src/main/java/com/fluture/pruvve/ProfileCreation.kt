@@ -11,6 +11,7 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
+import android.util.Patterns
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.NumberPicker
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.fluture.pruvve.databinding.ActivityProfileCreationBinding
 import java.io.BufferedReader
@@ -59,7 +61,7 @@ class ProfileCreation : AppCompatActivity() {
             val zipCode = binding.zipCodeField.text.toString()
             val gender = binding.tvgenderview.text.toString().uppercase()
             val dateOfBirth = "${binding.tvyearview.text}-${binding.tvmonthview.text}-${binding.tvdayview.text}"
-            val email = binding.emailaddressfield.text.toString()
+            val email = getValidatedEmail()
             Intent(this, UsernameCreation::class.java).also {
                 it.putExtra("Extra_firstname", firstName)
                 it.putExtra("Extra_lastname", lastName)
@@ -192,5 +194,22 @@ class ProfileCreation : AppCompatActivity() {
         window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
         window?.setGravity(Gravity.BOTTOM)
         dialog.show()
+    }
+
+    private fun getValidatedEmail(): String? {
+        val email = binding.emailaddressfield.text.toString()
+
+        return if (isValidEmail(email)) {
+            email
+        } else {
+            // Show error message if email is invalid
+            Toast.makeText(this, "Please enter a valid email address.", Toast.LENGTH_SHORT).show()
+            null
+        }
+    }
+
+    // Function to check if the email is valid
+    private fun isValidEmail(email: String): Boolean {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 }

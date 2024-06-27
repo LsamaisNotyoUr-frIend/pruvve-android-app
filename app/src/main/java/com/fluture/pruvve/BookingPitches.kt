@@ -153,6 +153,10 @@ class BookingPitches : AppCompatActivity() {
                         }
                         recyclerViewTimes.visibility = View.VISIBLE
                         adapter.notifyDataSetChanged()
+                        if (adapter.ifClicked()){
+                            binding.btnPitchDays.setBackgroundResource(R.drawable.primary_button)
+                            binding.btnPitchDays.isEnabled = true
+                        }
 
                         binding.btnPitchDays.setOnClickListener {
                             binding.btnPitchDays.setBackgroundResource(R.drawable.disabled_button)

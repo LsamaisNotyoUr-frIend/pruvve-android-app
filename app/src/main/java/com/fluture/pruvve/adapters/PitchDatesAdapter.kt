@@ -113,6 +113,7 @@ data class DayItems(
 
 class PitchTimesAdapter(private val times: List<TimeItems>):RecyclerView.Adapter<PitchTimesAdapter.TimesViewHolder>(){
     private val selectedItems = mutableListOf<TimeItems>()
+    var clickedBoolean = false
     inner class TimesViewHolder(itemView: View):RecyclerView.ViewHolder(itemView)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimesViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_pitch_times, parent, false)
@@ -121,6 +122,7 @@ class PitchTimesAdapter(private val times: List<TimeItems>):RecyclerView.Adapter
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TimesViewHolder, position: Int) {
+
         val currentItem = times[position]
         holder.itemView.apply {
             findViewById<TextView>(R.id.tvDatesTimes).text = currentItem.startTime
@@ -142,6 +144,7 @@ class PitchTimesAdapter(private val times: List<TimeItems>):RecyclerView.Adapter
                     } else {
                         selectedItems.add(currentItem)
                         setBackgroundResource(R.drawable.primary_button)
+                        clickedBoolean = true
                     }
                 }
             }
@@ -161,6 +164,9 @@ class PitchTimesAdapter(private val times: List<TimeItems>):RecyclerView.Adapter
 
     fun getSelectedTimes(): List<PitchTimes> {
         return selectedItems.map { PitchTimes(it.startTime, it.endTime) }
+    }
+    fun ifClicked():Boolean {
+        return clickedBoolean
     }
 
     fun getSelectedTimesCount(): Int {
