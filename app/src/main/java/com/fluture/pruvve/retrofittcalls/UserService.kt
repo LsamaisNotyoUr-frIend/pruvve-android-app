@@ -79,7 +79,7 @@ interface UserService {
     fun getFollowersAndFollowing(): Call<Follow>
 
     @GET("v1/user/follow-status")
-    fun getFollowStatus(@Query("followerId")followerId: FollowerId, @Query("followedId")followedId: FollowedId):Call<FollowStatusReply>
+    fun getFollowStatus(@Query("followerId")followerId: Int, @Query("followedId")followedId: Int):Call<FollowStatusReply>
 
     @POST("v1/story")
     fun postStory(@Body post: PostsMedia):Call<UploadResponse>

@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.fluture.pruvve.adapters.StoryAdapter
@@ -34,7 +36,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 class HomePage : AppCompatActivity() {
     private lateinit var binding: ActivityHomePageBinding
-    private lateinit var repository: StoryRepository
+    private val myUrl2 = "https://i.pinimg.com/236x/e5/97/79/e59779258a86991a933e45143bf3db4c.jpg"
     private val storyViewModel: StoryViewModel by viewModels {
         StoryViewModel.StoryViewModelFactory(StoryRepository(PruvveDatabase.getDatabase(this).storyDao))
     }
@@ -60,7 +62,6 @@ class HomePage : AppCompatActivity() {
         val username = intent.getStringExtra("profileUsername") ?: "AdminSomething"
         val id: Int = intent.getIntExtra("ProfileId", 3)
 
-        val myUrl2 = "https://i.pinimg.com/236x/e5/97/79/e59779258a86991a933e45143bf3db4c.jpg"
         val listStories = mutableListOf(
             SavedStory(username, url = myUrl2),
         )
@@ -84,71 +85,6 @@ class HomePage : AppCompatActivity() {
 //                Log.d("Database", "No posts collected")
 //            }
 //        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val token = LoginManager.getToken()
-        Log.d("RetrofitToken", token.toString())
-        val id: Int = intent.getIntExtra("ProfileId", 3)
-        val myUrl2 = "https://i.pinimg.com/236x/e5/97/79/e59779258a86991a933e45143bf3db4c.jpg"
-        val username = intent.getStringExtra("profileUsername") ?: "AdminSomething"
-        val profilePic = intent.getStringExtra("profileUrl") ?: "https://i.pinimg.com/236x/e5/97/79/e59779258a86991a933e45143bf3db4c.jpg"
-        val httpClient = OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor(token.toString()))
-            .build()
-
-        val service = Retrofit.Builder()
-            .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
-            .client(httpClient)
-            .addConverterFactory(MoshiConverterFactory.create())
-            .build()
-            .create(UserService::class.java)
-
-        val downloadImage = UploadImage(
-            fileName = profilePic,
-            "DOWNLOAD"
-        )
-        binding.tvUsername.text = username
-        service.uploadPicture(downloadImage).enqueue(object :Callback<UploadResponse>{
-            override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>
-            ) {
-                val url = response.body()?.data
-                if (response.isSuccessful){
-                    Glide.with(this@HomePage)
-                        .load(url)
-                        .apply(RequestOptions.circleCropTransform())
-                        .into(binding.imvProfilePlace)
-                }else{
-                    Log.e("RetrofitError","an error occurred ${response.errorBody().toString()}")
-                }
-            }
-            override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
-                Log.e("RetrofitError","an error occurred ${t.message.toString()}")
-            }
-        })
-
-        val myUrl = "https://i.pinimg.com/236x/63/cc/06/63cc06edc7c8222eaee125beb92bfc99.jpg"
-
-        Glide.with(this)
-            .load(myUrl)
-            .apply(RequestOptions.circleCropTransform())
-            .into(binding.imvNewsCoverPfp)
-
-        Glide.with(this)
-            .load(myUrl)
-            .apply(RequestOptions.circleCropTransform())
-            .into(binding.imvFeedsCoverPfp)
-
-        Glide.with(this)
-            .load(myUrl2)
-            .apply(RequestOptions().centerCrop())
-            .into(binding.imvfeedsHp)
-
-        Glide.with(this)
-            .load(myUrl2)
-            .apply(RequestOptions().centerCrop())
-            .into(binding.imvNewsCover)
 
         binding.homePageButton.setOnClickListener {
             supportFragmentManager.beginTransaction().apply {
@@ -215,13 +151,77 @@ class HomePage : AppCompatActivity() {
                 startActivity(it)
             }
         }
-        storyViewModel.getStories()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val token = LoginManager.getToken()
+        Log.d("RetrofitToken", token.toString())
+        val username = intent.getStringExtra("profileUsername") ?: "AdminSomething"
+        val profilePic = intent.getStringExtra("profileUrl") ?: myUrl2
+        val httpClient = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(token.toString()))
+            .build()
+
+        val service = Retrofit.Builder()
+            .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
+            .client(httpClient)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(UserService::class.java)
+
+        val downloadImage = UploadImage(
+            fileName = profilePic,
+            "DOWNLOAD"
+        )
+        binding.tvUsername.text = username
+        service.uploadPicture(downloadImage).enqueue(object :Callback<UploadResponse>{
+            override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>
+            ) {
+                val url = response.body()?.data
+                if (response.isSuccessful){
+                    Glide.with(this@HomePage)
+                        .load(url)
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(binding.imvProfilePlace)
+                }else{
+                    Log.e("RetrofitError","an error occurred ${response.errorBody().toString()}")
+                }
+            }
+            override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
+                Log.e("RetrofitError","an error occurred ${t.message.toString()}")
+            }
+        })
+
+        val myUrl = "https://i.pinimg.com/236x/63/cc/06/63cc06edc7c8222eaee125beb92bfc99.jpg"
+
+        Glide.with(this)
+            .load(myUrl)
+            .apply(RequestOptions.circleCropTransform())
+            .into(binding.imvNewsCoverPfp)
+
+        Glide.with(this)
+            .load(myUrl)
+            .apply(RequestOptions.circleCropTransform())
+            .into(binding.imvFeedsCoverPfp)
+
+        Glide.with(this)
+            .load(myUrl2)
+            .apply(RequestOptions().centerCrop())
+            .into(binding.imvfeedsHp)
+
+        Glide.with(this)
+            .load(myUrl2)
+            .apply(RequestOptions().centerCrop())
+            .into(binding.imvNewsCover)
+
+//        storyViewModel.getStories()
     }
 
     private fun getStories(service: UserService,userid: Int, adapter: StoryAdapter){
         val postMedia = GetPostsMedia(
             page = 1,
-            size = 10,
+            size = 3,
             userId = userid
         )
         service.getStories(postMedia).enqueue(object: Callback<GetPost>{
@@ -243,6 +243,11 @@ class HomePage : AppCompatActivity() {
                                         val signedUrl2 = response.body()?.data.toString()
                                         val postToAdd = SavedStory(user.username, signedUrl2)
                                         listToUpload.add(postToAdd)
+                                        adapter.updateData(listToUpload)
+                                        binding.rvStories.visibility = View.VISIBLE
+                                        binding.rvStories.adapter = adapter
+                                        binding.rvStories.layoutManager = LinearLayoutManager(this@HomePage, LinearLayoutManager.HORIZONTAL, false)
+                                        Log.d("Retrofit", "Posts Uploaded")
                                     } else {
                                         Log.e("RetrofitError", "An error has occurred ${response.errorBody().toString()}")
                                     }
@@ -253,7 +258,6 @@ class HomePage : AppCompatActivity() {
                                 }
                             })
                         }
-                        adapter.notifyDataSetChanged()
                     } else {
                         Log.e("RetrofitLists", "Your list is null")
                     }

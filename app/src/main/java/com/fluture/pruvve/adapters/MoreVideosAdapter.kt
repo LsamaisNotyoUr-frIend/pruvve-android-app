@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.fluture.pruvve.adapters
 
 import android.annotation.SuppressLint
@@ -16,7 +18,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -51,7 +52,7 @@ class MoreVideosAdapter(private var videos: List<SavedPost>, private val service
 
     fun updateData(newData: List<SavedPost>) {
         videos = newData
-        notifyItemInserted(0)
+        notifyItemRangeInserted(0, newData.size)
     }
 
     override fun onBindViewHolder(holder: VideosViewHolder, position: Int) {
@@ -79,14 +80,9 @@ class MoreVideosAdapter(private var videos: List<SavedPost>, private val service
                     .apply(RequestOptions().centerCrop())
                     .into(imageView)
             } else {
-                imageView.z = -1f
-                imageView.isVisible = false
                 imageView.visibility = View.GONE
                 isImage = false
                 playerView.visibility = View.VISIBLE
-                playerView.bringToFront()
-                playerView.visibility = View.VISIBLE
-                playerView.bringToFront()
                 val exoPlayer = ExoPlayer.Builder(context).build()
                 playerView.player = exoPlayer
                 val mediaItem = MediaItem.fromUri(Uri.parse(currentItem.videoUrl))
@@ -94,10 +90,12 @@ class MoreVideosAdapter(private var videos: List<SavedPost>, private val service
                 exoPlayer.prepare()
                 exoPlayer.playWhenReady = true
                 exoPlayer.repeatMode = ExoPlayer.REPEAT_MODE_ONE
+
                 playerView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
                     override fun onViewAttachedToWindow(v: View) {
-                        //this is an unused line of code that had to be called
+                        // No action needed
                     }
+
                     override fun onViewDetachedFromWindow(v: View) {
                         exoPlayer.release()
                     }
@@ -112,9 +110,9 @@ class MoreVideosAdapter(private var videos: List<SavedPost>, private val service
             findViewById<TextView>(R.id.tvTimestamp).text = currentItem.timeStamp
             findViewById<TextView>(R.id.tvTitle).text = currentItem.title
             findViewById<TextView>(R.id.tvProfileName).text = currentItem.name
-            findViewById<TextView>(R.id.tvViews).text = currentItem.views.toString()
-            findViewById<TextView>(R.id.tvComments).text = currentItem.comments.toString()
-            findViewById<TextView>(R.id.tvLikes).text = currentItem.likes.toString()
+            findViewById<TextView>(R.id.tvViews).text = currentItem.views
+            findViewById<TextView>(R.id.tvComments).text = currentItem.comments
+            findViewById<TextView>(R.id.tvLikes).text = currentItem.likes
 
             val likesButton = findViewById<TextView>(R.id.tvLikeItems)
             val commentButton = findViewById<TextView>(R.id.tvMyComments)
@@ -217,6 +215,7 @@ class MoreVideosAdapter(private var videos: List<SavedPost>, private val service
     }
 
     private fun getComments(context: Context, postId: Int, recyclerView: RecyclerView, itemView: View) {
+        itemView.findViewById<ImageView>(R.id.ivLoadingImage).visibility = View.VISIBLE
         val request = RequestObjects(
             1,
             5)
@@ -254,7 +253,7 @@ class MoreVideosAdapter(private var videos: List<SavedPost>, private val service
                         val commentAdapter = CommentAdapter(comments)
                         recyclerView.adapter = commentAdapter
                         recyclerView.layoutManager = LinearLayoutManager(context)
-                        commentAdapter.notifyDataSetChanged()
+                        commentAdapter.notifyItemRangeInserted(0, comments.size)
                     } else {
                         Log.e("RetrofitLists", "Your list is null")
                     }
@@ -267,7 +266,8 @@ class MoreVideosAdapter(private var videos: List<SavedPost>, private val service
         })
     }
 
-    private fun getLikes(context: Context, postId: Int, recyclerView: RecyclerView) {
+    private fun getLikes(context: Context, postId: Int, recyclerView: RecyclerView, itemView:View) {
+        itemView.findViewById<ImageView>(R.id.ivLoadingImage).visibility = View.VISIBLE
         val request = RequestObjects(
             1,
             20)
@@ -291,6 +291,7 @@ class MoreVideosAdapter(private var videos: List<SavedPost>, private val service
                                         val likesToAdd = Likes(user.username, signedUrl)
                                         likes.add(likesToAdd)
                                         if (likes.size == likesLists.size) {
+                                            itemView.findViewById<ImageView>(R.id.ivLoadingImage).visibility = View.GONE
                                             Log.d("RetrofitSuccess", "the loop is done")
                                             val likesAdapter = LikeAdapter(likes)
                                             recyclerView.adapter = likesAdapter
@@ -400,7 +401,7 @@ class MoreVideosAdapter(private var videos: List<SavedPost>, private val service
             if (commentSelected) {
                 getComments(itemView.context, postId, itemView.findViewById(R.id.rvCommentsAndLikes), itemView)
             } else {
-                getLikes(itemView.context, postId, itemView.findViewById(R.id.rvCommentsAndLikes))
+                getLikes(itemView.context, postId, itemView.findViewById(R.id.rvCommentsAndLikes), itemView)
             }
         } else {
             params.guidePercent = 1.0f

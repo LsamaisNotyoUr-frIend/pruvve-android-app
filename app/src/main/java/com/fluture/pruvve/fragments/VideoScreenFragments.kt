@@ -75,7 +75,7 @@ class VideoScreenFragments : Fragment(R.layout.fragment_video_screen_fragments) 
     }
 
     private fun getVideos(service: UserService){
-        val getPostMedia = GetFeedsMedia(1, 10)
+        val getPostMedia = GetFeedsMedia(1, 5)
         service.getPosts(getPostMedia).enqueue(object : Callback<GetAllPosts> {
             @SuppressLint("NotifyDataSetChanged")
             override fun onResponse(call: Call<GetAllPosts>, response: Response<GetAllPosts>) {
@@ -89,14 +89,12 @@ class VideoScreenFragments : Fragment(R.layout.fragment_video_screen_fragments) 
                                 fileName = url,
                                 purpose = "DOWNLOAD"
                             )
-                            service.uploadPicture(downloadImage2).enqueue(object:
-                                Callback<UploadResponse> {
-                                override fun onResponse(
-                                    call: Call<UploadResponse>,
-                                    response: Response<UploadResponse>
-                                ) {
+                            service.uploadPicture(downloadImage2).enqueue(object: Callback<UploadResponse> {
+                                override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
                                     if (response.isSuccessful){
                                         listToReturn.add(VideoPageItems(response.body()?.data.toString()))
+                                        adapter = VideosPageAdapter1(listToReturn)
+                                        adapter.notifyDataSetChanged()
                                     }else{
                                         Log.e("RetrofitError", "Error taking data from the server")
                                     }
@@ -106,8 +104,6 @@ class VideoScreenFragments : Fragment(R.layout.fragment_video_screen_fragments) 
                                 }
                             })
                         }
-                        adapter= VideosPageAdapter1(listToReturn)
-                        adapter.notifyDataSetChanged()
                     }else{
                         Log.e("RetrofitError", "Your list is empty")
                     }

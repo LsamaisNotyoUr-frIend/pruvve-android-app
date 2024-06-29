@@ -43,7 +43,7 @@ class WelcomeBack : AppCompatActivity() {
             val password =  binding.etpasswordfield.text.toString()
             val userLogin = LoginInfo(
                 username.trim(),
-                password
+                password.trim()
             )
             service.getUser(userLogin).enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {

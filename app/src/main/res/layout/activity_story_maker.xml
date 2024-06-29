@@ -8,28 +8,28 @@
     android:background="@drawable/pitch_background"
     tools:context=".StoryMaker">
 
-    <ImageView
-        android:id="@+id/imvAddAStory"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="centerCrop"
-        android:background="@drawable/dialogue_background3"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/imvAddAStory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/dialogue_background3"
+            android:scaleType="centerCrop"
+            tools:ignore="ContentDescription"
+            android:visibility="gone" />
 
-    <ImageView
-        android:id="@+id/imvAddAStory2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/dialogue_background3"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription" />
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/epAddVideo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/dialogue_background3"
+            android:scaleType="centerCrop"
+            app:resize_mode="fill"
+            app:use_controller="false"
+            android:visibility="gone" />
+    </FrameLayout>
 
     <ImageView
         android:id="@+id/btnBack"
