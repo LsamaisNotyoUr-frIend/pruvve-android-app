@@ -200,3 +200,5 @@ p
 @app/src/main/java/com/fluture/pruvve/localdatabase/SavedStory.kt,b\7\b7997f7c233bdd7b792094164a2ab1dc9a9ee4f0
 l
 <app/src/main/java/com/fluture/pruvve/essentials/dateSaver.kt,3\2\32e5b7e6497f74dde6d56e9dadb40215f2764a25
+g
+7app/src/main/java/com/fluture/pruvve/fragments/bugs.xml,4\9\49da5283cbf169f552fea0dd4062c256be192ac2

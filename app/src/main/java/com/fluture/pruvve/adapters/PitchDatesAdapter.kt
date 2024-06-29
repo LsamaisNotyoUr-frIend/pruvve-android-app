@@ -11,26 +11,9 @@ import com.fluture.pruvve.R
 import com.fluture.pruvve.retrofittcalls.PitchTimes
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Calendar
 
-class PitchDatesAdapter(private val days:List<DayItems>):RecyclerView.Adapter<PitchDatesAdapter.DaysViewHolder>() {
+class PitchDatesAdapter(private var days:List<DayItems>):RecyclerView.Adapter<PitchDatesAdapter.DaysViewHolder>() {
     private var selectedIndex: Int = RecyclerView.NO_POSITION
-    private var currentDateItem: DayItems? = null
-
-    init {
-        val currentCalendar = Calendar.getInstance()
-        val currentDate = currentCalendar[Calendar.DAY_OF_MONTH]
-        val currentMonth = currentCalendar[Calendar.MONTH] + 1
-        val currentYear = currentCalendar[Calendar.YEAR]
-
-        for ((index, item) in days.withIndex()) {
-            if (item.dayOfTheMonth == currentDate && item.month == currentMonth) {
-                selectedIndex = index
-                currentDateItem = item
-                break
-            }
-        }
-    }
 
     inner class DaysViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         init {
@@ -42,7 +25,6 @@ class PitchDatesAdapter(private val days:List<DayItems>):RecyclerView.Adapter<Pi
             }
         }
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DaysViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_days, parent, false)
         return DaysViewHolder(view)
@@ -70,42 +52,32 @@ class PitchDatesAdapter(private val days:List<DayItems>):RecyclerView.Adapter<Pi
         }
     }
 
-    fun getSelectedDate(): DayItems {
-        return days[selectedIndex]
-    }
-
     fun getSelectedItem(): DayItems? {
-        if (selectedIndex != RecyclerView.NO_POSITION) {
-            return days.getOrNull(selectedIndex)
-        }
-        return null
-    }
-
-    fun getCurrentDateString(): String? {
-        currentDateItem?.let {
-            return formatDate(it.year, it.month, it.dayOfTheMonth)
-        }
-        return null
+        return if (selectedIndex != RecyclerView.NO_POSITION) {
+            days.getOrNull(selectedIndex)
+        } else null
     }
 
     fun getSelectedDateString(): String? {
-        val selectedItem = getSelectedItem()
-        selectedItem?.let {
-            return formatDate(it.year, it.month, it.dayOfTheMonth)
+        return getSelectedItem()?.let {
+            formatDate(it.year, it.month, it.dayOfTheMonth)
         }
-        return null
     }
 
     private fun formatDate(year: Int, month: Int, day: Int): String {
-        val dateFormat = LocalDate.of( year, month, day).format(
-            DateTimeFormatter.ISO_DATE
-        )
-        return dateFormat
+        return LocalDate.of(year, month, day).format(DateTimeFormatter.ISO_DATE)
     }
 
+    fun updateDays(newDays: List<DayItems>) {
+        days = newDays
+        notifyDataSetChanged()
+    }
 }
+
+// File path: DayItems.kt
+
 data class DayItems(
-    val dayOfTheMonth:Int,
+    val dayOfTheMonth: Int,
     val dayOfTheWeek: String,
     val year: Int,
     val month: Int

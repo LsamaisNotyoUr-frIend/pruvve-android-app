@@ -106,9 +106,7 @@ class BookingPitches : AppCompatActivity() {
             updateMonthYearTextView(monthYearTextView)
             updateRecyclerViewForCurrentMonth()
         }
-
     }
-
     override fun onStart() {
         super.onStart()
         LoginManager.init(this)
@@ -237,15 +235,15 @@ class BookingPitches : AppCompatActivity() {
         val currentMonth = currentMonthYear.month
         val currentYear = currentMonthYear.year
         val daysInMonth = currentMonth.length(Year.isLeap(currentYear.toLong()))
-        val dataList = mutableListOf<DayItems>()
+        val newDataList = mutableListOf<DayItems>()
         for (dayOfMonth in 1..daysInMonth) {
             val currentDate = LocalDate.of(currentYear, currentMonth, dayOfMonth)
             val dayOfWeek = currentDate.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
 
             val dayItem = DayItems(dayOfMonth, dayOfWeek, LocalDate.now().year, LocalDate.now().monthValue)
-            dataList.add(dayItem)
+            newDataList.add(dayItem)
         }
-        return dataList
+        return newDataList
     }
 
     private fun updateMonthYearTextView(textView: TextView) {
@@ -262,11 +260,6 @@ class BookingPitches : AppCompatActivity() {
             Date(currentTimeMillis)
         )
         return "${pitchName}_${timeStamp}_${userId}"
-    }
-
-    fun updateData(newDataList: MutableList<DayItems>, adapter: PitchDatesAdapter){
-        dataList = newDataList
-        adapter.notifyDataSetChanged()
     }
 
     private fun logError(errorBody: String?, message: String) {
