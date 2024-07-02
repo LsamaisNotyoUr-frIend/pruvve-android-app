@@ -11,6 +11,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fluture.pruvve.adapters.DayItems
 import com.fluture.pruvve.adapters.GetUserResponse
@@ -20,6 +21,7 @@ import com.fluture.pruvve.adapters.TimeItems
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityBookingPitchesBinding
+import com.fluture.pruvve.essentials.PitchViewModel
 import com.fluture.pruvve.retrofittcalls.GetPitch
 import com.fluture.pruvve.retrofittcalls.GetPitchAvailability
 import com.fluture.pruvve.retrofittcalls.PitchRequestObjects
@@ -88,7 +90,7 @@ class BookingPitches : AppCompatActivity() {
             }
         })
 
-        pitchDatesAdapter = PitchDatesAdapter(dataList)
+        pitchDatesAdapter = PitchDatesAdapter(dataList, PitchViewModel())
         recyclerViewDates.adapter = pitchDatesAdapter
         recyclerViewDates.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
@@ -132,95 +134,101 @@ class BookingPitches : AppCompatActivity() {
 
         val pitchId = intent.getIntExtra("Extra_id", 2)
         val recyclerViewTimes = binding.rvPitchDaysTime
-        val timeIndex = pitchDatesAdapter.getSelectedDateString() ?: "2024-11-24"
         val pitchName = intent.getStringExtra("Extra_pitch_name") ?: "provingGrounds"
         val adapter = PitchTimesAdapter(dataList2)
         recyclerViewTimes.adapter = adapter
         recyclerViewTimes.layoutManager = LinearLayoutManager(this@BookingPitches, LinearLayoutManager.VERTICAL, false)
+        val pitchViewModel = PitchViewModel()
 
-        service.checkAvailability(pitchId, timeIndex!!).enqueue(object : Callback<GetPitchAvailability> {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onResponse(call: Call<GetPitchAvailability>, response: Response<GetPitchAvailability>) {
-                if (response.isSuccessful) {
-                    val list = response.body()?.data?.slots
-                    if (list != null) {
-                        for (timeItems in list) {
-                            val slotsLeft = timeItems.slotsLeft
-                            val timesList = TimeItems(timeItems.startTime, timeItems.endTime, getStatus(slotsLeft), pitchId)
-                            dataList2.add(timesList)
-                        }
-                        recyclerViewTimes.visibility = View.VISIBLE
-                        adapter.notifyDataSetChanged()
-                        if (adapter.ifClicked()){
-                            binding.btnPitchDays.setBackgroundResource(R.drawable.primary_button)
-                            binding.btnPitchDays.isEnabled = true
-                        }
-
-                        binding.btnPitchDays.setOnClickListener {
-                            binding.btnPitchDays.setBackgroundResource(R.drawable.disabled_button)
-                            binding.btnPitchDays.isEnabled = false
-                            val selectedTimes = adapter.getSelectedTimes()
-                            val bookingReference = createBookingReference(pitchName, userId)
-                            val pitchRequestObjects = PitchRequestObjects(selectedTimes, bookingReference)
-                            service.bookPitch(pitchId, pitchRequestObjects).enqueue(object : Callback<GetPitch> {
-                                @SuppressLint("SetJavaScriptEnabled")
-                                override fun onResponse(call: Call<GetPitch>, response: Response<GetPitch>) {
-                                    if (response.isSuccessful) {
-                                        closeButton.visibility = View.VISIBLE
-                                        webView.visibility = View.VISIBLE
-                                        val url = "https://pruvve-pay-ab34e3cd9a37.herokuapp.com/?token=$token&bookingReference=$bookingReference"
-                                        val webSettings: WebSettings = webView.settings
-                                        webSettings.javaScriptEnabled = true
-                                        webSettings.domStorageEnabled = true
-                                        webSettings.useWideViewPort = true
-                                        webSettings.loadWithOverviewMode = true
-                                        WebView.setWebContentsDebuggingEnabled(true)
-                                        webView.webViewClient = object : WebViewClient() {
-                                            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-                                                view.loadUrl(request.url.toString())
-                                                return true
+        pitchViewModel.selectedDate.observe(this, Observer { date ->
+            service.checkAvailability(pitchId, date ?: "2024-11-09").enqueue(object : Callback<GetPitchAvailability> {
+                @SuppressLint("NotifyDataSetChanged") override fun onResponse(call: Call<GetPitchAvailability>, response: Response<GetPitchAvailability>) {
+                    if (response.isSuccessful) {
+                        val list = response.body()?.data?.slots
+                        if (list != null) {
+                            for (timeItems in list) {
+                                val slotsLeft = timeItems.slotsLeft
+                                val timesList = TimeItems(
+                                    timeItems.startTime,
+                                    timeItems.endTime,
+                                    getStatus(slotsLeft),
+                                    pitchId
+                                )
+                                dataList2.add(timesList)
+                            }
+                            recyclerViewTimes.visibility = View.VISIBLE
+                            adapter.notifyDataSetChanged()
+                            if (adapter.ifClicked()) {
+                                binding.btnPitchDays.setBackgroundResource(R.drawable.primary_button)
+                                binding.btnPitchDays.isEnabled = true
+                            }
+                            binding.btnPitchDays.setOnClickListener {
+                                binding.btnPitchDays.setBackgroundResource(R.drawable.disabled_button)
+                                binding.btnPitchDays.isEnabled = false
+                                val selectedTimes = adapter.getSelectedTimes()
+                                val bookingReference = createBookingReference(pitchName, userId)
+                                val pitchRequestObjects = PitchRequestObjects(selectedTimes, bookingReference)
+                                service.bookPitch(pitchId, pitchRequestObjects).enqueue(object : Callback<GetPitch> {
+                                    @SuppressLint("SetJavaScriptEnabled")
+                                    override fun onResponse(call: Call<GetPitch>, response: Response<GetPitch>) {
+                                        if (response.isSuccessful) {
+                                            closeButton.visibility = View.VISIBLE
+                                            webView.visibility = View.VISIBLE
+                                            val url =
+                                                "https://pruvve-pay-ab34e3cd9a37.herokuapp.com/?token=$token&bookingReference=$bookingReference"
+                                            val webSettings: WebSettings = webView.settings
+                                            webSettings.javaScriptEnabled = true
+                                            webSettings.domStorageEnabled = true
+                                            webSettings.useWideViewPort = true
+                                            webSettings.loadWithOverviewMode = true
+                                            WebView.setWebContentsDebuggingEnabled(true)
+                                            webView.webViewClient = object : WebViewClient() {
+                                                    override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+                                                        view.loadUrl(request.url.toString())
+                                                        return true
+                                                    }
+                                                    override fun onPageFinished(view: WebView?, url: String?
+                                                    ) { super.onPageFinished(view, url)
+                                                        Log.d("WebView", "Page loaded: $url") }
+                                                    override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+                                                        super.onReceivedError(view, request, error)
+                                                        Log.e("WebViewError", "Error: ${error?.description}") }
+                                                }
+                                            webView.loadUrl(url)
+                                            Log.d("WebView", "Loading URL: $url")
+                                            closeButton.setOnClickListener { webView.loadUrl("")
+                                                webView.visibility = View.GONE
+                                                it.visibility = View.GONE
                                             }
-
-                                            override fun onPageFinished(view: WebView?, url: String?) {
-                                                super.onPageFinished(view, url)
-                                                Log.d("WebView", "Page loaded: $url")
-                                            }
-
-                                            override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
-                                                super.onReceivedError(view, request, error)
-                                                Log.e("WebViewError", "Error: ${error?.description}")
-                                            }
+                                        } else {
+                                            binding.btnPitchDays.setBackgroundResource(R.drawable.disabled_button)
+                                            binding.btnPitchDays.isEnabled = false
+                                            logError(response.errorBody().toString(), "couldn't book the pitch")
                                         }
-                                        webView.loadUrl(url)
-                                        Log.d("WebView", "Loading URL: $url")
-                                        closeButton.setOnClickListener{ it ->
-                                            webView.loadUrl("")
-                                            webView.visibility = View.GONE
-                                            it.visibility = View.GONE
-                                        }
-                                    } else {
+                                    }
+                                    override fun onFailure(call: Call<GetPitch>, t: Throwable) {
                                         binding.btnPitchDays.setBackgroundResource(R.drawable.disabled_button)
                                         binding.btnPitchDays.isEnabled = false
-                                        logError(response.errorBody().toString(), "couldn't book the pitch")
+                                        logFailure(t, "Unable to reach the server at this moment")
                                     }
-                                }
-
-                                override fun onFailure(call: Call<GetPitch>, t: Throwable) {
-                                    binding.btnPitchDays.setBackgroundResource(R.drawable.disabled_button)
-                                    binding.btnPitchDays.isEnabled = false
-                                    logFailure(t, "Unable to reach the server at this moment")
-                                }
-                            })
+                                })
+                            }
                         }
+                    } else {
+                        Log.e(
+                            "RetrofitError",
+                            "An error occurred ${response.errorBody().toString()}"
+                        )
                     }
-                } else {
-                    Log.e("RetrofitError", "An error occurred ${response.errorBody().toString()}")
                 }
-            }
 
-            override fun onFailure(call: Call<GetPitchAvailability>, t: Throwable) {
-                Log.e("RetrofitFailure", "couldn't reach the server ${t.message.toString()}")
-            }
+                override fun onFailure(call: Call<GetPitchAvailability>, t: Throwable) {
+                    Log.e(
+                        "RetrofitFailure",
+                        "couldn't reach the server ${t.message.toString()}"
+                    )
+                }
+            })
         })
     }
 
