@@ -41,16 +41,16 @@
         android:id="@+id/imvPitchDateLeft"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:src="@drawable/left_date"
         android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
         android:layout_marginTop="12dp"
+        android:layout_marginEnd="5dp"
         android:layout_marginBottom="12dp"
+        android:contentDescription="To change to the previous date"
+        android:src="@drawable/left_date"
         app:layout_constraintBottom_toTopOf="@+id/guideline35"
         app:layout_constraintEnd_toStartOf="@+id/guideline30"
         app:layout_constraintStart_toStartOf="@+id/guideline29"
         app:layout_constraintTop_toTopOf="@+id/guideline32"
-        android:contentDescription="To change to the previous date"
         tools:ignore="HardcodedText" />
 
     <ImageView
@@ -58,8 +58,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
         android:layout_marginTop="12dp"
+        android:layout_marginEnd="5dp"
         android:layout_marginBottom="12dp"
         android:contentDescription="To change to the next date in the sequence"
         android:src="@drawable/right_date"
@@ -82,6 +82,25 @@
         app:layout_constraintTop_toTopOf="@+id/guideline9"
         tools:ignore="HardcodedText" />
 
+    <Button
+        android:id="@+id/btnPitchDays"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/disabled_button"
+        android:fontFamily="@font/my_exo"
+        android:text="Book Pitch"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline66"
+        tools:ignore="HardcodedText" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPitchDateDays"
         android:layout_width="0dp"
@@ -102,24 +121,34 @@
         app:layout_constraintStart_toStartOf="@+id/guideline29"
         app:layout_constraintTop_toTopOf="@+id/guideline76" />
 
-    <Button
-        android:id="@+id/btnPitchDays"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="10dp"
-        android:background="@drawable/primary_button"
-        android:fontFamily="@font/my_exo"
-        android:text="Let's go"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline66"
-        tools:ignore="HardcodedText" />
+    <LinearLayout
+        android:id="@+id/llPayment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <WebView
+            android:id="@+id/wvMakePayment"
+            android:layout_margin="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/btnClosePayment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="@drawable/primary_button"
+            android:fontFamily="@font/my_exo"
+            android:text="BACK TO APP"
+            android:layout_weight="9.2"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText"/>
+    </LinearLayout>
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline10"
@@ -211,5 +240,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.88" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline346"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.82" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

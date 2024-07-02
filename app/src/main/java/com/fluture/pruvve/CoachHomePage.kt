@@ -52,7 +52,7 @@ class CoachHomePage : AppCompatActivity() {
 
         val video = mutableListOf(VideoPageItems(myUrl))
 
-        val getPostMedia = GetFeedsMedia(1, 20)
+        val getPostMedia = GetFeedsMedia(1, 5)
         service.getPosts(getPostMedia).enqueue(object : Callback<GetAllPosts>{
             override fun onResponse(call: Call<GetAllPosts>, response: Response<GetAllPosts>) {
                 if(response.isSuccessful){

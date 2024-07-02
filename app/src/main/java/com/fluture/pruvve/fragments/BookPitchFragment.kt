@@ -34,6 +34,8 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 class BookPitchFragment : Fragment(R.layout.fragment_book_pitch){
     private lateinit var binding: FragmentBookPitchBinding
 
+    private lateinit var adapter: PitchAdapter
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentBookPitchBinding.bind(view)
         LoginManager.init(requireContext())
@@ -63,10 +65,26 @@ class BookPitchFragment : Fragment(R.layout.fragment_book_pitch){
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
         mapView.overlays.add(startMarker)
         mapView.overlays.add(pitchMarker)
-        val token = LoginManager.getToken()
-        Log.d("RetrofitToken", token.toString())
 
         binding.tvSearchBar.text = TextManager.getText()
+
+        binding.tvSearchBar.setOnClickListener {
+            Intent(requireContext(), SearchPage::class.java).also {
+                startActivity(it)
+            }
+        }
+
+        adapter = PitchAdapter(arrayListOf())
+        val recycler = binding.rvPitches
+        recycler.adapter = adapter
+        recycler.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        val token = LoginManager.getToken()
+        Log.d("RetrofitToken", token.toString())
 
         val httpClient = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(token.toString()))
@@ -79,17 +97,6 @@ class BookPitchFragment : Fragment(R.layout.fragment_book_pitch){
             .build()
             .create(UserService::class.java)
 
-
-        binding.tvSearchBar.setOnClickListener {
-            Intent(requireContext(), SearchPage::class.java).also {
-                startActivity(it)
-            }
-        }
-        binding.llViewAllPitches.setOnClickListener{
-            Intent(requireContext(), ShowAllPosts::class.java).also { thisActivity ->
-                startActivity(thisActivity)
-            }
-        }
         getPitches(service = service)
     }
 
@@ -112,15 +119,9 @@ class BookPitchFragment : Fragment(R.layout.fragment_book_pitch){
                             val address = pitchItems.address
                             val pitches = Pitches(title, address, profUrl, 2, format, surface, facilities, facilities2, facilities3, pitchItems.id, pitchItems.description)
                             pitchList.add(pitches)
-                            if (pitchList.size == list.size){
-                                val adapter = PitchAdapter(pitchList)
-                                val recycler = binding.rvPitches
-                                recycler.adapter = adapter
-                                recycler.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false)
-                                recycler.visibility= View.VISIBLE
-                            }
                         }
-                    }else{
+                        adapter.update(pitchList)
+                    } else {
                         Log.e("RetrofitListError", "your list is empty")
                     }
                 }else{

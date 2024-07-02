@@ -3,10 +3,10 @@ package com.fluture.pruvve
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.SpannableString
+import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -14,14 +14,14 @@ import android.text.style.UnderlineSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.text.TextWatcher
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import com.fluture.pruvve.retrofittcalls.LoginInfo
+import androidx.appcompat.app.AppCompatActivity
 import com.fluture.pruvve.adapters.LoginResponse
 import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityUsernameCreationBinding
+import com.fluture.pruvve.retrofittcalls.LoginInfo
 import com.fluture.pruvve.retrofittcalls.User
 import com.fluture.pruvve.retrofittcalls.UserService
 import retrofit2.Call
@@ -96,60 +96,60 @@ class UsernameCreation : AppCompatActivity() {
             binding.button.isEnabled = false
             val username = binding.usernameField.text.toString()
             val password = binding.passwordField.text.toString()
-                val userToCreate = User(
-                    firstName = firstName,
-                    lastName = lastName,
-                    email = email,
-                    zipCode = zipCode,
-                    gender = gender,
-                    dateOfBirth = dateOfBirth,
-                    username = username,
-                    password = password
-                )
-                service.createUser(userToCreate).enqueue(object : Callback<User> {
-                    override fun onResponse(call: Call<User>, response: Response<User>) {
-                        if (response.isSuccessful) {
-                            Toast.makeText(this@UsernameCreation, "User created successfully", Toast.LENGTH_SHORT).show()
-                            val userLogin = LoginInfo(
-                                username,
-                                password
-                            )
-                            service.getUser(userLogin).enqueue(object : Callback<LoginResponse> {
-                                override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-                                    if (response.isSuccessful) {
-                                        val token = response.body()?.data?.token.toString()
-                                        Log.d("RetrofitToken", token)
-                                        Log.d("RetrofitLogin", "User Logged in successfully")
-                                        LoginManager.saveToken(token)
-                                        Intent(this@UsernameCreation, AccountTypeSelector::class.java).also {
-                                            it.putExtra("Extra_username", username)
-                                            startActivity(it)
-                                        }
-                                    } else {
-                                        Log.e("RetrofitError", "User authorization failed: ${response.errorBody()?.toString()}")
-                                        Toast.makeText(this@UsernameCreation, "Couldn't authorize user", Toast.LENGTH_SHORT).show()
+            val userToCreate = User(
+                firstName = firstName,
+                lastName = lastName,
+                email = email,
+                zipCode = zipCode,
+                gender = gender,
+                dateOfBirth = dateOfBirth,
+                username = username.trim(),
+                password = password.trim()
+            )
+            service.createUser(userToCreate).enqueue(object : Callback<User> {
+                override fun onResponse(call: Call<User>, response: Response<User>) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(this@UsernameCreation, "User created successfully", Toast.LENGTH_SHORT).show()
+                        val userLogin = LoginInfo(
+                            username,
+                            password
+                        )
+                        service.getUser(userLogin).enqueue(object : Callback<LoginResponse> {
+                            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                                if (response.isSuccessful) {
+                                    val token = response.body()?.data?.token.toString()
+                                    Log.d("RetrofitToken", token)
+                                    Log.d("RetrofitLogin", "User Logged in successfully")
+                                    LoginManager.saveToken(token)
+                                    Intent(this@UsernameCreation, AccountTypeSelector::class.java).also {
+                                        it.putExtra("Extra_username", username)
+                                        startActivity(it)
                                     }
+                                } else {
+                                    Log.e("RetrofitError", "User authorization failed: ${response.errorBody()?.toString()}")
+                                    Toast.makeText(this@UsernameCreation, "Couldn't authorize user", Toast.LENGTH_SHORT).show()
                                 }
-                                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                                    Log.e("RetrofitError", "Authorization failed: ${t.message.toString()}")
-                                    Toast.makeText(this@UsernameCreation, "Error during authorization", Toast.LENGTH_SHORT).show()
-                                }
-                            })
-                        } else {
-                            Log.e("RetrofitError", "RetrofitError:${response.errorBody()?.string()!!}")
-                            Toast.makeText(this@UsernameCreation, "User creation failed", Toast.LENGTH_SHORT).show()
-                            binding.button.setBackgroundResource(R.drawable.primary_button)
-                            binding.button.isEnabled = true
-                        }
-                    }
-
-                    override fun onFailure(call: Call<User>, t: Throwable) {
-                        Log.e("RetrofitFailure", "error: ${t.message.toString()}")
-                        Toast.makeText(this@UsernameCreation, "User could not be created", Toast.LENGTH_SHORT).show()
+                            }
+                            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                                Log.e("RetrofitError", "Authorization failed: ${t.message.toString()}")
+                                Toast.makeText(this@UsernameCreation, "Error during authorization", Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                    } else {
+                        Log.e("RetrofitError", "RetrofitError:${response.errorBody()?.string()!!}")
+                        Toast.makeText(this@UsernameCreation, "User creation failed", Toast.LENGTH_SHORT).show()
                         binding.button.setBackgroundResource(R.drawable.primary_button)
                         binding.button.isEnabled = true
                     }
-                })
+                }
+
+                override fun onFailure(call: Call<User>, t: Throwable) {
+                    Log.e("RetrofitFailure", "error: ${t.message.toString()}")
+                    Toast.makeText(this@UsernameCreation, "User could not be created", Toast.LENGTH_SHORT).show()
+                    binding.button.setBackgroundResource(R.drawable.primary_button)
+                    binding.button.isEnabled = true
+                }
+            })
     }
 }
     private fun setClickableSpan(spannableString: SpannableString, targetWord: String) {

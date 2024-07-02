@@ -13,6 +13,11 @@ import com.fluture.pruvve.localdatabase.SavedStory
 class StoryAdapter(private var story: List<SavedStory>):RecyclerView.Adapter<StoryAdapter.StoryViewHolder>() {
     inner class StoryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
+    fun updateData(newData: List<SavedStory>) {
+        story = newData
+        notifyItemInserted(0)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_storyobjects, parent, false)
         return StoryViewHolder(view)

@@ -23,7 +23,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 class ShowAllPosts : AppCompatActivity() {
-
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityShowAllPostsBinding
 
@@ -49,7 +48,7 @@ class ShowAllPosts : AppCompatActivity() {
     }
     private fun getPitches(service: UserService){
         val requestObject = RequestObjects(1, 10)
-        val pitchList = mutableListOf<Pitches>()
+        val pitchList = ArrayList<Pitches>()
         service.getPitches(requestObject).enqueue(object : Callback<GetPitches> {
             override fun onResponse(call: Call<GetPitches>, response: Response<GetPitches>) {
                 if (response.isSuccessful){
@@ -80,10 +79,8 @@ class ShowAllPosts : AppCompatActivity() {
                                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                                         val searchText = s.toString().lowercase()
 
-                                        val filteredSearches = pitchList.filter { it.title.lowercase()
-                                            .contains(searchText) }
-
-                                        val sortedFilteredSearches = filteredSearches.sortedByDescending { it.title.count { char -> char in searchText } }
+                                        val filteredSearches = pitchList.filter { it.title.lowercase().contains(searchText) }
+                                        val sortedFilteredSearches = ArrayList(filteredSearches.sortedByDescending { it.title.count { char -> char in searchText } })
 
                                         adapter.setData(sortedFilteredSearches)
                                     }

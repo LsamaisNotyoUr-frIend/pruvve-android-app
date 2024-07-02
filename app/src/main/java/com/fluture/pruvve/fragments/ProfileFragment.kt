@@ -28,6 +28,7 @@ import com.fluture.pruvve.adapters.VideosPageAdapter1
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.FragmentProfileBinding
+import com.fluture.pruvve.retrofittcalls.Follow
 import com.fluture.pruvve.retrofittcalls.GetAllPosts
 import com.fluture.pruvve.retrofittcalls.GetAthleteProfile
 import com.fluture.pruvve.retrofittcalls.GetFeedsMedia
@@ -96,9 +97,22 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     Log.e("RetrofitError","Couldn't get the athlete's information${response.errorBody().toString()}")
                 }
             }
-
             override fun onFailure(call: Call<GetAthleteProfile>, t: Throwable) {
                 Log.e("RetrofitFailure", "Couldn't reach the server${t.message.toString()}")
+            }
+        })
+        service.getFollowersAndFollowing().enqueue(object: Callback<Follow>{
+            override fun onResponse(call: Call<Follow>, response: Response<Follow>) {
+                if (response.isSuccessful){
+                    binding.tvUsersFollowers.text = "${response.body()?.data?.followers.toString()} Followers"
+                    binding.tvUsersFollowing.text = "${response.body()?.data?.following.toString()} Following"
+                }
+                else{
+                    Log.e("RetrofitError", "There was a problem getting the number of followers and following ${response.errorBody().toString()}")
+                }
+            }
+            override fun onFailure(call: Call<Follow>, t: Throwable) {
+                Log.e("RetrofitFailure", "Couldn't not call the server successfully, ${t.message.toString()}")
             }
         })
         val myUrl = "https://i.pinimg.com/236x/5a/6b/ea/5a6beaca00190835c3ba144424156afb.jpg"

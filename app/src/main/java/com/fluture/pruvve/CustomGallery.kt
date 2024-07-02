@@ -186,6 +186,7 @@ class CustomGallery : AppCompatActivity() {
                                 if (response.isSuccessful) {
                                     Log.d("RetrofitSuccess", response.body()?.message.toString())
                                     Intent(this@CustomGallery, MorePage::class.java).also {
+                                        it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                                         startActivity(it)
                                     }
                                     finish()

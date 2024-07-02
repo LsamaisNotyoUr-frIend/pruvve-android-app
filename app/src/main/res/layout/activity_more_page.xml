@@ -137,6 +137,18 @@
         app:layout_constraintTop_toTopOf="@+id/guideline31" />
 
     <ImageView
+        android:id="@+id/ivLoadingImage2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="50dp"
+        android:src="@drawable/loading2"
+        app:layout_constraintBottom_toTopOf="@+id/guideline314"
+        app:layout_constraintEnd_toStartOf="@+id/guideline37"
+        app:layout_constraintStart_toStartOf="@+id/guideline29"
+        app:layout_constraintTop_toTopOf="@+id/guideline31"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
         android:id="@+id/imvAddAPost"
         android:layout_width="0dp"
         android:layout_height="0dp"

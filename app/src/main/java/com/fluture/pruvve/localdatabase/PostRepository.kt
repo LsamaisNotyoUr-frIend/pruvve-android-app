@@ -38,7 +38,9 @@ class PostRepository(private val postDao: PostDao) {
 
 class StoryRepository(private val storyDao: StoryDao) {
 
-    val allStories = storyDao.getStoriesByNames()
+    suspend fun getStories():List<SavedStory>{
+        return storyDao.getStoriesByNames()
+    }
 
     suspend fun upsertStory(story: SavedStory) {
         withContext(Dispatchers.IO) {
@@ -59,10 +61,5 @@ class StoryRepository(private val storyDao: StoryDao) {
             }
         }
     }
-    fun isDatabaseForStoriesEmpty(): Flow<Boolean> {
-        return storyDao.getStoryCount().map { it == 0 }
-    }
-    fun getStoryCount(): Flow<Int> {
-        return storyDao.getStoryCount()
-    }
+
 }

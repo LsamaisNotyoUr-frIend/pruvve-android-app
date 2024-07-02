@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.fluture.pruvve
 
 import android.Manifest.permission.CAMERA
@@ -22,6 +24,7 @@ import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.fluture.pruvve.adapters.GetUserResponse
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
@@ -32,6 +35,8 @@ import com.fluture.pruvve.retrofittcalls.PostsMedia
 import com.fluture.pruvve.retrofittcalls.UploadImage
 import com.fluture.pruvve.retrofittcalls.UploadResponse
 import com.fluture.pruvve.retrofittcalls.UserService
+import com.google.android.exoplayer2.ExoPlayer.*
+import com.google.android.exoplayer2.MediaItem
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -51,6 +56,7 @@ class StoryMaker : AppCompatActivity() {
     private var imageUri: Uri? = null
     private var videoUri: Uri? = null
     private var imageChosen: Boolean = false
+    private val videoResponse = "your file is a video"
     private lateinit var username: String
     private val authority = "com.fluture.pruvve.fileprovider"
     private var currentPhotoPath: String? = null
@@ -63,8 +69,6 @@ class StoryMaker : AppCompatActivity() {
         setContentView(binding.root)
         binding.llCaption.visibility = View.GONE
         binding.etStoryCaption.visibility = View.GONE
-        binding.imvAddAStory2.visibility = View.GONE
-        binding.imvAddAStory.visibility = View.GONE
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.clStoryMaker)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -120,16 +124,36 @@ class StoryMaker : AppCompatActivity() {
                     videoUri = null
                     imageChosen = true
                     binding.imvAddAStory.visibility = View.VISIBLE
-                    binding.imvAddAStory.setImageURI(photoUri)
+                    Glide.with(this)
+                        .load(imageUri)
+                        .apply(RequestOptions().centerCrop())
+                        .into(binding.imvAddAStory)
                 } else if (currentVideoPath != null) {
                     val file = File(currentVideoPath!!)
-                    val videoUri2 = FileProvider.getUriForFile(this, authority, file)
-                    videoUri = videoUri2
+                    val videoUriFromDevice = FileProvider.getUriForFile(this, authority, file)
+                    videoUri = videoUriFromDevice
                     imageUri = null
                     imageChosen = false
-                    Glide.with(this)
-                        .load(videoUri)
-                        .into(binding.imvAddAStory2)
+                    val playerView = binding.epAddVideo
+                    playerView.visibility = View.VISIBLE
+                    val exoPlayer = Builder(this@StoryMaker).build()
+                    playerView.player = exoPlayer
+                    val mediaItem = MediaItem.fromUri(videoUri ?: Uri.parse(""))
+                    exoPlayer.setMediaItem(mediaItem)
+                    exoPlayer.prepare()
+                    exoPlayer.playWhenReady = true
+                    exoPlayer.repeatMode = REPEAT_MODE_ONE
+
+                    playerView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                        override fun onViewAttachedToWindow(v: View) {
+                            // No action needed
+                        }
+
+                        override fun onViewDetachedFromWindow(v: View) {
+                            exoPlayer.release()
+                        }
+                    })
+                    Log.d("RetrofitImage", videoResponse)
                 }
             }
         }
@@ -174,6 +198,7 @@ class StoryMaker : AppCompatActivity() {
                                 if (response.isSuccessful){
                                     Log.d("RetrofitSuccess", response.body()?.message.toString())
                                     Intent(this@StoryMaker, HomePage::class.java).also {
+                                        it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                                         startActivity(it)
                                     }
                                     finish()
@@ -220,7 +245,8 @@ class StoryMaker : AppCompatActivity() {
                             {
                                 if (response.isSuccessful){
                                     Log.d("RetrofitSuccess", response.body()?.message.toString())
-                                    Intent(this@StoryMaker, MorePage::class.java).also {
+                                    Intent(this@StoryMaker, HomePage::class.java).also {
+                                        it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                                         startActivity(it)
                                     }
                                     finish()
@@ -271,7 +297,7 @@ class StoryMaker : AppCompatActivity() {
                     videoUri = null
                     imageChosen = true
                     binding.imvAddAStory.visibility = View.VISIBLE
-                    binding.imvAddAStory2.visibility = View.GONE
+                    binding.epAddVideo.visibility = View.GONE
                     binding.imvAddAStory.setImageURI(uri)
                     Log.d("Url", "your uri has been gotten")
                     Log.d("RetrofitImage", "your file is an image")
@@ -279,13 +305,29 @@ class StoryMaker : AppCompatActivity() {
                     videoUri = uri
                     imageUri = null
                     imageChosen = false
-                    binding.imvAddAStory2.visibility = View.VISIBLE
+                    val playerView = binding.epAddVideo
+                    playerView.visibility = View.VISIBLE
                     binding.imvAddAStory.visibility = View.GONE
-                    Glide.with(this)
-                        .load(videoUri)
-                        .into(binding.imvAddAStory2)
-                    Log.d("RetrofitImage", "your file is a video")
-                    Log.d("Url", "your video has been gotten")
+
+                    playerView.visibility = View.VISIBLE
+                    val exoPlayer = Builder(this@StoryMaker).build()
+                    playerView.player = exoPlayer
+                    val mediaItem = MediaItem.fromUri(videoUri ?: Uri.parse(""))
+                    exoPlayer.setMediaItem(mediaItem)
+                    exoPlayer.prepare()
+                    exoPlayer.playWhenReady = true
+                    exoPlayer.repeatMode = REPEAT_MODE_ONE
+
+                    playerView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                        override fun onViewAttachedToWindow(v: View) {
+                            // No action needed
+                        }
+
+                        override fun onViewDetachedFromWindow(v: View) {
+                            exoPlayer.release()
+                        }
+                    })
+                    Log.d("RetrofitImage", videoResponse)
                 }
                 binding.btnDone.setBackgroundResource(R.drawable.primary_button)
                 binding.btnDone.isEnabled = true
@@ -332,7 +374,7 @@ class StoryMaker : AppCompatActivity() {
         if (result.resultCode == Activity.RESULT_OK) {
             val photoUri = result.data?.data
             binding.imvAddAStory.visibility = View.VISIBLE
-            binding.imvAddAStory2.visibility = View.GONE
+            binding.epAddVideo.visibility = View.GONE
             Log.d("Url", "your uri has been gotten")
             Log.d("RetrofitImage", "your file is an image")
             binding.imvAddAStory.setImageURI(photoUri)
@@ -342,14 +384,30 @@ class StoryMaker : AppCompatActivity() {
     private val takeVideo = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val videoUri = result.data?.data
-            binding.imvAddAStory2.visibility = View.VISIBLE
+            val playerView = binding.epAddVideo
+            playerView.visibility = View.VISIBLE
             binding.imvAddAStory.visibility = View.GONE
-            Log.d("RetrofitImage", "your file is a video")
-            Log.d("Url", "your video has been gotten")
-            Glide.with(this)
-                .load(videoUri)
-                .into(binding.imvAddAStory2)
+            val exoPlayer = Builder(this@StoryMaker).build()
+            playerView.player = exoPlayer
+            val mediaItem = MediaItem.fromUri(videoUri ?: Uri.parse(""))
+            exoPlayer.setMediaItem(mediaItem)
+            exoPlayer.prepare()
+            exoPlayer.playWhenReady = true
+            exoPlayer.repeatMode = REPEAT_MODE_ONE
+
+            playerView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: View) {
+                    // No action needed
+                }
+
+                override fun onViewDetachedFromWindow(v: View) {
+                    exoPlayer.release()
+                }
+            })
+            Log.d("RetrofitImage", videoResponse)
         }
+        binding.btnDone.setBackgroundResource(R.drawable.primary_button)
+        binding.btnDone.isEnabled = true
     }
 
     private fun openCamera() {

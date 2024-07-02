@@ -22,7 +22,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="450dp"
+                android:layout_height="match_parent"
                 android:background="@drawable/pitch_background">
 
                 <TextView
@@ -43,13 +43,13 @@
                     android:id="@+id/tvUsername"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:fontFamily="@font/my_poppins"
                     android:textColor="@color/white"
                     android:textSize="24sp"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline27"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/guideline26"
-                    app:layout_constraintTop_toTopOf="@+id/guideline28" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/imvProfilePlace"
@@ -72,17 +72,18 @@
                     app:layout_constraintBottom_toTopOf="@+id/guideline87"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/guideline27"
+                    app:layout_constraintTop_toBottomOf="@+id/tvUsername"
                     tools:ignore="HardcodedText" />
 
                 <LinearLayout
                     android:id="@+id/llStories"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline88"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="15dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/guideline87">
+                    app:layout_constraintTop_toBottomOf="@+id/textView8">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvStories"
@@ -101,16 +102,9 @@
                     app:layout_constraintGuide_percent="0.17" />
 
                 <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline27"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintGuide_percent="0.21" />
-
-                <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline28"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:orientation="horizontal"
                     app:layout_constraintGuide_percent="0.1" />
 
@@ -120,13 +114,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     app:layout_constraintGuide_percent="0.33" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline88"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintGuide_percent="0.95" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline94"
@@ -140,7 +127,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    app:layout_constraintGuide_percent="0.17" />
+                    app:layout_constraintGuide_percent="0.19" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline347"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="1.0" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -236,6 +230,7 @@
                             app:layout_constraintEnd_toStartOf="@+id/guideline103"
                             app:layout_constraintStart_toStartOf="@+id/guideline101"
                             app:layout_constraintTop_toTopOf="parent" />
+
                     </androidx.cardview.widget.CardView>
 
                     <View

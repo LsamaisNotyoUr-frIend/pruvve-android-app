@@ -7,6 +7,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.fluture.pruvve.R
 import com.fluture.pruvve.adapters.VideoPageItems
 import com.fluture.pruvve.adapters.VideosPageAdapter1
@@ -55,6 +56,7 @@ class VideoScreenFragments : Fragment(R.layout.fragment_video_screen_fragments) 
         binding.wvSkills.loadUrl(myUrl)
         Glide.with(requireContext())
             .load(myUrl)
+            .apply(RequestOptions().centerCrop())
             .into(binding.wvTopVideo)
 
         val videos1 = mutableListOf(
@@ -73,7 +75,7 @@ class VideoScreenFragments : Fragment(R.layout.fragment_video_screen_fragments) 
     }
 
     private fun getVideos(service: UserService){
-        val getPostMedia = GetFeedsMedia(1, 20)
+        val getPostMedia = GetFeedsMedia(1, 5)
         service.getPosts(getPostMedia).enqueue(object : Callback<GetAllPosts> {
             @SuppressLint("NotifyDataSetChanged")
             override fun onResponse(call: Call<GetAllPosts>, response: Response<GetAllPosts>) {
@@ -87,14 +89,12 @@ class VideoScreenFragments : Fragment(R.layout.fragment_video_screen_fragments) 
                                 fileName = url,
                                 purpose = "DOWNLOAD"
                             )
-                            service.uploadPicture(downloadImage2).enqueue(object:
-                                Callback<UploadResponse> {
-                                override fun onResponse(
-                                    call: Call<UploadResponse>,
-                                    response: Response<UploadResponse>
-                                ) {
+                            service.uploadPicture(downloadImage2).enqueue(object: Callback<UploadResponse> {
+                                override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
                                     if (response.isSuccessful){
                                         listToReturn.add(VideoPageItems(response.body()?.data.toString()))
+                                        adapter = VideosPageAdapter1(listToReturn)
+                                        adapter.notifyDataSetChanged()
                                     }else{
                                         Log.e("RetrofitError", "Error taking data from the server")
                                     }
@@ -104,8 +104,6 @@ class VideoScreenFragments : Fragment(R.layout.fragment_video_screen_fragments) 
                                 }
                             })
                         }
-                        adapter= VideosPageAdapter1(listToReturn)
-                        adapter.notifyDataSetChanged()
                     }else{
                         Log.e("RetrofitError", "Your list is empty")
                     }
