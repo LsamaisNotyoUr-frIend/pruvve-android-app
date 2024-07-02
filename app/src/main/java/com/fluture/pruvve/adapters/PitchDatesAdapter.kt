@@ -1,6 +1,7 @@
 package com.fluture.pruvve.adapters
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,12 +9,14 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.fluture.pruvve.R
+import com.fluture.pruvve.essentials.PitchViewModel
 import com.fluture.pruvve.retrofittcalls.PitchTimes
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class PitchDatesAdapter(private var days:List<DayItems>):RecyclerView.Adapter<PitchDatesAdapter.DaysViewHolder>() {
+class PitchDatesAdapter(private var days:List<DayItems>, private val viewModel: PitchViewModel):RecyclerView.Adapter<PitchDatesAdapter.DaysViewHolder>() {
     private var selectedIndex: Int = RecyclerView.NO_POSITION
+    private var currentDateItem: DayItems? = null
 
     inner class DaysViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         init {
@@ -22,9 +25,15 @@ class PitchDatesAdapter(private var days:List<DayItems>):RecyclerView.Adapter<Pi
                 selectedIndex = adapterPosition
                 notifyItemChanged(previousSelectedIndex)
                 notifyItemChanged(selectedIndex)
+                currentDateItem = days[selectedIndex]
+                currentDateItem?.let {
+                    viewModel.selectDate(formatDate(it.year, it.month, it.dayOfTheMonth))
+                    Log.d("Retrofit", "Process loading")
+                }
             }
         }
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DaysViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_days, parent, false)
         return DaysViewHolder(view)
@@ -34,7 +43,7 @@ class PitchDatesAdapter(private var days:List<DayItems>):RecyclerView.Adapter<Pi
         return days.size
     }
 
-    override fun onBindViewHolder(holder: DaysViewHolder, @SuppressLint("RecyclerView") position: Int) {
+    override fun onBindViewHolder(holder: DaysViewHolder, position: Int) {
         val currentItem = days[position]
         holder.itemView.apply {
             findViewById<TextView>(R.id.tvDaysOfMonth).text = currentItem.dayOfTheMonth.toString()
@@ -44,33 +53,16 @@ class PitchDatesAdapter(private var days:List<DayItems>):RecyclerView.Adapter<Pi
                     R.drawable.dates_backgrounds
                 } else R.drawable.dates_backgrounds2
             )
-            setOnClickListener {
-                notifyItemChanged(selectedIndex)
-                selectedIndex = position
-                notifyItemChanged(selectedIndex)
-            }
         }
-    }
-
-    fun getSelectedItem(): DayItems? {
-        return if (selectedIndex != RecyclerView.NO_POSITION) {
-            days.getOrNull(selectedIndex)
-        } else null
-    }
-
-    fun getSelectedDateString(): String? {
-        return getSelectedItem()?.let {
-            formatDate(it.year, it.month, it.dayOfTheMonth)
-        }
-    }
-
-    private fun formatDate(year: Int, month: Int, day: Int): String {
-        return LocalDate.of(year, month, day).format(DateTimeFormatter.ISO_DATE)
     }
 
     fun updateDays(newDays: List<DayItems>) {
         days = newDays
         notifyDataSetChanged()
+    }
+
+    private fun formatDate(year: Int, month: Int, day: Int): String {
+        return LocalDate.of(year, month, day).format(DateTimeFormatter.ISO_DATE)
     }
 }
 
@@ -85,7 +77,7 @@ data class DayItems(
 
 class PitchTimesAdapter(private val times: List<TimeItems>):RecyclerView.Adapter<PitchTimesAdapter.TimesViewHolder>(){
     private val selectedItems = mutableListOf<TimeItems>()
-    var clickedBoolean = false
+    private var clickedBoolean = false
     inner class TimesViewHolder(itemView: View):RecyclerView.ViewHolder(itemView)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimesViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_pitch_times, parent, false)
