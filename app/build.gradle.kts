@@ -59,7 +59,10 @@ implementation("androidx.compose.runtime:runtime-livedata:1.6.8")
     implementation("com.google.android.material:material:1.12.0")
     implementation("com.google.gms.google-services:com.google.gms.google-services.gradle.plugin:4.4.2")
 
-
+//DataStore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore:1.0.0")
+    implementation("com.google.code.gson:gson:2.10.1")
 
 //    retrofit
     implementation("com.squareup.okio:okio:2.10.0")
