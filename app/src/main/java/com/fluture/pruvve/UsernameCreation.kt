@@ -97,9 +97,9 @@ class UsernameCreation : AppCompatActivity() {
             val username = binding.usernameField.text.toString()
             val password = binding.passwordField.text.toString()
             val userToCreate = User(
-                firstName = firstName,
-                lastName = lastName,
-                email = email,
+                firstName = firstName.trim(),
+                lastName = lastName.trim(),
+                email = email.trim(),
                 zipCode = zipCode,
                 gender = gender,
                 dateOfBirth = dateOfBirth,

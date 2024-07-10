@@ -22,6 +22,9 @@ interface PostDao {
 
     @Query("SELECT COUNT(*) FROM savedpost")
     fun getPostCount(): Flow<Int>
+
+    @Query("DELETE FROM savedpost")
+    fun deleteAllPosts()
 }
 
 @Dao

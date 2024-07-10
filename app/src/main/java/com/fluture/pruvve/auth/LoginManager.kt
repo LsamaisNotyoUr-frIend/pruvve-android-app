@@ -6,8 +6,15 @@ import android.content.SharedPreferences
 object LoginManager {
     private const val PREF_NAME = "auth_pref"
     private const val KEY_TOKEN = "auth_token"
+    private const val KEY_USER_ID = "user_id"
+    private const val KEY_USERNAME = "username"
+    private const val KEY_ACCOUNT_TYPE = "account_type"
+    private const val KEY_IS_LOGGED_IN = "is_logged_in"
+    private const val KEY_PROFILE_URL = "profile_url"
+
 
     private var sharedPreferences: SharedPreferences? = null
+
 
     fun init(context: Context) {
         sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -17,11 +24,25 @@ object LoginManager {
         sharedPreferences?.edit()?.putString(KEY_TOKEN, token)?.apply()
     }
 
-    fun getToken(): String? {
-        return sharedPreferences?.getString(KEY_TOKEN, null)
+    fun saveUserInfo(userId: Int, username: String, accountType: String, profileUrl: String?) {
+        sharedPreferences?.edit()?.apply {
+            putString(KEY_TOKEN, getToken())
+            putInt(KEY_USER_ID, userId)
+            putString(KEY_USERNAME, username)
+            putString(KEY_ACCOUNT_TYPE, accountType)
+            putString(KEY_PROFILE_URL, profileUrl)
+            putBoolean(KEY_IS_LOGGED_IN, true)
+        }?.apply()
     }
 
-    fun clearToken() {
-        sharedPreferences?.edit()?.remove(KEY_TOKEN)?.apply()
+    fun getToken(): String? = sharedPreferences?.getString(KEY_TOKEN, null)
+    fun getUserId(): Int = sharedPreferences?.getInt(KEY_USER_ID, -1) ?: -1
+    fun getUsername(): String? = sharedPreferences?.getString(KEY_USERNAME, null)
+    fun getAccountType(): String? = sharedPreferences?.getString(KEY_ACCOUNT_TYPE, null)
+    fun isLoggedIn(): Boolean = sharedPreferences?.getBoolean(KEY_IS_LOGGED_IN, false) ?: false
+    fun getProfileUrl(): String? = sharedPreferences?.getString(KEY_PROFILE_URL, null)
+
+    fun clearUserInfo() {
+        sharedPreferences?.edit()?.clear()?.apply()
     }
 }

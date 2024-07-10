@@ -41,7 +41,7 @@ class MorePage : AppCompatActivity() {
     private val postsList = mutableListOf<SavedPost>()
     private val uploadMessage = "Uploading posts"
     private val postViewModel: PostViewModel by viewModels {
-        PostViewModelFactory(PostRepository(PruvveDatabase.getDatabase(this).postDao))
+        PostViewModelFactory(PostRepository(PruvveDatabase.getDatabase(this).postDao, this@MorePage))
     }
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +50,7 @@ class MorePage : AppCompatActivity() {
         LoginManager.init(this)
         val database = Room.databaseBuilder(this, PruvveDatabase::class.java, "pruvve_database").build()
         val dao = database.postDao
-        repository = PostRepository(dao)
+        repository = PostRepository(dao, this)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         binding.rvFeeds.visibility = View.GONE
@@ -75,28 +75,20 @@ class MorePage : AppCompatActivity() {
             .create(UserService::class.java)
 
         val adapter = MoreVideosAdapter(listPosts, service)
+        binding.rvFeeds.adapter = adapter
+        binding.rvFeeds.layoutManager = LinearLayoutManager(this)
+        // Load cached posts
+        postViewModel.allPosts.observe(this, { posts ->
+            if (posts != null) {
+                postsList.clear()
+                postsList.addAll(posts)
+                adapter.notifyDataSetChanged()
+                binding.ivLoadingImage2.visibility = View.GONE
+                binding.rvFeeds.visibility = View.VISIBLE
+            }
+        })
         Log.d("Database2", "Recycler being filled")
         val id = intent.getIntExtra("userId", 5)
-//        getPosts(service, id)
-
-//        postViewModel.allPosts.observe(this@MorePage) { posts ->
-//            Log.e("Database", "Started")
-//            if (posts.isNotEmpty()) {
-//                listPosts.clear()  // Clear the initial post
-//                for (post in posts) {
-//                    Log.d("Url", post.videoUrl)
-//                    val postToUpload = SavedPost(
-//                        post.profilePicUrl, post.timeStamp, post.name, post.title,
-//                        post.videoUrl, post.follow, post.views, post.comments, post.likes, post.otherUsersId, post.postId
-//                    )
-//                    listPosts.add(postToUpload)
-//                }
-//                adapter.notifyDataSetChanged()
-//                binding.rvFeeds.visibility = View.VISIBLE
-//            } else {
-//                Log.d("Database", "No posts collected")
-//            }
-//        }
         getPostsToUpdate(service, id, adapter)
 
         Log.d("RetrofitPosts", "your list size is ${listPosts.size}")
@@ -246,14 +238,15 @@ class MorePage : AppCompatActivity() {
     }
 
     private fun getPostsToUpdate(service: UserService, id: Int, adapter: MoreVideosAdapter) {
-        service.getPosts(GetFeedsMedia(1, 5)).enqueue(object : Callback<GetAllPosts> {
+        service.getPosts(GetFeedsMedia(1, 15)).enqueue(object : Callback<GetAllPosts> {
             override fun onResponse(call: Call<GetAllPosts>, response: Response<GetAllPosts>) {
                 if (response.isSuccessful) {
                     val list = response.body()?.data?.list!!
                     for (posts in list) {
                         Log.d("Database1", uploadMessage)
-                        uploadMediaAndProfilePictures2(service, posts, id, adapter) }
-                    }else {
+                        uploadMediaAndProfilePictures2(service, posts, id, adapter)
+                    }
+                } else {
                     logError(response.errorBody()?.toString(), "Couldn't get the media URL")
                 }
             }
@@ -269,12 +262,12 @@ class MorePage : AppCompatActivity() {
             Log.d("Database2", "Uploading Posts $mediaToUploadUrl")
             uploadImage(service, posts.user.profilePictureUrl) { profilePicToUploadUrl ->
                 Log.d("Database3", "Uploading Posts $profilePicToUploadUrl")
-                getFollowStatus2(service, posts, mediaToUploadUrl, profilePicToUploadUrl,id, adapter)
+                getFollowStatus2(service, posts, mediaToUploadUrl, profilePicToUploadUrl, id, adapter)
             }
         }
     }
 
-    private fun getFollowStatus2(service: UserService, posts: AllPostItems, mediaUrl: String?, profilePicUrl: String?, id: Int, adapter:MoreVideosAdapter) {
+    private fun getFollowStatus2(service: UserService, posts: AllPostItems, mediaUrl: String?, profilePicUrl: String?, id: Int, adapter: MoreVideosAdapter) {
         service.getFollowStatus(id, posts.user.id).enqueue(object : Callback<FollowStatusReply> {
             override fun onResponse(call: Call<FollowStatusReply>, response: Response<FollowStatusReply>) {
                 if (response.isSuccessful) {
@@ -300,7 +293,7 @@ class MorePage : AppCompatActivity() {
                     updateRecycler(posts, mediaUrl, profilePicUrl, followStatus, adapter,
                         summary?.viewCount ?: 1000,
                         summary?.likeCount ?: 500,
-                        summary?.commentCount ?: 20,)
+                        summary?.commentCount ?: 20)
                 } else {
                     logError(response.errorBody()?.toString(), "Couldn't get post summary")
                 }
@@ -330,13 +323,15 @@ class MorePage : AppCompatActivity() {
         // Add post to the list
         postsList.add(postToUpload)
         Log.d("DatabaseFinal", "Post added to postsList: $postToUpload")
+
         // Update the adapter
         adapter.updateData(postsList)
+
+        // Save posts to the database, ensuring no more than 7 posts are cached
+        postViewModel.upsertPosts(postsList.takeLast(7))
+
         binding.ivLoadingImage2.visibility = View.GONE
         binding.rvFeeds.visibility = View.VISIBLE
-        binding.rvFeeds.adapter = adapter
-        binding.rvFeeds.layoutManager = LinearLayoutManager(this@MorePage)
-        Log.d("Database", "Posts Uploaded")
     }
 
     private fun uploadImage(service: UserService, url: String, onSuccess: (String?) -> Unit) {

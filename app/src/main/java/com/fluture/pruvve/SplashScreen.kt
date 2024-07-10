@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.fluture.pruvve.adapters.GetUserResponse
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
+import com.fluture.pruvve.auth.UserManager
 import com.fluture.pruvve.databinding.ActivitySplashScreenBinding
 import com.fluture.pruvve.retrofittcalls.UserService
 import okhttp3.OkHttpClient
@@ -26,6 +27,7 @@ class SplashScreen : AppCompatActivity() {
         binding = ActivitySplashScreenBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         LoginManager.init(this)
+        UserManager.init(this)
         setContentView(binding.root)
         val token = LoginManager.getToken()
         Log.d("RetrofitToken", token.toString())
@@ -40,8 +42,6 @@ class SplashScreen : AppCompatActivity() {
             .build()
             .create(UserService::class.java)
 
-        val teamId = intent.getIntExtra("Extra_teamId", 5)
-
         Glide.with(this)
             .load(R.drawable.soccer)
             .into(binding.imvSplashPic)
@@ -53,20 +53,15 @@ class SplashScreen : AppCompatActivity() {
                     Log.d("RetrofitAccount", "Your account type is: $accountType")
                     val userName = response.body()?.data?.username.toString()
                     val profileUrl = response.body()?.data?.profilePictureUrl.toString()
-                    val id = response.body()?.data?.id
+                    val id = response.body()?.data?.id ?: 10
                     if (accountType == "COACH") {
+                        UserManager.saveUserCredentials(id, userName, profileUrl)
                         Intent(this@SplashScreen, CoachHomePage::class.java).also {
-                            it.putExtra("profileUsername", userName)
-                            it.putExtra("profileUrl", profileUrl)
-                            it.putExtra("ProfileId", id)
-                            it.putExtra("Extra_teamId", teamId)
                             startActivity(it)
                         }
                     } else {
+                        UserManager.saveUserCredentials(id, userName, profileUrl)
                         Intent(this@SplashScreen, HomePage::class.java).also {
-                            it.putExtra("profileUsername", userName)
-                            it.putExtra("profileUrl", profileUrl)
-                            it.putExtra("ProfileId", id)
                             startActivity(it)
                         }
                     }

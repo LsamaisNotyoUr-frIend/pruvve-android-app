@@ -19,6 +19,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.fluture.pruvve.MainSignup
 import com.fluture.pruvve.R
 import com.fluture.pruvve.TeamsPage
 import com.fluture.pruvve.TeamsPage2
@@ -221,6 +222,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0)
         popupView.findViewById<TextView>(R.id.tvSettingOfMs).setOnClickListener {
             popupView.findViewById<TextView>(R.id.tvSettingOfMs).setBackgroundResource(R.color.dark_gray)
+            showLogOutDialogue()
             popupWindow.dismiss()
         }
 
@@ -267,6 +269,43 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
         window?.setGravity(Gravity.BOTTOM)
         dialog.show()
+    }
+
+    private fun showLogOutDialogue(){
+        val dialogView = layoutInflater.inflate(R.layout.gender_picker, null)
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setView(dialogView)
+        val dialog = builder.create()
+
+        val genderPicker: NumberPicker = dialogView.findViewById(R.id.genderPicker)
+        val genderLabel: TextView = dialogView.findViewById(R.id.genderLabel)
+        val gender = arrayOf("Yes","No")
+        genderPicker.minValue = 0
+        genderPicker.maxValue = 1
+        genderPicker.displayedValues = gender
+        genderPicker.setOnValueChangedListener { _, _, newVal ->
+            genderLabel.text = gender[newVal]
+        }
+
+        dialog.setOnDismissListener {
+            if(gender[genderPicker.value] == "Yes"){
+                logout()
+            }else{
+                dialog.dismiss()
+            }
+        }
+        val window = dialog.window
+        window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
+        window?.setGravity(Gravity.BOTTOM)
+        dialog.show()
+    }
+
+    private fun logout() {
+        LoginManager.clearUserInfo()
+        val intent = Intent(requireContext(), MainSignup::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        requireActivity().finish()
     }
 
     private fun getUsersPosts(service: UserService,  userId:Int,  recyclerView: RecyclerView,

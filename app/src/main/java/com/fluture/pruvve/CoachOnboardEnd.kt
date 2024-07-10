@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.fluture.pruvve.adapters.GetUserResponse
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
+import com.fluture.pruvve.auth.TeamManager
 import com.fluture.pruvve.databinding.ActivityCoachOnboardEndBinding
 import com.fluture.pruvve.retrofittcalls.UserService
 import okhttp3.OkHttpClient
@@ -36,6 +37,7 @@ class CoachOnboardEnd : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         LoginManager.init(this)
+        TeamManager.init(this)
         binding = ActivityCoachOnboardEndBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -86,9 +88,9 @@ class CoachOnboardEnd : AppCompatActivity() {
             finish() }
 
         binding.button.setOnClickListener {
+            TeamManager.saveToken(teamId)
             val intent = Intent(this@CoachOnboardEnd, SplashScreen::class.java)
             intent.putExtra("accountType", accountType)
-            intent.putExtra("Extra_teamId", teamId)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
             finish()

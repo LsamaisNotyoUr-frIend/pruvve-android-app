@@ -1,7 +1,6 @@
 package com.fluture.pruvve.adapters
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +13,8 @@ import com.fluture.pruvve.retrofittcalls.PitchTimes
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class PitchDatesAdapter(private var days:List<DayItems>, private val viewModel: PitchViewModel):RecyclerView.Adapter<PitchDatesAdapter.DaysViewHolder>() {
+class PitchDatesAdapter(private var days: MutableList<DayItems>, private val viewModel: PitchViewModel, private val onDateSelected: (String) -> Unit) : RecyclerView.Adapter<PitchDatesAdapter.DaysViewHolder>() {
     private var selectedIndex: Int = RecyclerView.NO_POSITION
-    private var currentDateItem: DayItems? = null
 
     inner class DaysViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         init {
@@ -25,11 +23,10 @@ class PitchDatesAdapter(private var days:List<DayItems>, private val viewModel: 
                 selectedIndex = adapterPosition
                 notifyItemChanged(previousSelectedIndex)
                 notifyItemChanged(selectedIndex)
-                currentDateItem = days[selectedIndex]
-                currentDateItem?.let {
-                    viewModel.selectDate(formatDate(it.year, it.month, it.dayOfTheMonth))
-                    Log.d("Retrofit", "Process loading")
-                }
+                val selectedDate = days[selectedIndex]
+                val formattedDate = formatDate(selectedDate.year, selectedDate.month, selectedDate.dayOfTheMonth)
+                viewModel.selectDate(formattedDate)
+                onDateSelected(formattedDate)
             }
         }
     }
@@ -49,16 +46,11 @@ class PitchDatesAdapter(private var days:List<DayItems>, private val viewModel: 
             findViewById<TextView>(R.id.tvDaysOfMonth).text = currentItem.dayOfTheMonth.toString()
             findViewById<TextView>(R.id.tvDatesOfWeek).text = currentItem.dayOfTheWeek
             findViewById<View>(R.id.llDates).setBackgroundResource(
-                if (holder.adapterPosition == selectedIndex) {
+                if (position == selectedIndex) {
                     R.drawable.dates_backgrounds
                 } else R.drawable.dates_backgrounds2
             )
         }
-    }
-
-    fun updateDays(newDays: List<DayItems>) {
-        days = newDays
-        notifyDataSetChanged()
     }
 
     private fun formatDate(year: Int, month: Int, day: Int): String {

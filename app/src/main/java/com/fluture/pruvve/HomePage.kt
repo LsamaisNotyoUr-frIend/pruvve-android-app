@@ -10,9 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.fluture.pruvve.adapters.GetUserResponse
 import com.fluture.pruvve.adapters.StoryAdapter
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
+import com.fluture.pruvve.auth.UserManager
 import com.fluture.pruvve.databinding.ActivityHomePageBinding
 import com.fluture.pruvve.fragments.BookPitchFragment
 import com.fluture.pruvve.fragments.NewsFragment
@@ -37,36 +39,17 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 class HomePage : AppCompatActivity() {
     private lateinit var binding: ActivityHomePageBinding
     private val myUrl2 = "https://i.pinimg.com/236x/e5/97/79/e59779258a86991a933e45143bf3db4c.jpg"
+    private var storiesLoaded = false
     private val storyViewModel: StoryViewModel by viewModels {
         StoryViewModel.StoryViewModelFactory(StoryRepository(PruvveDatabase.getDatabase(this).storyDao))
     }
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityHomePageBinding.inflate(layoutInflater)
+        UserManager.init(this)
         LoginManager.init(this)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        val token = LoginManager.getToken()
-
-        val httpClient = OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor(token.toString()))
-            .build()
-
-        val service = Retrofit.Builder()
-            .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
-            .client(httpClient)
-            .addConverterFactory(MoshiConverterFactory.create())
-            .build()
-            .create(UserService::class.java)
-
-        val username = intent.getStringExtra("profileUsername") ?: "AdminSomething"
-        val id: Int = intent.getIntExtra("ProfileId", 3)
-
-        val listStories = mutableListOf(
-            SavedStory(username, url = myUrl2),
-        )
-        val adapter = StoryAdapter(listStories)
-        getStories(service, id, adapter)
 
 //        storyViewModel.getStories()
 //
@@ -86,6 +69,9 @@ class HomePage : AppCompatActivity() {
 //            }
 //        }
 
+        initializeStories()
+
+        val id = UserManager.getUserId()
         binding.homePageButton.setOnClickListener {
             supportFragmentManager.beginTransaction().apply {
                 supportFragmentManager.fragments.forEach { remove(it) }
@@ -154,11 +140,12 @@ class HomePage : AppCompatActivity() {
     }
 
     override fun onStart() {
+        LoginManager.init(this)
         super.onStart()
         val token = LoginManager.getToken()
         Log.d("RetrofitToken", token.toString())
-        val username = intent.getStringExtra("profileUsername") ?: "AdminSomething"
-        val profilePic = intent.getStringExtra("profileUrl") ?: myUrl2
+        val username = LoginManager.getUsername() ?: "Admin Something"
+        var profilePic = LoginManager.getProfileUrl() ?: "null"
         val httpClient = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(token.toString()))
             .build()
@@ -169,6 +156,18 @@ class HomePage : AppCompatActivity() {
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
             .create(UserService::class.java)
+
+        service.getUserCredentials().enqueue(object: Callback<GetUserResponse>{
+            override fun onResponse(call: Call<GetUserResponse>, response: Response<GetUserResponse>) {
+                if (response.isSuccessful){
+                    profilePic= response.body()?.data?.profilePictureUrl.toString()
+                }
+            }
+
+            override fun onFailure(call: Call<GetUserResponse>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
 
         val downloadImage = UploadImage(
             fileName = profilePic,
@@ -216,6 +215,34 @@ class HomePage : AppCompatActivity() {
             .into(binding.imvNewsCover)
 
 //        storyViewModel.getStories()
+    }
+    override fun onResume() {
+        super.onResume()
+        initializeStories()
+    }
+
+    private fun initializeStories() {
+        if (!storiesLoaded) {
+            val token = LoginManager.getToken()
+            val id: Int = LoginManager.getUserId()
+            val httpClient = OkHttpClient.Builder()
+                .addInterceptor(AuthInterceptor(token.toString()))
+                .build()
+
+            val service = Retrofit.Builder()
+                .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
+                .client(httpClient)
+                .addConverterFactory(MoshiConverterFactory.create())
+                .build()
+                .create(UserService::class.java)
+
+            val listStories = mutableListOf(
+                SavedStory(LoginManager.getUsername() ?: "Admin Something", url = myUrl2),
+            )
+            val adapter = StoryAdapter(listStories)
+            getStories(service, id, adapter)
+            storiesLoaded = true
+        }
     }
 
     private fun getStories(service: UserService,userid: Int, adapter: StoryAdapter){
