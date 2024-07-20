@@ -10,23 +10,14 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.fluture.pruvve.adapters.GetUserResponse
-import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
+import com.fluture.pruvve.auth.TeamManager
 import com.fluture.pruvve.databinding.ActivityCoachOnboardEndBinding
-import com.fluture.pruvve.retrofittcalls.UserService
-import okhttp3.OkHttpClient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -36,59 +27,31 @@ class CoachOnboardEnd : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         LoginManager.init(this)
+        TeamManager.init(this)
         binding = ActivityCoachOnboardEndBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         val teamId = intent.getIntExtra("Extra_teamId", 5)
-
-        val token = LoginManager.getToken()
-        Log.d("RetrofitToken", token.toString())
-
-        val httpClient = OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor(token.toString()))
-            .build()
-
-        val service = Retrofit.Builder()
-            .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
-            .client(httpClient)
-            .addConverterFactory(MoshiConverterFactory.create())
-            .build()
-            .create(UserService::class.java)
-
-        var firstName = ""
-        service.getUserCredentials().enqueue(object : Callback<GetUserResponse> {
-            override fun onResponse(call: Call<GetUserResponse>, response: Response<GetUserResponse>) {
-                if (response.isSuccessful){
-                    firstName = response.body()?.data?.firstName.toString()
-                    accountType = response.body()?.data?.accountType.toString()
-                    Log.d("RetrofitSuccess", "users account type is $accountType")
-                }else{
-                    Log.e("RetrofitError", "Couldn't get user credentials ${response.errorBody().toString()}")
-                }
-            }
-            override fun onFailure(call: Call<GetUserResponse>, t: Throwable) {
-                Log.e("RetrofitFailure", "Error reaching server ${t.message.toString()}")
-            }
-        })
-
         val text1 = binding.tvtos.text.toString()
         val mySpan = SpannableString(text1)
         setClickableSpan(mySpan, "terms of service")
         setClickableSpan(mySpan, "additional terms")
         setClickableSpan(mySpan, "privacy policy")
-        binding.tvwelcome.text = "Welcome to Pruvve, \n$firstName!"
 
+        val username = LoginManager.getUsername()
+        binding.tvwelcome.text = "Welcome to Pruvve, \n$username"
         binding.tvtos.apply {
             text = mySpan
             movementMethod = LinkMovementMethod.getInstance()
         }
         binding.button1.setOnClickListener {
-            finish() }
+            finish()
+        }
 
         binding.button.setOnClickListener {
+            TeamManager.saveToken(teamId)
             val intent = Intent(this@CoachOnboardEnd, SplashScreen::class.java)
             intent.putExtra("accountType", accountType)
-            intent.putExtra("Extra_teamId", teamId)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
             finish()

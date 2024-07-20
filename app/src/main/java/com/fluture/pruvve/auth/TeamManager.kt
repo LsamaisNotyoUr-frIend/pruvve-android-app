@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 
 object TeamManager {
     private const val PREF_NAME = "team_pref"
-    private const val TEAM_ID = "team_token"
+    private const val KEY_TEAM_ID = "team_id"
 
     private var sharedPreferences: SharedPreferences? = null
 
@@ -15,14 +15,14 @@ object TeamManager {
     }
 
     fun saveToken(id: Int) {
-        sharedPreferences?.edit()?.putInt(TEAM_ID, id)?.apply()
+        sharedPreferences?.edit()?.putInt(KEY_TEAM_ID, id)?.apply()
     }
 
-    fun getToken(): Int? {
-        return sharedPreferences?.getInt(TEAM_ID, 1)
+    fun getTeamId(): Int {
+        return TeamManager.sharedPreferences?.getInt(KEY_TEAM_ID, 2) ?: 9
     }
 
     fun clearToken() {
-        sharedPreferences?.edit()?.remove(TEAM_ID)?.apply()
+        sharedPreferences?.edit()?.remove(KEY_TEAM_ID)?.apply()
     }
 }

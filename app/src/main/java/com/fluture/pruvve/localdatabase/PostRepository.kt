@@ -8,7 +8,7 @@ import kotlinx.coroutines.withContext
 class PostRepository(private val postDao: PostDao) {
 
     val allPosts = postDao.getPostsByLikes()
-//    posts
+    //    posts
     suspend fun upsertPost(post: SavedPost) {
         withContext(Dispatchers.IO) {
             postDao.upsertPosts(post)
@@ -32,34 +32,5 @@ class PostRepository(private val postDao: PostDao) {
     fun getPostCount(): Flow<Int> {
         return postDao.getPostCount()
     }
-
 //    Stories
-}
-
-class StoryRepository(private val storyDao: StoryDao) {
-
-    suspend fun getStories():List<SavedStory>{
-        return storyDao.getStoriesByNames()
-    }
-
-    suspend fun upsertStory(story: SavedStory) {
-        withContext(Dispatchers.IO) {
-            storyDao.upsertStories(story)
-        }
-    }
-
-    suspend fun deleteStory(story: SavedStory) {
-        withContext(Dispatchers.IO) {
-            storyDao.deleteStories(story)
-        }
-    }
-
-    suspend fun upsertStories(posts: List<SavedStory>) {
-        withContext(Dispatchers.IO) {
-            posts.forEach {
-                storyDao.upsertStories(it)
-            }
-        }
-    }
-
 }

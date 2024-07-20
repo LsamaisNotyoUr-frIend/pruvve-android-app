@@ -51,12 +51,18 @@ class WelcomeBack : AppCompatActivity() {
                         Toast.makeText(this@WelcomeBack, "User gotten successfully", Toast.LENGTH_SHORT).show()
                         val token = response.body()?.data?.token.toString()
                         LoginManager.saveToken(token)
-                        Log.d("RetrofitToken", token)
-                        val accountType = response.body()?.data?.user?.accountType.toString()
-                        val intent = Intent(this@WelcomeBack, SplashScreen::class.java)
-                        intent.putExtra("accountType", accountType)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                        startActivity(intent)
+                        val userData = response.body()?.data
+                        userData?.let {
+                            LoginManager.saveProfileUrl(
+                                it.user.profilePicUrl
+                            )
+                            LoginManager.saveUserInfo(
+                                it.user.id,
+                                it.user.username,
+                                it.user.accountType,
+                            )
+                        }
+                        navigateToMainScreen(userData?.user?.accountType)
                         finish()
                     } else {
                         Log.e("RetrofitGetUserError", "Error calling user API, body:${response.errorBody()?.string()!!}")
@@ -72,5 +78,13 @@ class WelcomeBack : AppCompatActivity() {
                 }
             })
         }
+    }
+
+    private fun navigateToMainScreen(accountType: String?) {
+        val intent = Intent(this@WelcomeBack, SplashScreen::class.java)
+        intent.putExtra("accountType", accountType)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        finish()
     }
 }

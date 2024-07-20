@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fluture.pruvve.R
 import com.fluture.pruvve.SearchPage
-import com.fluture.pruvve.ShowAllPosts
+import com.fluture.pruvve.ViewPitchItem
 import com.fluture.pruvve.adapters.PitchAdapter
 import com.fluture.pruvve.adapters.Pitches
 import com.fluture.pruvve.auth.AuthInterceptor
@@ -38,6 +38,7 @@ class BookPitchFragment : Fragment(R.layout.fragment_book_pitch){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentBookPitchBinding.bind(view)
+        TextManager.init(requireContext())
         LoginManager.init(requireContext())
         super.onViewCreated(view, savedInstanceState)
         val ctx = requireActivity().applicationContext
@@ -73,6 +74,11 @@ class BookPitchFragment : Fragment(R.layout.fragment_book_pitch){
                 startActivity(it)
             }
         }
+        binding.llViewAllPitches.setOnClickListener {
+            Intent(requireContext(), ViewPitchItem::class.java).also{
+                startActivity(it)
+            }
+        }
 
         adapter = PitchAdapter(arrayListOf())
         val recycler = binding.rvPitches
@@ -100,6 +106,16 @@ class BookPitchFragment : Fragment(R.layout.fragment_book_pitch){
         getPitches(service = service)
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.tvSearchBar.text = TextManager.getText()
+        binding.tvSearchBar.setOnClickListener {
+            Intent(requireContext(), SearchPage::class.java).also {
+                startActivity(it)
+            }
+        }
+    }
+
     private fun getPitches(service: UserService){
         val requestObject = RequestObjects(1, 5)
         val pitchList = mutableListOf<Pitches>()
@@ -117,7 +133,7 @@ class BookPitchFragment : Fragment(R.layout.fragment_book_pitch){
                             val facilities3 = returnFacilities3(pitchItems.hasFloodLights)
                             val title = pitchItems.title
                             val address = pitchItems.address
-                            val pitches = Pitches(title, address, profUrl, 2, format, surface, facilities, facilities2, facilities3, pitchItems.id, pitchItems.description)
+                            val pitches = Pitches(title, address, profUrl, pitchItems.rating ?: 2, format, surface, facilities, facilities2, facilities3, pitchItems.id, pitchItems.description)
                             pitchList.add(pitches)
                         }
                         adapter.update(pitchList)

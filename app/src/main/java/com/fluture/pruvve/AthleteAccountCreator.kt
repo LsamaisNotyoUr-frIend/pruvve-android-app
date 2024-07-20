@@ -99,6 +99,7 @@ class AthleteAccountCreator : AppCompatActivity() {
                             override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
                                 if (response.isSuccessful){
                                     Log.d("RetrofitUrl", "Your url is ${response.body()?.data.toString()}")
+                                    LoginManager.saveProfileUrl(response.body()?.data ?: "empty")
                                     service.uploadData(imageData).enqueue(object : Callback<UploadResponse>{
                                         override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
                                             if (response.isSuccessful){

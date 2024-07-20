@@ -7,6 +7,7 @@ buildscript {
         classpath("com.google.gms:google-services:4.4.2")
         classpath("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.5.30-1.0.0")
         classpath("com.android.tools.build:gradle:8.5.0")
+        classpath("com.google.dagger:hilt-android-gradle-plugin:2.47")
     }
 }
 // Top-level build file where you can add configuration options common to all sub-projects/modules.

@@ -45,6 +45,8 @@ class ShowAllPosts : AppCompatActivity() {
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
             .create(UserService::class.java)
+
+        getPitches(service)
     }
     private fun getPitches(service: UserService){
         val requestObject = RequestObjects(1, 10)

@@ -40,33 +40,44 @@ class SplashScreen : AppCompatActivity() {
             .build()
             .create(UserService::class.java)
 
-        val teamId = intent.getIntExtra("Extra_teamId", 5)
-
         Glide.with(this)
             .load(R.drawable.soccer)
             .into(binding.imvSplashPic)
 
+        getUserCredentials(service)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        LoginManager.init(this)
+        val token = LoginManager.getToken()
+        Log.d("RetrofitToken", token.toString())
+
+        val httpClient = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(token.toString()))
+            .build()
+        val service = Retrofit.Builder()
+            .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
+            .client(httpClient)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(UserService::class.java)
+
+        getUserCredentials(service)
+    }
+
+    private fun getUserCredentials(service: UserService){
         service.getUserCredentials().enqueue(object : Callback<GetUserResponse> {
             override fun onResponse(call: Call<GetUserResponse>, response: Response<GetUserResponse>) {
                 if (response.isSuccessful) {
                     val accountType = response.body()?.data?.accountType.toString()
                     Log.d("RetrofitAccount", "Your account type is: $accountType")
-                    val userName = response.body()?.data?.username.toString()
-                    val profileUrl = response.body()?.data?.profilePictureUrl.toString()
-                    val id = response.body()?.data?.id
                     if (accountType == "COACH") {
                         Intent(this@SplashScreen, CoachHomePage::class.java).also {
-                            it.putExtra("profileUsername", userName)
-                            it.putExtra("profileUrl", profileUrl)
-                            it.putExtra("ProfileId", id)
-                            it.putExtra("Extra_teamId", teamId)
                             startActivity(it)
                         }
                     } else {
                         Intent(this@SplashScreen, HomePage::class.java).also {
-                            it.putExtra("profileUsername", userName)
-                            it.putExtra("profileUrl", profileUrl)
-                            it.putExtra("ProfileId", id)
                             startActivity(it)
                         }
                     }

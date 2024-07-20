@@ -55,6 +55,7 @@ class UsernameCreation : AppCompatActivity() {
         binding.button1.setOnClickListener {
             finish()
         }
+
         val text1 = binding.tvtos.text.toString()
         val mySpan = SpannableString(text1)
         setClickableSpan(mySpan, "terms of service")
@@ -97,9 +98,9 @@ class UsernameCreation : AppCompatActivity() {
             val username = binding.usernameField.text.toString()
             val password = binding.passwordField.text.toString()
             val userToCreate = User(
-                firstName = firstName,
-                lastName = lastName,
-                email = email,
+                firstName = firstName.trim(),
+                lastName = lastName.trim(),
+                email = email.trim(),
                 zipCode = zipCode,
                 gender = gender,
                 dateOfBirth = dateOfBirth,
@@ -121,6 +122,9 @@ class UsernameCreation : AppCompatActivity() {
                                     Log.d("RetrofitToken", token)
                                     Log.d("RetrofitLogin", "User Logged in successfully")
                                     LoginManager.saveToken(token)
+                                    response.body()?.data?.user?.let {
+                                        LoginManager.saveUserInfo(it.id, it.username, it.accountType)
+                                    }
                                     Intent(this@UsernameCreation, AccountTypeSelector::class.java).also {
                                         it.putExtra("Extra_username", username)
                                         startActivity(it)

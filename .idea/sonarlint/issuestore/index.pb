@@ -202,7 +202,13 @@ l
 <app/src/main/java/com/fluture/pruvve/essentials/dateSaver.kt,3\2\32e5b7e6497f74dde6d56e9dadb40215f2764a25
 q
 Aapp/src/main/java/com/fluture/pruvve/essentials/PitchViewModel.kt,c\3\c3e6eda7f86745ae6b3df804a69a8e0b27086ad4
-n
->app/src/main/java/com/fluture/pruvve/auth/UserAuthenticator.kt,1\1\117fb8f49045a4455cd4fa3b307eddca90b3e651
-n
->app/src/main/java/com/fluture/pruvve/adapters/user_prefs.proto,1\7\1775f791e23203163c4b0e67d6a020b7f7f7b099
+l
+<app/src/main/java/com/fluture/pruvve/essentials/fileUtils.kt,5\9\59a2defb9537390ec712d68d574b5cfbf51d1079
+l
+<app/src/main/java/com/fluture/pruvve/essentials/FileUtils.kt,7\a\7a86d228fdbc24379f1350ac6bbfc32d60280320
+u
+Eapp/src/main/java/com/fluture/pruvve/localdatabase/StoryRepository.kt,e\4\e4231ace8c95aebdc2a0174c6f004c028917e5a5
+o
+?app/src/main/res/layout/activity_coach_account_finalization.xml,d\1\d1751591e02faf3a0349d5833911692dc3f63270
+p
+@app/src/main/java/com/fluture/pruvve/fragments/ViewAllPitches.kt,d\e\de9a40f60cc9a3b30e9cb9bcba1904c4c86a0079

@@ -41,7 +41,7 @@
                     android:autofillHints="none"
                     android:fontFamily="@font/my_exo"
                     android:gravity="start"
-                    android:hint="Type your comment here"
+                    android:hint="Type your caption here"
                     android:inputType="text"
                     android:textColor="@color/white"
                     android:textColorHint="@color/gray"
