@@ -22,8 +22,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <VideoView
-                android:id="@+id/vvMediumVideos"
+            <com.google.android.exoplayer2.ui.PlayerView
+                android:id="@+id/epMediumVideos"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/dialogue_background3"

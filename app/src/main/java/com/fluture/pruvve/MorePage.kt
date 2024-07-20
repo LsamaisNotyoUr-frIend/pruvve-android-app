@@ -41,7 +41,7 @@ class MorePage : AppCompatActivity() {
     private val postsList = mutableListOf<SavedPost>()
     private val uploadMessage = "Uploading posts"
     private val postViewModel: PostViewModel by viewModels {
-        PostViewModelFactory(PostRepository(PruvveDatabase.getDatabase(this).postDao, this@MorePage))
+        PostViewModelFactory(PostRepository(PruvveDatabase.getDatabase(this).postDao))
     }
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +50,7 @@ class MorePage : AppCompatActivity() {
         LoginManager.init(this)
         val database = Room.databaseBuilder(this, PruvveDatabase::class.java, "pruvve_database").build()
         val dao = database.postDao
-        repository = PostRepository(dao, this)
+        repository = PostRepository(dao)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         binding.rvFeeds.visibility = View.GONE
@@ -78,7 +78,7 @@ class MorePage : AppCompatActivity() {
         binding.rvFeeds.adapter = adapter
         binding.rvFeeds.layoutManager = LinearLayoutManager(this)
         // Load cached posts
-        postViewModel.allPosts.observe(this, { posts ->
+        postViewModel.allPosts.observe(this@MorePage) { posts ->
             if (posts != null) {
                 postsList.clear()
                 postsList.addAll(posts)
@@ -86,7 +86,7 @@ class MorePage : AppCompatActivity() {
                 binding.ivLoadingImage2.visibility = View.GONE
                 binding.rvFeeds.visibility = View.VISIBLE
             }
-        })
+        }
         Log.d("Database2", "Recycler being filled")
         val id = intent.getIntExtra("userId", 5)
         getPostsToUpdate(service, id, adapter)

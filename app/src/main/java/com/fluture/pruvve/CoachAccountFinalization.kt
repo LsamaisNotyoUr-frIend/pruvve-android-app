@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -22,6 +21,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityCoachAccountFinalizationBinding
@@ -69,7 +69,7 @@ class CoachAccountFinalization : AppCompatActivity() {
         val handler = Handler(Looper.getMainLooper())
         var searchRunnable: Runnable? = null
 
-        binding.etteamview.addTextChangedListener(object : TextWatcher {
+        binding.etTeamView.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 //no change is expected
             }
@@ -100,7 +100,7 @@ class CoachAccountFinalization : AppCompatActivity() {
         binding.button.setOnClickListener {
             binding.button1.isEnabled = false
             binding.button1.setBackgroundResource(R.drawable.disabled_button)
-            val team = binding.etteamview.text.toString()
+            val team = binding.etTeamView.text.toString()
             if (isUsable){
                  makeTeams(service, team)
             }else{
@@ -153,8 +153,8 @@ class CoachAccountFinalization : AppCompatActivity() {
 
     private fun getTeams(service: UserService, team:String){
         val requestObjects = RequestObjects(
-            10,
-            10
+            1,
+            2
         )
         Log.d("RetrofitTeams","Process started")
         service.getTeams(requestObjects).enqueue(object : Callback<GetTeams>{
@@ -191,7 +191,7 @@ class CoachAccountFinalization : AppCompatActivity() {
     }
     private fun makeTeams(service: UserService, team: String){
         Log.d("RetrofitTeams","Creating new teams")
-        service.makeTeams(binding.etteamview.text.toString()).enqueue(object : Callback<GetSpecificTeam>{
+        service.makeTeams(binding.etTeamView.text.toString()).enqueue(object : Callback<GetSpecificTeam>{
             override fun onResponse(call: Call<GetSpecificTeam>, response: Response<GetSpecificTeam>) {
                 if (response.isSuccessful){
                     Toast.makeText(this@CoachAccountFinalization, "Team created successfully", Toast.LENGTH_SHORT).show()

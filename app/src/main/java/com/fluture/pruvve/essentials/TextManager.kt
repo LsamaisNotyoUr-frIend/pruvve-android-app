@@ -18,7 +18,7 @@ object TextManager {
     }
 
     fun getText(): String? {
-        return sharedPreferences?.getString(TEXT, null)
+        return sharedPreferences?.getString(TEXT, "Search by location and name")
     }
 
     fun clearText() {

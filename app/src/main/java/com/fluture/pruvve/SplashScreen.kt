@@ -9,7 +9,6 @@ import com.bumptech.glide.Glide
 import com.fluture.pruvve.adapters.GetUserResponse
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
-import com.fluture.pruvve.auth.UserManager
 import com.fluture.pruvve.databinding.ActivitySplashScreenBinding
 import com.fluture.pruvve.retrofittcalls.UserService
 import okhttp3.OkHttpClient
@@ -27,7 +26,6 @@ class SplashScreen : AppCompatActivity() {
         binding = ActivitySplashScreenBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         LoginManager.init(this)
-        UserManager.init(this)
         setContentView(binding.root)
         val token = LoginManager.getToken()
         Log.d("RetrofitToken", token.toString())
@@ -46,21 +44,39 @@ class SplashScreen : AppCompatActivity() {
             .load(R.drawable.soccer)
             .into(binding.imvSplashPic)
 
+        getUserCredentials(service)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        LoginManager.init(this)
+        val token = LoginManager.getToken()
+        Log.d("RetrofitToken", token.toString())
+
+        val httpClient = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(token.toString()))
+            .build()
+        val service = Retrofit.Builder()
+            .baseUrl("https://pruvve-backend-9a89de78d2a1.herokuapp.com/api/")
+            .client(httpClient)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(UserService::class.java)
+
+        getUserCredentials(service)
+    }
+
+    private fun getUserCredentials(service: UserService){
         service.getUserCredentials().enqueue(object : Callback<GetUserResponse> {
             override fun onResponse(call: Call<GetUserResponse>, response: Response<GetUserResponse>) {
                 if (response.isSuccessful) {
                     val accountType = response.body()?.data?.accountType.toString()
                     Log.d("RetrofitAccount", "Your account type is: $accountType")
-                    val userName = response.body()?.data?.username.toString()
-                    val profileUrl = response.body()?.data?.profilePictureUrl.toString()
-                    val id = response.body()?.data?.id ?: 10
                     if (accountType == "COACH") {
-                        UserManager.saveUserCredentials(id, userName, profileUrl)
                         Intent(this@SplashScreen, CoachHomePage::class.java).also {
                             startActivity(it)
                         }
                     } else {
-                        UserManager.saveUserCredentials(id, userName, profileUrl)
                         Intent(this@SplashScreen, HomePage::class.java).also {
                             startActivity(it)
                         }

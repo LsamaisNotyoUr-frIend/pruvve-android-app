@@ -14,7 +14,6 @@ import com.fluture.pruvve.adapters.GetUserResponse
 import com.fluture.pruvve.adapters.StoryAdapter
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
-import com.fluture.pruvve.auth.UserManager
 import com.fluture.pruvve.databinding.ActivityHomePageBinding
 import com.fluture.pruvve.fragments.BookPitchFragment
 import com.fluture.pruvve.fragments.NewsFragment
@@ -46,7 +45,6 @@ class HomePage : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityHomePageBinding.inflate(layoutInflater)
-        UserManager.init(this)
         LoginManager.init(this)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -71,7 +69,7 @@ class HomePage : AppCompatActivity() {
 
         initializeStories()
 
-        val id = UserManager.getUserId()
+        val id = LoginManager.getUserId()
         binding.homePageButton.setOnClickListener {
             supportFragmentManager.beginTransaction().apply {
                 supportFragmentManager.fragments.forEach { remove(it) }

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fluture.pruvve.R
 import com.fluture.pruvve.SearchPage
+import com.fluture.pruvve.ViewPitchItem
 import com.fluture.pruvve.adapters.PitchAdapter
 import com.fluture.pruvve.adapters.Pitches
 import com.fluture.pruvve.auth.AuthInterceptor
@@ -37,6 +38,7 @@ class BookPitchFragment : Fragment(R.layout.fragment_book_pitch){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentBookPitchBinding.bind(view)
+        TextManager.init(requireContext())
         LoginManager.init(requireContext())
         super.onViewCreated(view, savedInstanceState)
         val ctx = requireActivity().applicationContext
@@ -72,6 +74,11 @@ class BookPitchFragment : Fragment(R.layout.fragment_book_pitch){
                 startActivity(it)
             }
         }
+        binding.llViewAllPitches.setOnClickListener {
+            Intent(requireContext(), ViewPitchItem::class.java).also{
+                startActivity(it)
+            }
+        }
 
         adapter = PitchAdapter(arrayListOf())
         val recycler = binding.rvPitches
@@ -97,6 +104,16 @@ class BookPitchFragment : Fragment(R.layout.fragment_book_pitch){
             .create(UserService::class.java)
 
         getPitches(service = service)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.tvSearchBar.text = TextManager.getText()
+        binding.tvSearchBar.setOnClickListener {
+            Intent(requireContext(), SearchPage::class.java).also {
+                startActivity(it)
+            }
+        }
     }
 
     private fun getPitches(service: UserService){

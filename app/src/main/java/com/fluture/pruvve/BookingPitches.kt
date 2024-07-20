@@ -33,7 +33,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.time.YearMonth
+import java.time.Year
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Date
@@ -145,25 +145,28 @@ class BookingPitches : AppCompatActivity() {
             updateAvailableTimes(selectedDate, service)
         }
     }
-
     @SuppressLint("NotifyDataSetChanged")
     private fun updateRecyclerViewForCurrentMonth() {
+        dataList.clear()
+        dataList.addAll(updateDateListForCurrentMonth())
+        pitchDatesAdapter.notifyDataSetChanged()
+    }
+
+    private fun updateDateListForCurrentMonth(): MutableList<DayItems> {
         val currentMonth = currentMonthYear.monthValue
         val currentYear = currentMonthYear.year
-        val daysInMonth = YearMonth.of(currentYear, currentMonth).lengthOfMonth()
+        val daysInMonth = currentMonthYear.month.length(Year.isLeap(currentYear.toLong()))
         Log.e("RetrofitError", "your month size is $daysInMonth")
-        val newDataList = mutableListOf<DayItems>()
+        val dataList = mutableListOf<DayItems>()
 
         for (dayOfMonth in 1..daysInMonth) {
             val currentDate = LocalDate.of(currentYear, currentMonth, dayOfMonth)
             val dayOfWeek = currentDate.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
 
             val dayItem = DayItems(dayOfMonth, dayOfWeek, currentYear, currentMonth)
-            newDataList.add(dayItem)
+            dataList.add(dayItem)
         }
-        dataList.clear()
-        dataList.addAll(newDataList)
-        pitchDatesAdapter.notifyDataSetChanged()
+        return dataList
     }
 
     private fun updateMonthYearTextView(textView: TextView) {

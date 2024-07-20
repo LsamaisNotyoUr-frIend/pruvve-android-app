@@ -14,6 +14,7 @@ class SearchPage : AppCompatActivity(){
     private lateinit var binding: ActivitySearchPageBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        TextManager.init(this)
         binding = ActivitySearchPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -50,7 +51,6 @@ class SearchPage : AppCompatActivity(){
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val searchText = s.toString().lowercase()
-                TextManager.saveText(searchText.toString())
 
                 val filteredSearches = searches.filter { it.title.lowercase()
                     .contains(searchText) }
@@ -61,7 +61,8 @@ class SearchPage : AppCompatActivity(){
             }
 
             override fun afterTextChanged(s: Editable?) {
-                // Not used
+                val searchText = s.toString().lowercase()
+                TextManager.saveText(searchText)
             }
         })
     }

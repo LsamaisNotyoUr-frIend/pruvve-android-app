@@ -23,14 +23,18 @@ object LoginManager {
     fun saveToken(token: String) {
         sharedPreferences?.edit()?.putString(KEY_TOKEN, token)?.apply()
     }
+    fun saveProfileUrl(profileUrl: String) {
+        sharedPreferences?.edit()?.putString(KEY_PROFILE_URL, profileUrl)?.apply()
+    }
+    fun saveAccountType(accountType: String) {
+        sharedPreferences?.edit()?.putString(KEY_ACCOUNT_TYPE, accountType)?.apply()
+    }
 
-    fun saveUserInfo(userId: Int, username: String, accountType: String, profileUrl: String?) {
+    fun saveUserInfo(userId: Int, username: String, accountType: String) {
         sharedPreferences?.edit()?.apply {
             putString(KEY_TOKEN, getToken())
             putInt(KEY_USER_ID, userId)
             putString(KEY_USERNAME, username)
-            putString(KEY_ACCOUNT_TYPE, accountType)
-            putString(KEY_PROFILE_URL, profileUrl)
             putBoolean(KEY_IS_LOGGED_IN, true)
         }?.apply()
     }
@@ -40,7 +44,7 @@ object LoginManager {
     fun getUsername(): String? = sharedPreferences?.getString(KEY_USERNAME, null)
     fun getAccountType(): String? = sharedPreferences?.getString(KEY_ACCOUNT_TYPE, null)
     fun isLoggedIn(): Boolean = sharedPreferences?.getBoolean(KEY_IS_LOGGED_IN, false) ?: false
-    fun getProfileUrl(): String? = sharedPreferences?.getString(KEY_PROFILE_URL, null)
+    fun getProfileUrl(): String? = sharedPreferences?.getString(KEY_PROFILE_URL, "https://i.pinimg.com/564x/63/9c/7b/639c7be5f3ebe958d761cb2c614884dc.jpg")
 
     fun clearUserInfo() {
         sharedPreferences?.edit()?.clear()?.apply()

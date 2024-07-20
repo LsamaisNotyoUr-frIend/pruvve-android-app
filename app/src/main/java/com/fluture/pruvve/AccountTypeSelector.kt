@@ -3,7 +3,6 @@ package com.fluture.pruvve
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
@@ -15,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityAccounttypeSelectorBinding
@@ -22,11 +22,11 @@ import com.fluture.pruvve.retrofittcalls.AccountType
 import com.fluture.pruvve.retrofittcalls.AccountTypeResponse
 import com.fluture.pruvve.retrofittcalls.UserService
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -100,22 +100,18 @@ class AccountTypeSelector : AppCompatActivity() {
             binding.button.setBackgroundResource(R.drawable.disabled_button)
             binding.button.isEnabled = false
             val accountType = if (selectedTextView == binding.tvteamcoach) "COACH" else "ATHLETE"
-            val username = intent.getStringExtra("Extra_username").toString()
-                val enterAccountType = AccountType(
-                    accountType
-                )
+            LoginManager.saveAccountType(accountType)
+            val enterAccountType = AccountType(accountType)
             Log.d("RetrofitAccountType", "Your account type is $enterAccountType")
                 service.putAccountType(enterAccountType).enqueue(object : Callback<AccountTypeResponse>{
                     override fun onResponse(call: Call<AccountTypeResponse>, response: Response<AccountTypeResponse>) {
                         if(response.isSuccessful){
                             Log.d("RetrofitSuccess", "Your account type has been updated successfully ${response.body()?.message.toString()}")
                             val intent:Intent = if (selectedTextView == binding.tvteamcoach) {
-
                                 Intent(this@AccountTypeSelector, CoachScoutAccountcreator::class.java)
                                 }else {
                                     Intent(this@AccountTypeSelector, AthleteAccountCreator::class.java)
                             }
-                            intent.putExtra("Extra_username", username)
                             startActivity(intent)
                         }else{
                             Log.e("RetrofitError", "There was an error making the request ${response.errorBody().toString()}")
