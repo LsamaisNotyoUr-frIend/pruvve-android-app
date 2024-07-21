@@ -15,6 +15,7 @@ class StoryViewModel(private val repository: StoryRepository) : ViewModel() {
             allStories.postValue(repository.getStories())
         }
     }
+
     fun upsertStory(story: SavedStory) {
         viewModelScope.launch {
             repository.upsertStory(story)

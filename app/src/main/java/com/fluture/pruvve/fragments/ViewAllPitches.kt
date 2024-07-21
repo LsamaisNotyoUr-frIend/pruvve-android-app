@@ -11,5 +11,6 @@ class ViewAllPitches : Fragment(R.layout.fragment_view_all_pitches) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentViewAllPitchesBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
+
     }
 }

@@ -327,9 +327,6 @@ class MorePage : AppCompatActivity() {
         // Update the adapter
         adapter.updateData(postsList)
 
-        // Save posts to the database, ensuring no more than 7 posts are cached
-        postViewModel.upsertPosts(postsList.takeLast(7))
-
         binding.ivLoadingImage2.visibility = View.GONE
         binding.rvFeeds.visibility = View.VISIBLE
     }

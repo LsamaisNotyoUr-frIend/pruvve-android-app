@@ -71,6 +71,7 @@ class SplashScreen : AppCompatActivity() {
             override fun onResponse(call: Call<GetUserResponse>, response: Response<GetUserResponse>) {
                 if (response.isSuccessful) {
                     val accountType = response.body()?.data?.accountType.toString()
+                    LoginManager.saveAccountType(accountType)
                     Log.d("RetrofitAccount", "Your account type is: $accountType")
                     if (accountType == "COACH") {
                         Intent(this@SplashScreen, CoachHomePage::class.java).also {
