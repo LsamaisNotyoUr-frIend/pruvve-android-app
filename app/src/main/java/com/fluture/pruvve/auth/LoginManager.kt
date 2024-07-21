@@ -23,19 +23,22 @@ object LoginManager {
     fun saveToken(token: String) {
         sharedPreferences?.edit()?.putString(KEY_TOKEN, token)?.apply()
     }
-    fun saveProfileUrl(profileUrl: String) {
+
+    fun saveProfileUrl(profileUrl: String){
         sharedPreferences?.edit()?.putString(KEY_PROFILE_URL, profileUrl)?.apply()
     }
+
     fun saveAccountType(accountType: String) {
         sharedPreferences?.edit()?.putString(KEY_ACCOUNT_TYPE, accountType)?.apply()
     }
 
-    fun saveUserInfo(userId: Int, username: String, accountType: String) {
+    fun saveUserInfo(userId: Int, username: String, profileUrl: String) {
         sharedPreferences?.edit()?.apply {
             putString(KEY_TOKEN, getToken())
             putInt(KEY_USER_ID, userId)
             putString(KEY_USERNAME, username)
             putBoolean(KEY_IS_LOGGED_IN, true)
+            putString(KEY_PROFILE_URL, profileUrl)
         }?.apply()
     }
 

@@ -212,3 +212,9 @@ o
 ?app/src/main/res/layout/activity_coach_account_finalization.xml,d\1\d1751591e02faf3a0349d5833911692dc3f63270
 p
 @app/src/main/java/com/fluture/pruvve/fragments/ViewAllPitches.kt,d\e\de9a40f60cc9a3b30e9cb9bcba1904c4c86a0079
+t
+Dapp/src/main/java/com/fluture/pruvve/networkcalls/FilesViewholder.kt,8\e\8e20d5f2246cf6032f5f1c6fb847c8d090c53a1f
+r
+Bapp/src/main/java/com/fluture/pruvve/networkcalls/FileRetriever.kt,e\5\e50aa4336649052441c7df691d71cbba2ff11bc6
+t
+Dapp/src/main/java/com/fluture/pruvve/networkcalls/FilesViewHolder.kt,4\5\452a2c12071a3acd14e245cbc7b5b8e0bfebc234

@@ -148,8 +148,8 @@ class BookingPitches : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     private fun updateRecyclerViewForCurrentMonth() {
         dataList.clear()
-        dataList.addAll(updateDateListForCurrentMonth())
         pitchDatesAdapter.notifyDataSetChanged()
+        dataList.addAll(updateDateListForCurrentMonth())
     }
 
     private fun updateDateListForCurrentMonth(): MutableList<DayItems> {

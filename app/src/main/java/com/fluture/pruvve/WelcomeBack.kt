@@ -53,13 +53,10 @@ class WelcomeBack : AppCompatActivity() {
                         LoginManager.saveToken(token)
                         val userData = response.body()?.data
                         userData?.let {
-                            LoginManager.saveProfileUrl(
-                                it.user.profilePicUrl
-                            )
                             LoginManager.saveUserInfo(
                                 it.user.id,
                                 it.user.username,
-                                it.user.accountType,
+                                it.user.profilePicUrl ?: "https://i.pinimg.com/564x/63/9c/7b/639c7be5f3ebe958d761cb2c614884dc.jpg"
                             )
                         }
                         navigateToMainScreen(userData?.user?.accountType)
