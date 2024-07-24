@@ -20,7 +20,8 @@ import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityAccounttypeSelectorBinding
 import com.fluture.pruvve.retrofittcalls.AccountType
 import com.fluture.pruvve.retrofittcalls.AccountTypeResponse
-import com.fluture.pruvve.retrofittcalls.UserService
+import com.fluture.pruvve.data.api.UserService
+import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -31,6 +32,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
+@AndroidEntryPoint
 class AccountTypeSelector : AppCompatActivity() {
     private lateinit var binding: ActivityAccounttypeSelectorBinding
     private var selectedTextView: TextView? = null

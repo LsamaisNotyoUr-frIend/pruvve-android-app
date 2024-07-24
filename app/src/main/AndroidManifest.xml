@@ -39,7 +39,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Pruvve"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        android:name="com.fluture.pruvve.PruvveAndroidApp">
         <activity
             android:name=".ShowAllPosts"
             android:exported="false"
@@ -120,10 +121,10 @@
             android:name=".AccountTypeSelector"
             android:exported="false" />
         <activity
-            android:name=".UsernameCreation"
+            android:name=".ui.onboarding.UsernameCreation"
             android:exported="false" />
         <activity
-            android:name=".ProfileCreation"
+            android:name=".ui.onboarding.ProfileCreation"
             android:exported="false" />
         <activity android:name=".MainSignup" />
         <activity

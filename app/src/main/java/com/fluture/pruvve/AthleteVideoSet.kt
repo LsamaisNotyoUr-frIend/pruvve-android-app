@@ -8,7 +8,7 @@ import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.retrofittcalls.UploadData
 import com.fluture.pruvve.retrofittcalls.UploadImage
 import com.fluture.pruvve.retrofittcalls.UploadResponse
-import com.fluture.pruvve.retrofittcalls.UserService
+import com.fluture.pruvve.data.api.UserService
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -20,6 +20,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.fluture.pruvve.databinding.ActivityAthleteVideoSetBinding
 import com.fluture.pruvve.essentials.VideoUploader
+import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -33,6 +34,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+@AndroidEntryPoint
 class AthleteVideoSet : AppCompatActivity() {
     private lateinit var binding:ActivityAthleteVideoSetBinding
     private var videoUri: Uri? = null

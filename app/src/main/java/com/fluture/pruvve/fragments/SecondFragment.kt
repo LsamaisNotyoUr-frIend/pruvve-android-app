@@ -8,10 +8,13 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.fluture.pruvve.R
 import com.fluture.pruvve.databinding.FragmentSecondBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
+
+@AndroidEntryPoint
 class SecondFragment : Fragment() {
 
     private var _binding: FragmentSecondBinding? = null

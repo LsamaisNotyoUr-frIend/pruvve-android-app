@@ -14,7 +14,8 @@ import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityShowAllPostsBinding
 import com.fluture.pruvve.retrofittcalls.GetPitches
 import com.fluture.pruvve.retrofittcalls.RequestObjects
-import com.fluture.pruvve.retrofittcalls.UserService
+import com.fluture.pruvve.data.api.UserService
+import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -22,6 +23,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
+@AndroidEntryPoint
 class ShowAllPosts : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityShowAllPostsBinding

@@ -16,7 +16,8 @@ import com.fluture.pruvve.retrofittcalls.InputStreamRequestBody
 import com.fluture.pruvve.retrofittcalls.UploadData
 import com.fluture.pruvve.retrofittcalls.UploadImage
 import com.fluture.pruvve.retrofittcalls.UploadResponse
-import com.fluture.pruvve.retrofittcalls.UserService
+import com.fluture.pruvve.data.api.UserService
+import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -28,6 +29,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+@AndroidEntryPoint
 class CoachScoutAccountcreator : AppCompatActivity() {
     private lateinit var binding: ActivityCoachScoutAccountcreatorBinding
     private var imageUri: Uri? = null

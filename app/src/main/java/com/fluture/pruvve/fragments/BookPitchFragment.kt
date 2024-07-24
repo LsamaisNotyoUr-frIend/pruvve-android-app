@@ -18,7 +18,8 @@ import com.fluture.pruvve.databinding.FragmentBookPitchBinding
 import com.fluture.pruvve.essentials.TextManager
 import com.fluture.pruvve.retrofittcalls.GetPitches
 import com.fluture.pruvve.retrofittcalls.RequestObjects
-import com.fluture.pruvve.retrofittcalls.UserService
+import com.fluture.pruvve.data.api.UserService
+import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.OkHttpClient
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -31,6 +32,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
+@AndroidEntryPoint
 class BookPitchFragment : Fragment(R.layout.fragment_book_pitch){
     private lateinit var binding: FragmentBookPitchBinding
 

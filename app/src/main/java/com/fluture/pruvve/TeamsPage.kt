@@ -10,8 +10,10 @@ import com.fluture.pruvve.adapters.TeamsAdapter
 import com.fluture.pruvve.adapters.VideoPageItems
 import com.fluture.pruvve.adapters.VideosPageAdapter1
 import com.fluture.pruvve.databinding.ActivityTeamsPageBinding
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Random
 
+@AndroidEntryPoint
 class TeamsPage : AppCompatActivity() {
     private lateinit var binding:ActivityTeamsPageBinding
     override fun onCreate(savedInstanceState: Bundle?) {

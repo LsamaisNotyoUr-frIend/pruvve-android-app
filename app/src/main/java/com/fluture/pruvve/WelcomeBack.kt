@@ -9,13 +9,16 @@ import com.fluture.pruvve.adapters.LoginResponse
 import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityWelcomeBackBinding
 import com.fluture.pruvve.retrofittcalls.LoginInfo
-import com.fluture.pruvve.retrofittcalls.UserService
+import com.fluture.pruvve.data.api.UserService
+import com.fluture.pruvve.ui.onboarding.ProfileCreation
+import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
+@AndroidEntryPoint
 class WelcomeBack : AppCompatActivity() {
     private lateinit var binding: ActivityWelcomeBackBinding
     override fun onCreate(savedInstanceState: Bundle?) {

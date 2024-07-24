@@ -6,8 +6,9 @@ import android.os.Bundle
 import com.bumptech.glide.Glide
 import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityLoginPageBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class LoginPage : AppCompatActivity() {
     private lateinit var binding: ActivityLoginPageBinding
     override fun onCreate(savedInstanceState: Bundle?) {

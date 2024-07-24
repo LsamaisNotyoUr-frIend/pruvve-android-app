@@ -9,7 +9,9 @@ import com.fluture.pruvve.R
 import com.fluture.pruvve.adapters.NewsAdapter
 import com.fluture.pruvve.adapters.NewsItems
 import com.fluture.pruvve.databinding.FragmentNewsBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class NewsFragment : Fragment(R.layout.fragment_news) {
     private lateinit var binding: FragmentNewsBinding
     @SuppressLint("NotifyDataSetChanged")

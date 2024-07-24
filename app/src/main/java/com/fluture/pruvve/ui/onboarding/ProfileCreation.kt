@@ -1,4 +1,4 @@
-package com.fluture.pruvve
+package com.fluture.pruvve.ui.onboarding
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -21,11 +21,14 @@ import android.widget.NumberPicker
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.fluture.pruvve.R
 import com.fluture.pruvve.databinding.ActivityProfileCreationBinding
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.Calendar
 
+@AndroidEntryPoint
 class ProfileCreation : AppCompatActivity() {
     private lateinit var binding: ActivityProfileCreationBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,18 +61,21 @@ class ProfileCreation : AppCompatActivity() {
         binding.button.setOnClickListener {
             val firstName = binding.firstNameField.text.toString()
             val lastName = binding.lastNameField.text.toString()
+            val email = binding.emailaddressfield.text.toString().trim()
             val zipCode = binding.zipCodeField.text.toString()
-            val gender = binding.tvgenderview.text.toString().uppercase()
+            val gender = binding.tvgenderview.text.toString()
             val dateOfBirth = "${binding.tvyearview.text}-${binding.tvmonthview.text}-${binding.tvdayview.text}"
-            val email = getValidatedEmail()
-            Intent(this, UsernameCreation::class.java).also {
-                it.putExtra("Extra_firstname", firstName)
-                it.putExtra("Extra_lastname", lastName)
-                it.putExtra("Extra_zipcode", zipCode)
-                it.putExtra("Extra_gender", gender)
-                it.putExtra("Extra_dateOfBirth", dateOfBirth)
-                it.putExtra("Extra_email", email)
-                startActivity(it)}
+
+            if (validateForm(firstName, lastName, email, gender, zipCode, dateOfBirth)) {
+                Intent(this, UsernameCreation::class.java).also {
+                    it.putExtra("Extra_firstname", firstName)
+                    it.putExtra("Extra_lastname", lastName)
+                    it.putExtra("Extra_zipcode", zipCode)
+                    it.putExtra("Extra_gender", gender.uppercase())
+                    it.putExtra("Extra_dateOfBirth", dateOfBirth)
+                    it.putExtra("Extra_email", email)
+                    startActivity(it)}
+            }
         }
     }
     private fun setClickableSpan(spannableString: SpannableString, targetWord: String) {
@@ -196,20 +202,58 @@ class ProfileCreation : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun getValidatedEmail(): String? {
-        val email = binding.emailaddressfield.text.toString()
-
-        return if (isValidEmail(email)) {
-            email
-        } else {
-            // Show error message if email is invalid
-            Toast.makeText(this, "Please enter a valid email address.", Toast.LENGTH_SHORT).show()
-            null
-        }
-    }
-
     // Function to check if the email is valid
     private fun isValidEmail(email: String): Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
+    private fun validateForm(
+        firstName: String,
+        lastName: String,
+        email: String,
+        gender: String,
+        zipCode: String,
+        dateOfBirth: String
+    ): Boolean {
+        val fields = listOf(
+            Pair(firstName, binding.firstNameField to "First Name is required"),
+            Pair(lastName, binding.lastNameField to "Last Name is required"),
+            Pair(email, binding.emailaddressfield to "Valid email is required"),
+            Pair(gender, binding.tvgenderview to "Valid gender is required"),
+            Pair(zipCode, binding.zipCodeField to "Valid Zip Code is required"),
+            Pair(dateOfBirth, binding.tvyearview to "Valid date of birth is required")
+        )
+
+        val validGenders = listOf("Male", "Female")
+        val pattern =  Patterns.EMAIL_ADDRESS.matcher(email).matches()
+
+        for ((value, pair) in fields) {
+            val (field, errorMessage) = pair
+            field.error = null // Clear the previous error message
+
+            when (field) {
+                binding.firstNameField, binding.lastNameField -> if (value.isEmpty()) {
+                    field.error = errorMessage
+                    return false
+                }
+                binding.emailaddressfield -> if (value.isEmpty() || !pattern ) {
+                    field.error = errorMessage
+                    return false
+                }
+                binding.tvgenderview -> if (value.isEmpty() || !validGenders.contains(value)) {
+                    field.error = errorMessage
+                    return false
+                }
+                binding.zipCodeField -> if (value.isEmpty() || value.length != 5) {
+                    field.error = errorMessage
+                    return false
+                }
+                binding.tvyearview -> if (value.isEmpty()) {
+                    field.error = errorMessage
+                    return false
+                }
+            }
+        }
+        return true
     }
 }

@@ -1,4 +1,4 @@
-package com.fluture.pruvve
+package com.fluture.pruvve.ui.onboarding
 
 import android.app.Dialog
 import android.content.Intent
@@ -17,13 +17,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.fluture.pruvve.AccountTypeSelector
+import com.fluture.pruvve.R
 import com.fluture.pruvve.adapters.LoginResponse
 import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityUsernameCreationBinding
 import com.fluture.pruvve.retrofittcalls.LoginInfo
 import com.fluture.pruvve.retrofittcalls.User
-import com.fluture.pruvve.retrofittcalls.UserService
+import com.fluture.pruvve.data.api.UserService
+import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,8 +36,11 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
+@AndroidEntryPoint
 class UsernameCreation : AppCompatActivity() {
     private lateinit var binding: ActivityUsernameCreationBinding
+
+    private val viewModel by viewModels<SignUpViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityUsernameCreationBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
@@ -107,6 +114,7 @@ class UsernameCreation : AppCompatActivity() {
                 username = username.trim(),
                 password = password.trim()
             )
+
             service.createUser(userToCreate).enqueue(object : Callback<User> {
                 override fun onResponse(call: Call<User>, response: Response<User>) {
                     if (response.isSuccessful) {

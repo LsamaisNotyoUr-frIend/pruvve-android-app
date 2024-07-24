@@ -17,9 +17,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityAthleteOnboardEndBinding
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
+@AndroidEntryPoint
 class AthleteOnboardEnd : AppCompatActivity() {
     private lateinit var binding: ActivityAthleteOnboardEndBinding
     private var accountType: String = ""

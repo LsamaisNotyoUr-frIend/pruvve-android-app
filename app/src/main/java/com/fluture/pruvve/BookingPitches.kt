@@ -24,7 +24,8 @@ import com.fluture.pruvve.essentials.PitchViewModel
 import com.fluture.pruvve.retrofittcalls.GetPitch
 import com.fluture.pruvve.retrofittcalls.GetPitchAvailability
 import com.fluture.pruvve.retrofittcalls.PitchRequestObjects
-import com.fluture.pruvve.retrofittcalls.UserService
+import com.fluture.pruvve.data.api.UserService
+import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -39,6 +40,7 @@ import java.time.format.TextStyle
 import java.util.Date
 import java.util.Locale
 
+@AndroidEntryPoint
 class BookingPitches : AppCompatActivity() {
     private lateinit var binding: ActivityBookingPitchesBinding
     private var currentMonthYear: LocalDate = LocalDate.now()

@@ -23,7 +23,8 @@ import android.widget.TextView
 import com.fluture.pruvve.auth.AuthInterceptor
 import com.fluture.pruvve.auth.LoginManager
 import com.fluture.pruvve.databinding.ActivityAthleteAccountFinalizationBinding
-import com.fluture.pruvve.retrofittcalls.UserService
+import com.fluture.pruvve.data.api.UserService
+import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -33,6 +34,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
+@AndroidEntryPoint
 class AthleteAccountFinalization : AppCompatActivity() {
     private lateinit var binding: ActivityAthleteAccountFinalizationBinding
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,4 +1,4 @@
-package com.fluture.pruvve.retrofittcalls
+package com.fluture.pruvve.data.api
 
 
 import com.fluture.pruvve.CoachProfileBody
@@ -8,9 +8,47 @@ import com.fluture.pruvve.ProfileResponse
 import com.fluture.pruvve.adapters.GetAllUserResponse
 import com.fluture.pruvve.adapters.GetUserResponse
 import com.fluture.pruvve.adapters.LoginResponse
+
+import com.fluture.pruvve.retrofittcalls.AccountType
+import com.fluture.pruvve.retrofittcalls.AccountTypeResponse
+import com.fluture.pruvve.retrofittcalls.Follow
+import com.fluture.pruvve.retrofittcalls.FollowStatusReply
+import com.fluture.pruvve.retrofittcalls.FollowsReply
+import com.fluture.pruvve.retrofittcalls.GetAllPosts
+import com.fluture.pruvve.retrofittcalls.GetAthleteProfile
+import com.fluture.pruvve.retrofittcalls.GetFeedsMedia
+import com.fluture.pruvve.retrofittcalls.GetNews
+import com.fluture.pruvve.retrofittcalls.GetPitch
+import com.fluture.pruvve.retrofittcalls.GetPitchAvailability
+import com.fluture.pruvve.retrofittcalls.GetPitches
+import com.fluture.pruvve.retrofittcalls.GetPost
+import com.fluture.pruvve.retrofittcalls.GetPostsMedia
+import com.fluture.pruvve.retrofittcalls.GetPostsSummary
+import com.fluture.pruvve.retrofittcalls.GetSpecificTeam
+import com.fluture.pruvve.retrofittcalls.GetTeams
+import com.fluture.pruvve.retrofittcalls.GetVideoOfWeek
+import com.fluture.pruvve.retrofittcalls.LoginInfo
+import com.fluture.pruvve.retrofittcalls.MakeComments
+import com.fluture.pruvve.retrofittcalls.News
+import com.fluture.pruvve.retrofittcalls.NewsGotten
+import com.fluture.pruvve.retrofittcalls.PitchRequestObjects
+import com.fluture.pruvve.retrofittcalls.PostIdObject
+import com.fluture.pruvve.retrofittcalls.PostsMedia
+import com.fluture.pruvve.retrofittcalls.RequestObjects
+import com.fluture.pruvve.retrofittcalls.ServerComments
+import com.fluture.pruvve.retrofittcalls.ServerLikes
+import com.fluture.pruvve.retrofittcalls.UploadData
+import com.fluture.pruvve.retrofittcalls.UploadImage
+import com.fluture.pruvve.retrofittcalls.UploadResponse
+import com.fluture.pruvve.retrofittcalls.User
+import com.fluture.pruvve.retrofittcalls.UserIdObject
+import com.fluture.pruvve.retrofittcalls.UserRequestObjects
+import com.fluture.pruvve.retrofittcalls.VideoCategory
+import com.fluture.pruvve.retrofittcalls.VideoCategoryCreator
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -23,6 +61,12 @@ import retrofit2.http.Url
 
 interface UserService {
 //    UserController
+
+    @POST("v1/user")
+    suspend fun createUsers(@Body user: User): Response<User>
+
+    @POST("v1/auth/login")
+    suspend fun getUsers(@Body userToLogin: LoginInfo): Response<LoginResponse>
 
     @POST("v1/user")
     fun createUser(@Body user: User): Call<User>

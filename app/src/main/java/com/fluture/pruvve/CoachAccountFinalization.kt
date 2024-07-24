@@ -28,7 +28,8 @@ import com.fluture.pruvve.databinding.ActivityCoachAccountFinalizationBinding
 import com.fluture.pruvve.retrofittcalls.GetSpecificTeam
 import com.fluture.pruvve.retrofittcalls.GetTeams
 import com.fluture.pruvve.retrofittcalls.RequestObjects
-import com.fluture.pruvve.retrofittcalls.UserService
+import com.fluture.pruvve.data.api.UserService
+import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -38,6 +39,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
+@AndroidEntryPoint
 class CoachAccountFinalization : AppCompatActivity() {
     private lateinit var binding: ActivityCoachAccountFinalizationBinding
     private var isUsable=  true

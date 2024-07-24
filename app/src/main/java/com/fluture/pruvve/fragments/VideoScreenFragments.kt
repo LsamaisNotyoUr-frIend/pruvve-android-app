@@ -18,7 +18,8 @@ import com.fluture.pruvve.retrofittcalls.GetAllPosts
 import com.fluture.pruvve.retrofittcalls.GetFeedsMedia
 import com.fluture.pruvve.retrofittcalls.UploadImage
 import com.fluture.pruvve.retrofittcalls.UploadResponse
-import com.fluture.pruvve.retrofittcalls.UserService
+import com.fluture.pruvve.data.api.UserService
+import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -26,6 +27,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
+@AndroidEntryPoint
 class VideoScreenFragments : Fragment(R.layout.fragment_video_screen_fragments) {
     private lateinit var binding: FragmentVideoScreenFragmentsBinding
     private lateinit var adapter: VideosPageAdapter1

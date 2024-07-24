@@ -9,7 +9,9 @@ import com.fluture.pruvve.adapters.SearchAdapter
 import com.fluture.pruvve.adapters.SearchItems
 import com.fluture.pruvve.databinding.ActivitySearchPageBinding
 import com.fluture.pruvve.essentials.TextManager
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SearchPage : AppCompatActivity(){
     private lateinit var binding: ActivitySearchPageBinding
     override fun onCreate(savedInstanceState: Bundle?) {

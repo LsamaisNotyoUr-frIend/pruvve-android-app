@@ -9,7 +9,10 @@ import android.text.style.ForegroundColorSpan
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.fluture.pruvve.databinding.ActivitySignupBinding
+import com.fluture.pruvve.ui.onboarding.ProfileCreation
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainSignup:AppCompatActivity() {
     private lateinit var binding: ActivitySignupBinding
     override fun onCreate(savedInstanceState: Bundle?) {

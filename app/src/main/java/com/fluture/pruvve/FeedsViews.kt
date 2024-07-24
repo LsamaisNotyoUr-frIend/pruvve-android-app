@@ -8,7 +8,9 @@ import com.fluture.pruvve.adapters.Comments
 import com.fluture.pruvve.adapters.LikeAdapter
 import com.fluture.pruvve.adapters.Likes
 import com.fluture.pruvve.databinding.ActivityFeedsViewsBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FeedsViews : AppCompatActivity() {
     private lateinit var binding :ActivityFeedsViewsBinding
     override fun onCreate(savedInstanceState: Bundle?) {

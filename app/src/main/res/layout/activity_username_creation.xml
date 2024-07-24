@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/pitch_background"
-    tools:context=".UsernameCreation">
+    tools:context=".ui.onboarding.UsernameCreation">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline73"
@@ -88,9 +88,11 @@
             android:background="@drawable/sign_in_viewbackgrounds"
             android:hint="username"
             android:inputType="textPersonName"
-            android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="20sp"
+            android:text=""
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="8dp"
             app:layout_constraintBottom_toTopOf="@+id/guideline38"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/username"
@@ -121,9 +123,11 @@
             android:background="@drawable/sign_in_viewbackgrounds"
             android:hint="password"
             android:inputType="textPassword"
-            android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="20sp"
+            android:text=""
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="8dp"
             app:layout_constraintBottom_toTopOf="@+id/guideline36"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline41"

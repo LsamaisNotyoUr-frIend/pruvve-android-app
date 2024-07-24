@@ -35,7 +35,8 @@ import com.fluture.pruvve.retrofittcalls.GetAthleteProfile
 import com.fluture.pruvve.retrofittcalls.GetFeedsMedia
 import com.fluture.pruvve.retrofittcalls.UploadImage
 import com.fluture.pruvve.retrofittcalls.UploadResponse
-import com.fluture.pruvve.retrofittcalls.UserService
+import com.fluture.pruvve.data.api.UserService
+import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -46,6 +47,7 @@ import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
 
+@AndroidEntryPoint
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private lateinit var binding: FragmentProfileBinding
     private val defaultUrl = "https://i.pinimg.com/236x/8f/9d/94/8f9d94ba59ecfc35bd129af0ca8a7f70.jpg"
@@ -308,8 +310,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         requireActivity().finish()
     }
 
-    private fun getUsersPosts(service: UserService,  userId:Int,  recyclerView: RecyclerView,
-    videoList: MutableList<VideoPageItems>, gridLayout: GridLayoutManager, defaultUrl:String = "https://i.pinimg.com/236x/8f/9d/94/8f9d94ba59ecfc35bd129af0ca8a7f70.jpg"){
+    private fun getUsersPosts(service: UserService, userId:Int, recyclerView: RecyclerView,
+                              videoList: MutableList<VideoPageItems>, gridLayout: GridLayoutManager, defaultUrl:String = "https://i.pinimg.com/236x/8f/9d/94/8f9d94ba59ecfc35bd129af0ca8a7f70.jpg"){
         val listToUpload = mutableListOf(VideoPageItems(defaultUrl))
         service.getMyPosts(userId, GetFeedsMedia(1, 10)).enqueue(object : Callback<GetAllPosts>{
             override fun onResponse(call: Call<GetAllPosts>, response: Response<GetAllPosts>) {
@@ -346,7 +348,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         })
     }
 
-    private fun getMediaPosts(service: UserService,recyclerView: RecyclerView, videoList: MutableList<VideoPageItems>,gridLayout: GridLayoutManager){
+    private fun getMediaPosts(service: UserService, recyclerView: RecyclerView, videoList: MutableList<VideoPageItems>, gridLayout: GridLayoutManager){
         val listToUpload = mutableListOf(VideoPageItems(defaultUrl))
         service.getPosts(GetFeedsMedia(1, 10)).enqueue(object : Callback<GetAllPosts>{
             override fun onResponse(call: Call<GetAllPosts>, response: Response<GetAllPosts>) {

@@ -19,8 +19,9 @@ import com.fluture.pruvve.databinding.FragmentTeamsBinding
 import com.fluture.pruvve.retrofittcalls.GetSpecificTeam
 import com.fluture.pruvve.retrofittcalls.UploadImage
 import com.fluture.pruvve.retrofittcalls.UploadResponse
-import com.fluture.pruvve.retrofittcalls.UserService
+import com.fluture.pruvve.data.api.UserService
 import com.fluture.pruvve.retrofittcalls.teamMembers
+import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,6 +29,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
+@AndroidEntryPoint
 class TeamsFragment : Fragment(R.layout.fragment_teams) {
     private lateinit var binding: FragmentTeamsBinding
     @SuppressLint("NotifyDataSetChanged")
@@ -105,7 +107,7 @@ class TeamsFragment : Fragment(R.layout.fragment_teams) {
         }
     }
 
-    private fun setUpGoaleeRecycler(service:UserService, teammate: teamMembers){
+    private fun setUpGoaleeRecycler(service: UserService, teammate: teamMembers){
         val uploadPic =  UploadImage(teammate.profilePictureUrl, "DOWNLOAD")
         val goalkeepers = mutableListOf<TeamMates>()
 
@@ -136,7 +138,7 @@ class TeamsFragment : Fragment(R.layout.fragment_teams) {
         })
     }
 
-    private fun setUpMidfielderRecycler(service:UserService, teammate: teamMembers){
+    private fun setUpMidfielderRecycler(service: UserService, teammate: teamMembers){
         val uploadPic =  UploadImage(teammate.profilePictureUrl, "DOWNLOAD")
         val midfielders = mutableListOf<TeamMates>()
         val midfielderRecycler = binding.rvMidfielders
@@ -163,7 +165,7 @@ class TeamsFragment : Fragment(R.layout.fragment_teams) {
         })
     }
 
-    private fun setUpStrikerRecycler(service:UserService, teammate: teamMembers){
+    private fun setUpStrikerRecycler(service: UserService, teammate: teamMembers){
         val uploadPic =  UploadImage(teammate.profilePictureUrl, "DOWNLOAD")
         val strikers = mutableListOf<TeamMates>()
         val strikerRecycler = binding.rvStrikes
@@ -190,7 +192,7 @@ class TeamsFragment : Fragment(R.layout.fragment_teams) {
         })
     }
 
-    private fun setUpDefenderRecycler(service:UserService, teammate: teamMembers){
+    private fun setUpDefenderRecycler(service: UserService, teammate: teamMembers){
         val uploadPic =  UploadImage(teammate.profilePictureUrl, "DOWNLOAD")
         val defenders = mutableListOf<TeamMates>()
         val defenderRecycler= binding.rvDefenders
